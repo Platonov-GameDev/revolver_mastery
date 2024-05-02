@@ -26,7 +26,7 @@ func _ready():
 
 
 func press():
-	if !is_active: return
+	if !is_active: reset()
 	if is_reloading: return
 	
 	change_activation(false)
@@ -34,12 +34,19 @@ func press():
 
 
 func release():
-	if !is_active: return
+	if !is_active: reset()
 	if is_reloading: return
 	
 	if fire_timer.time_left == 0: return
 	
 	shoot()
+
+
+func reset():
+	pre_fire_timer.stop()
+	fire_timer.stop()
+	recharge_timer.start()
+	change_activation(false)
 
 
 func shoot():
