@@ -21,7 +21,6 @@ func shoot():
 	
 	raycast.force_raycast_update()
 	var collider = raycast.get_collider()
-	print(collider)
 	if !collider: return
 	if collider.is_in_group("enemy"):
 		collider.queue_free()
