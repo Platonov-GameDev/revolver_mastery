@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://b8kpvspnu5q6x"]
+
+[ext_resource type="PackedScene" uid="uid://bwj64f6gyrrc4" path="res://scenes/Player/player.tscn" id="1_ppx16"]
+[ext_resource type="Texture2D" uid="uid://djjpwnfetbcon" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="2_8xvc4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8s2qk"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o24vh"]
+albedo_texture = ExtResource("2_8xvc4")
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_4mnsj"]
+material = SubResource("StandardMaterial3D_o24vh")
+size = Vector3(100, 1, 100)
+
+[sub_resource type="Environment" id="Environment_jdwgu"]
+background_energy_multiplier = 4.0
+
+[node name="TestLevel" type="Node"]
+
+[node name="Player" parent="." instance=ExtResource("1_ppx16")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_8s2qk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
+mesh = SubResource("BoxMesh_4mnsj")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_jdwgu")
