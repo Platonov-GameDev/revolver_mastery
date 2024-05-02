@@ -1,6 +1,7 @@
 extends Node3D
 
 
+@export var trail_scene: PackedScene
 @export var camera: Camera3D
 @onready var ray_cast_timer = $RayCastTimer
 @onready var pre_fan_timer = $PreFanTimer
@@ -8,6 +9,7 @@ extends Node3D
 @onready var recharge_timer = $RechargeTimer
 @onready var reload_timer = $ReloadTimer
 var raycast: RayCast3D
+var shot_trail
 var is_active = true
 var current_ammo = 6
 var max_ammo = 6
@@ -48,6 +50,11 @@ func shoot():
 		if collider.is_in_group("enemy"):
 			collider.queue_free()
 	
+	shot_trail = trail_scene.instantiate()
+	shot_trail.position = global_position
+	shot_trail.rotation = camera.global_rotation
+	get_parent().get_parent().add_child(shot_trail)
+	
 	fan_timer.stop()
 	change_ammo(current_ammo - 1)
 	change_activation(false)
@@ -57,6 +64,7 @@ func shoot():
 
 func _on_ray_cast_timer_timeout():
 	raycast.queue_free()
+	shot_trail.queue_free()
 
 
 func _on_pre_fan_timer_timeout():
