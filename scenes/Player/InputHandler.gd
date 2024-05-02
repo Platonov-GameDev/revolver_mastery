@@ -4,6 +4,7 @@ extends Node
 signal movement_inputted(input_vector)
 signal jump_pressed
 signal escape_pressed
+signal reload_pressed
 signal mouse_moved(input_vector)
 signal main_fire_pressed
 signal main_fire_released
@@ -29,6 +30,9 @@ func _process(_delta):
 	
 	if Input.is_action_just_pressed("ui_cancel"):
 		escape_pressed.emit()
+	
+	if Input.is_action_just_pressed("reload"):
+		reload_pressed.emit()
 	
 	if Input.is_action_just_pressed("main_fire"):
 		main_fire_pressed.emit()
