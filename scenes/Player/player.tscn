@@ -1,10 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=6 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/InputHandler.gd" id="1_mqogj"]
 [ext_resource type="Script" path="res://scenes/Player/Gun.gd" id="3_18qho"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vecmp"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_snrou"]
+font_size = 121
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 script = ExtResource("1_4bq6a")
@@ -19,7 +22,7 @@ script = ExtResource("1_mqogj")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="AimRect" type="ColorRect" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -34,6 +37,31 @@ grow_vertical = 2
 scale = Vector2(0.05, 0.05)
 pivot_offset = Vector2(20, 20)
 
+[node name="GunRect" type="ColorRect" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -285.0
+offset_top = -170.0
+offset_right = -106.0
+offset_bottom = -1.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="AmmoCount" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 95.0
+offset_top = -236.0
+offset_right = 178.0
+offset_bottom = -36.0
+grow_vertical = 0
+text = "6"
+label_settings = SubResource("LabelSettings_snrou")
+
 [node name="Gun" type="Node3D" parent="." node_paths=PackedStringArray("camera")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("3_18qho")
@@ -41,4 +69,20 @@ camera = NodePath("../Camera3D")
 
 [node name="RayCastTimer" type="Timer" parent="Gun"]
 wait_time = 0.2
+one_shot = true
+
+[node name="PreFireTimer" type="Timer" parent="Gun"]
+wait_time = 0.3
+one_shot = true
+
+[node name="FireTimer" type="Timer" parent="Gun"]
+wait_time = 0.3
+one_shot = true
+
+[node name="RechargeTimer" type="Timer" parent="Gun"]
+wait_time = 0.5
+one_shot = true
+
+[node name="ReloadTimer" type="Timer" parent="Gun"]
+wait_time = 1.5
 one_shot = true
