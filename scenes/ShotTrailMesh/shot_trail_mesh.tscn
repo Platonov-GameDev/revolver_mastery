@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0bg7mhjnrj6f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3bjc1"]
+transparency = 1
+albedo_color = Color(0.899377, 0.554774, 5.77569e-07, 0.447059)
+disable_receive_shadows = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lru1n"]
+material = SubResource("StandardMaterial3D_3bjc1")
+top_radius = 0.01
+bottom_radius = 0.01
+height = 100.0
+
+[node name="ShotTrailMesh" type="StaticBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 0, 0, -50)
+mesh = SubResource("CylinderMesh_lru1n")

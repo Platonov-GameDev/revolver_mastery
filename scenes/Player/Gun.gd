@@ -1,6 +1,7 @@
 extends Node3D
 
 
+@export var shot_trail_mesh: PackedScene
 @export var camera: Camera3D
 @onready var ray_cast_timer = $RayCastTimer
 @onready var pre_fire_timer = $PreFireTimer
@@ -8,6 +9,7 @@ extends Node3D
 @onready var recharge_timer = $RechargeTimer
 @onready var reload_timer = $ReloadTimer
 var raycast: RayCast3D
+var shot_trail
 var current_ammo = 6
 var max_ammo = 6
 var is_active = true
@@ -26,6 +28,7 @@ func _ready():
 
 
 func press():
+	if current_ammo == 0: return
 	if !is_active: reset()
 	if is_reloading: return
 	
@@ -34,6 +37,7 @@ func press():
 
 
 func release():
+	if current_ammo == 0: return
 	if !is_active: reset()
 	if is_reloading: return
 	
@@ -68,6 +72,11 @@ func shoot():
 		if collider.is_in_group("enemy"):
 			collider.queue_free()
 	
+	shot_trail = shot_trail_mesh.instantiate()
+	shot_trail.position = global_position
+	shot_trail.rotation = camera.global_rotation
+	get_parent().get_parent().add_child(shot_trail)
+	
 	fire_timer.stop()
 	change_activation(false)
 	
@@ -77,6 +86,7 @@ func shoot():
 
 func _on_ray_cast_timer_timeout():
 	raycast.queue_free()
+	shot_trail.queue_free()
 
 
 func change_ammo(new_ammo):
@@ -110,6 +120,8 @@ func _on_recharge_timer_timeout():
 
 
 func reload():
+	if current_ammo == max_ammo: return
+	
 	change_reload_state(true)
 	reload_timer.start()
 

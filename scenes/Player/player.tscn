@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=7 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/InputHandler.gd" id="1_mqogj"]
 [ext_resource type="Script" path="res://scenes/Player/Gun.gd" id="3_18qho"]
+[ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="4_5fvic"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vecmp"]
 
@@ -65,6 +66,7 @@ label_settings = SubResource("LabelSettings_snrou")
 [node name="Gun" type="Node3D" parent="." node_paths=PackedStringArray("camera")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("3_18qho")
+shot_trail_mesh = ExtResource("4_5fvic")
 camera = NodePath("../Camera3D")
 
 [node name="RayCastTimer" type="Timer" parent="Gun"]
