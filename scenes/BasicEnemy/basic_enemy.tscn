@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://bqgc76wlnvgnj"]
+
+[ext_resource type="Script" path="res://scenes/BasicEnemy/basic_enemy.gd" id="1_lil4r"]
+[ext_resource type="Texture2D" uid="uid://bfwtoq0kf818n" path="res://addons/kenney_prototype_textures/red/texture_10.png" id="1_ylx2f"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2dnmy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w048s"]
+albedo_texture = ExtResource("1_ylx2f")
+uv1_triplanar = true
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8oypo"]
+material = SubResource("StandardMaterial3D_w048s")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7f0dd"]
+radius = 1.0
+
+[node name="BasicEnemy" type="CharacterBody3D"]
+script = ExtResource("1_lil4r")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_2dnmy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_8oypo")
+
+[node name="HurtBox" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_7f0dd")

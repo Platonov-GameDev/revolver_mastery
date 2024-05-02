@@ -1,13 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://b8kpvspnu5q6x"]
+[gd_scene load_steps=10 format=3 uid="uid://b8kpvspnu5q6x"]
 
 [ext_resource type="PackedScene" uid="uid://bwj64f6gyrrc4" path="res://scenes/Player/player.tscn" id="1_ppx16"]
-[ext_resource type="Texture2D" uid="uid://djjpwnfetbcon" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="2_8xvc4"]
+[ext_resource type="Texture2D" uid="uid://b3bwpi2cimxt7" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_ikrhn"]
+[ext_resource type="PackedScene" uid="uid://dj1ddrxbaymmj" path="res://scenes/EnemySpawner/enemy_spawner.tscn" id="3_2sxpg"]
+[ext_resource type="PackedScene" uid="uid://bqgc76wlnvgnj" path="res://scenes/BasicEnemy/basic_enemy.tscn" id="3_4ntb6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8s2qk"]
 size = Vector3(100, 1, 100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o24vh"]
-albedo_texture = ExtResource("2_8xvc4")
+albedo_texture = ExtResource("2_ikrhn")
 uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_4mnsj"]
@@ -15,16 +17,25 @@ material = SubResource("StandardMaterial3D_o24vh")
 size = Vector3(100, 1, 100)
 
 [sub_resource type="Environment" id="Environment_jdwgu"]
-background_energy_multiplier = 4.0
+background_mode = 1
+background_color = Color(0.166934, 0.14767, 0.129789, 1)
+background_energy_multiplier = 1.95
+
+[sub_resource type="Curve3D" id="Curve3D_kh6cj"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 47.1528, 1.73386, 46.8995, 0, 0, 0, 0, 0, 0, -46, 2, 47, 0, 0, 0, 0, 0, 0, -47, 1, -47, 0, 0, 0, 0, 0, 0, 48, 1, -47, 0, 0, 0, 0, 0, 0, 47.1528, 1.73386, 46.8995),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
 
 [node name="TestLevel" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("1_ppx16")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_8s2qk")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/CollisionShape3D"]
@@ -32,6 +43,18 @@ mesh = SubResource("BoxMesh_4mnsj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jdwgu")
+
+[node name="EnemySpawnerPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_kh6cj")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="EnemySpawnerPath"]
+transform = Transform3D(-0.00107853, 0.00285697, 0.999995, 1.16415e-10, 0.999996, -0.00285697, -0.999999, -3.08121e-06, -0.00107853, 47.1528, 1.73386, 46.8995)
+
+[node name="EnemySpawner" parent="." node_paths=PackedStringArray("player", "spawn_path_follow") instance=ExtResource("3_2sxpg")]
+enemy_scene = ExtResource("3_4ntb6")
+player = NodePath("../Player")
+spawn_path_follow = NodePath("../EnemySpawnerPath/PathFollow3D")

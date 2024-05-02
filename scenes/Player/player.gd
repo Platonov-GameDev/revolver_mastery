@@ -3,7 +3,6 @@ extends CharacterBody3D
 
 @onready var input_handler = $InputHandler
 @onready var camera = $Camera3D
-var gravity_acceleration = 9.8
 var player_move_speed = 5
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -23,7 +22,7 @@ func _ready():
 
 
 func _process(delta):
-	velocity.y -= gravity_acceleration * delta
+	velocity.y -= Global.gravity_acceleration * delta
 	
 	move_and_slide()
 
