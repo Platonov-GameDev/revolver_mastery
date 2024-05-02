@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 @onready var input_handler = $InputHandler
 @onready var camera = $Camera3D
+@onready var gun = $Gun
 var player_move_speed = 5
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -54,7 +55,7 @@ func _on_input_handler_mouse_moved(input_vector):
 
 
 func _on_input_handler_main_fire_pressed():
-	print("main fire pressed")
+	gun.shoot()
 
 
 func _on_input_handler_main_fire_released():

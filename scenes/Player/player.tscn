@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=5 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/InputHandler.gd" id="1_mqogj"]
+[ext_resource type="Script" path="res://scenes/Player/Gun.gd" id="3_18qho"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vecmp"]
 
@@ -32,3 +33,12 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.05, 0.05)
 pivot_offset = Vector2(20, 20)
+
+[node name="Gun" type="Node3D" parent="." node_paths=PackedStringArray("camera")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+script = ExtResource("3_18qho")
+camera = NodePath("../Camera3D")
+
+[node name="RayCastTimer" type="Timer" parent="Gun"]
+wait_time = 0.2
+one_shot = true

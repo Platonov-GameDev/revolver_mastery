@@ -15,7 +15,7 @@ material = SubResource("StandardMaterial3D_w048s")
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7f0dd"]
 radius = 0.6
 
-[node name="BasicEnemy" type="CharacterBody3D"]
+[node name="BasicEnemy" type="CharacterBody3D" groups=["enemy"]]
 script = ExtResource("1_lil4r")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
