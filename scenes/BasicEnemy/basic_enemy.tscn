@@ -13,9 +13,12 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_w048s")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7f0dd"]
+height = 2.2
 radius = 0.6
 
 [node name="BasicEnemy" type="CharacterBody3D" groups=["enemy"]]
+collision_layer = 2
+collision_mask = 7
 script = ExtResource("1_lil4r")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -27,6 +30,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_8oypo")
 
 [node name="HurtBox" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

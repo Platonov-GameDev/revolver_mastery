@@ -12,11 +12,6 @@ func _ready():
 	timer.timeout.connect(_on_timer_timeout)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
 func _on_timer_timeout():
 	spawn_path_follow.progress_ratio = randf()
 	var spawn_position = spawn_path_follow.position

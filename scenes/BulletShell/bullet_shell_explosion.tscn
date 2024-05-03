@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bh0wdok0olehd"]
+
+[ext_resource type="Script" path="res://scenes/BulletShell/bullet_shell_explosion.gd" id="1_b638d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_am3pm"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(1, 0.823529, 0, 0.0627451)
+emission_enabled = true
+emission = Color(1, 0.537255, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_vb4oq"]
+material = SubResource("StandardMaterial3D_am3pm")
+radius = 8.0
+height = 16.0
+
+[node name="BulletShellExplosion" type="MeshInstance3D"]
+mesh = SubResource("SphereMesh_vb4oq")
+script = ExtResource("1_b638d")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+autostart = true
