@@ -20,6 +20,9 @@ size = Vector3(100, 1, 100)
 background_mode = 1
 background_color = Color(0.166934, 0.14767, 0.129789, 1)
 background_energy_multiplier = 1.95
+ambient_light_source = 2
+ambient_light_color = Color(0.683483, 0.589033, 0.467159, 1)
+ambient_light_energy = 0.95
 
 [sub_resource type="Curve3D" id="Curve3D_kh6cj"]
 _data = {

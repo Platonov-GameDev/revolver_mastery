@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkpg3e7pir8ag"]
+
+[ext_resource type="Script" path="res://scenes/NavEnemySpawner/nav_enemy_spawner.gd" id="1_oeh5a"]
+
+[node name="NavEnemySpawner" type="Node"]
+script = ExtResource("1_oeh5a")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
