@@ -13,20 +13,18 @@ func _ready():
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
 
 
-func _process(delta):
+func _physics_process(delta):
 	velocity.y -= Global.gravity_acceleration * delta
 	
 	if is_on_floor():
-		#var player_direction = player.position - position
-		#player_direction.y = 0
-		#player_direction = player_direction.normalized() * move_speed
-		
 		nav_agent.set_target_position(player.position)
 		var next_path_position: Vector3 = nav_agent.get_next_path_position()
-		var move_direction = (next_path_position - position) * move_speed
+		var move_direction = (next_path_position - position).normalized() * move_speed
 		
-		var delta_velocity = move_direction * delta
-		var new_velocity = Vector3(velocity.x + delta_velocity.x, 0, velocity.z + delta_velocity.z)
+		#var delta_velocity = move_direction * delta
+		#var new_velocity = Vector3(velocity.x + delta_velocity.x, 0, velocity.z + delta_velocity.z)
+		var delta_velocity = move_direction * delta * 3000
+		var new_velocity = Vector3(delta_velocity.x, 0, delta_velocity.z)
 		new_velocity = new_velocity.limit_length(max_velocity)
 		velocity.x = new_velocity.x
 		velocity.z = new_velocity.z
