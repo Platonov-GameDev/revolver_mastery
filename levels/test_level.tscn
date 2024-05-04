@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b8kpvspnu5q6x"]
+[gd_scene load_steps=10 format=3 uid="uid://b8kpvspnu5q6x"]
 
 [ext_resource type="PackedScene" uid="uid://bwj64f6gyrrc4" path="res://scenes/Player/player.tscn" id="1_ppx16"]
 [ext_resource type="Texture2D" uid="uid://b3bwpi2cimxt7" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_ikrhn"]
@@ -16,18 +16,13 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_o24vh")
 size = Vector3(100, 1, 100)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jnoax"]
-points = PackedVector3Array(0, 0, 0, 3, 0, 0, 0, 0, 5, 3, 0, 5, 0, 3, 0, 3, 3, 0)
-
-[sub_resource type="PrismMesh" id="PrismMesh_5r33d"]
-material = SubResource("StandardMaterial3D_o24vh")
-left_to_right = 1.0
-size = Vector3(5, 3, 3)
-
 [sub_resource type="Environment" id="Environment_jdwgu"]
 background_mode = 1
 background_color = Color(0.166934, 0.14767, 0.129789, 1)
 background_energy_multiplier = 1.95
+ambient_light_source = 2
+ambient_light_color = Color(0.683483, 0.589033, 0.467159, 1)
+ambient_light_energy = 0.95
 
 [sub_resource type="Curve3D" id="Curve3D_kh6cj"]
 _data = {
@@ -47,16 +42,6 @@ shape = SubResource("BoxShape3D_8s2qk")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Geometry/Ground/CollisionShape3D"]
 mesh = SubResource("BoxMesh_4mnsj")
-
-[node name="Stairs1" type="StaticBody3D" parent="Geometry"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Stairs1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.5, -15)
-shape = SubResource("ConvexPolygonShape3D_jnoax")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Geometry/Stairs1/CollisionShape3D"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.5, 1.5, 2.5)
-mesh = SubResource("PrismMesh_5r33d")
 
 [node name="Lighting" type="Node3D" parent="."]
 
