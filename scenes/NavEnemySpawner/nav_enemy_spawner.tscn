@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkpg3e7pir8ag"]
+[gd_scene load_steps=4 format=3 uid="uid://dkpg3e7pir8ag"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemySpawner/nav_enemy_spawner.gd" id="1_oeh5a"]
+[ext_resource type="PackedScene" uid="uid://btmryx3815hg" path="res://scenes/NavEnemy/nav_enemy.tscn" id="2_30x4m"]
+[ext_resource type="PackedScene" uid="uid://dw5ghu82f2tf0" path="res://scenes/NavEnemyRange/nav_enemy_range.tscn" id="2_l87ud"]
 
 [node name="NavEnemySpawner" type="Node"]
 script = ExtResource("1_oeh5a")
+enemy_scene = ExtResource("2_30x4m")
+range_enemy_scene = ExtResource("2_l87ud")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.5

@@ -3,6 +3,7 @@ extends Node
 
 @export var max_enemy_count = 100
 @export var enemy_scene: PackedScene
+@export var range_enemy_scene: PackedScene
 @export var player: CharacterBody3D
 @export var nav_region: NavigationRegion3D
 @export var spawn_points: Array[Node3D]
@@ -21,7 +22,11 @@ func _on_timer_timeout():
 	var random_point_index = randi_range(0, spawn_points.size() - 1)
 	var spawn_point = spawn_points[random_point_index].global_position
 	
-	var enemy = enemy_scene.instantiate()
+	var enemy
+	if get_child_count() % 2 == 0:
+		enemy = enemy_scene.instantiate()
+	else:
+		enemy = range_enemy_scene.instantiate()
 	enemy.player = player
 	enemy.position = spawn_point
 	add_child(enemy)

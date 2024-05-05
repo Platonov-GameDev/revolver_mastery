@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://duy07kxsr2yvc"]
+
+[ext_resource type="Script" path="res://scenes/NavEnemyRange/nav_enemy_range_projectile.gd" id="1_cq1no"]
+[ext_resource type="Texture2D" uid="uid://cr8se7tbyg88x" path="res://addons/kenney_prototype_textures/purple/texture_05.png" id="1_gj5mh"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_601wb"]
+radius = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wf7qc"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.396078)
+albedo_texture = ExtResource("1_gj5mh")
+emission_enabled = true
+emission = Color(0.196078, 0, 1, 1)
+emission_energy_multiplier = 44.55
+
+[sub_resource type="SphereMesh" id="SphereMesh_8hixl"]
+material = SubResource("StandardMaterial3D_wf7qc")
+radius = 0.3
+height = 0.6
+
+[node name="NavEnemyRangeProjectile" type="CharacterBody3D"]
+collision_layer = 0
+collision_mask = 5
+script = ExtResource("1_cq1no")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_601wb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_8hixl")
+
+[node name="LifetimeTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true

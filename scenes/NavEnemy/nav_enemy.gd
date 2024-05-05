@@ -4,8 +4,7 @@ extends CharacterBody3D
 @export var player: CharacterBody3D
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
-var move_speed = 7
-var max_velocity = 7
+var move_speed = 10
 
 
 func _ready():
@@ -19,20 +18,13 @@ func _physics_process(delta):
 	if is_on_floor():
 		nav_agent.set_target_position(player.position)
 		var next_path_position: Vector3 = nav_agent.get_next_path_position()
-		var move_direction = (next_path_position - position).normalized() * move_speed
+		var move_direction = (next_path_position - position).normalized()
 		
-		#var delta_velocity = move_direction * delta
-		#var new_velocity = Vector3(velocity.x + delta_velocity.x, 0, velocity.z + delta_velocity.z)
-		var delta_velocity = move_direction * delta * 3000
-		var new_velocity = Vector3(delta_velocity.x, 0, delta_velocity.z)
-		new_velocity = new_velocity.limit_length(max_velocity)
-		velocity.x = new_velocity.x
-		velocity.z = new_velocity.z
+		var delta_velocity = move_direction * move_speed
+		var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
+		nav_agent.set_velocity(new_velocity)
 	elif !is_on_floor():
-		velocity.x = 0
-		velocity.z = 0
-	
-	move_and_slide()
+		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 
 
 func _on_hurtbox_body_entered(body):

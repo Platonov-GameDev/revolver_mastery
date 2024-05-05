@@ -1,9 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://b8kpvspnu5q6x"]
+[gd_scene load_steps=9 format=3 uid="uid://b8kpvspnu5q6x"]
 
 [ext_resource type="PackedScene" uid="uid://bwj64f6gyrrc4" path="res://scenes/Player/player.tscn" id="1_ppx16"]
 [ext_resource type="Texture2D" uid="uid://b3bwpi2cimxt7" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_ikrhn"]
 [ext_resource type="PackedScene" uid="uid://dj1ddrxbaymmj" path="res://scenes/EnemySpawner/enemy_spawner.tscn" id="3_2sxpg"]
-[ext_resource type="PackedScene" uid="uid://bqgc76wlnvgnj" path="res://scenes/BasicEnemy/basic_enemy.tscn" id="3_4ntb6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8s2qk"]
 size = Vector3(100, 1, 100)
@@ -64,6 +63,5 @@ curve = SubResource("Curve3D_kh6cj")
 transform = Transform3D(-0.00107889, 0.00285701, 0.999995, 0, 0.999996, -0.00285701, -0.999999, -3.0824e-06, -0.00107888, 47.1528, 1.73386, 46.8995)
 
 [node name="EnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "spawn_path_follow") instance=ExtResource("3_2sxpg")]
-enemy_scene = ExtResource("3_4ntb6")
 player = NodePath("../Player")
 spawn_path_follow = NodePath("../EnemySpawnerPath/PathFollow3D")
