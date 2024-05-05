@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var player: CharacterBody3D
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
-var move_speed = 10
+var move_speed = 7
 
 
 func _ready():
