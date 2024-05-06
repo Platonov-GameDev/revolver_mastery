@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=9 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/InputHandler.gd" id="1_mqogj"]
 [ext_resource type="Script" path="res://scenes/Player/Gun.gd" id="3_18qho"]
 [ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="4_5fvic"]
 [ext_resource type="PackedScene" uid="uid://cbvjbpibi5ni3" path="res://scenes/BulletShell/bullet_shell.tscn" id="4_ucq0v"]
+[ext_resource type="PackedScene" uid="uid://c01bqbn2ci533" path="res://scenes/Player/ricochet.tscn" id="6_3ix4e"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vecmp"]
 
@@ -75,6 +76,7 @@ bullet_shell_scene = ExtResource("4_ucq0v")
 trail_scene = ExtResource("4_5fvic")
 camera = NodePath("../Camera3D")
 shell_spawner = NodePath("../Camera3D/ShellSpawner")
+ricochet_scene = ExtResource("6_3ix4e")
 
 [node name="RayCastTimer" type="Timer" parent="Gun"]
 wait_time = 0.2

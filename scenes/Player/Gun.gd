@@ -5,6 +5,7 @@ extends Node3D
 @export var trail_scene: PackedScene
 @export var camera: Camera3D
 @export var shell_spawner: Node3D
+@export var ricochet_scene: PackedScene
 @onready var ray_cast_timer = $RayCastTimer
 @onready var pre_fan_timer = $PreFanTimer
 @onready var fan_timer = $FanTimer
@@ -17,6 +18,7 @@ var current_ammo = 6
 var max_ammo = 6
 var bullet_shell_eject_impulse = 5
 var air_shot_push_impulse = 3
+var ricochet_count = 2
 signal activation_changed(new_is_active)
 signal ammo_changed(new_ammo)
 signal reload_state_changed(is_reloading)
@@ -57,13 +59,19 @@ func shoot():
 	
 	raycast.force_raycast_update()
 	var collider = raycast.get_collider()
-	if collider: 
+	if collider:
 		if collider.is_in_group("enemy"):
+			var ricochet = ricochet_scene.instantiate()
+			ricochet.position = raycast.get_collision_point()
+			ricochet.bounces_remaining = ricochet_count
+			get_parent().get_parent().add_child(ricochet)
+			
 			collider.queue_free()
 		elif collider.is_in_group("bullet_shell") && collider.is_class("Area3D"):
 			collider.get_parent().explode()
 	
 	shot_trail = trail_scene.instantiate()
+	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
 	shot_trail.position = global_position
 	shot_trail.rotation = camera.global_rotation
 	get_parent().get_parent().add_child(shot_trail)
