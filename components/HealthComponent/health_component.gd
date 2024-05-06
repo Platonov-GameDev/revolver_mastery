@@ -19,6 +19,10 @@ func receive_damage(damage_amount: int):
 	mesh.set_surface_override_material(0, damaged_material)
 	mesh_glow_timer.start()
 	
+	var enemy = get_parent()
+	if !enemy.is_on_floor():
+		enemy.velocity.y = 3
+	
 	if current_health <= 0:
 		died.emit()
 
