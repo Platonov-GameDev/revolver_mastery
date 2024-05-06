@@ -1,13 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://dkpg3e7pir8ag"]
+[gd_scene load_steps=5 format=3 uid="uid://dkpg3e7pir8ag"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemySpawner/nav_enemy_spawner.gd" id="1_oeh5a"]
 [ext_resource type="PackedScene" uid="uid://btmryx3815hg" path="res://scenes/NavEnemy/nav_enemy.tscn" id="2_30x4m"]
 [ext_resource type="PackedScene" uid="uid://dw5ghu82f2tf0" path="res://scenes/NavEnemyRange/nav_enemy_range.tscn" id="2_l87ud"]
+[ext_resource type="PackedScene" uid="uid://b6j757xdebkp4" path="res://scenes/NavEnemySpawner/spawn_impulse.tscn" id="4_xcawn"]
 
 [node name="NavEnemySpawner" type="Node"]
 script = ExtResource("1_oeh5a")
-enemy_scene = ExtResource("2_30x4m")
-range_enemy_scene = ExtResource("2_l87ud")
+red_scene = ExtResource("2_30x4m")
+purple_scene = ExtResource("2_l87ud")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="SpawnTimer" type="Timer" parent="."]
 autostart = true
+
+[node name="ImpulseTimer" type="Timer" parent="."]
+wait_time = 15.0
+autostart = true
+
+[node name="SpawnImpulses" type="Node" parent="."]
+
+[node name="SpawnImpulse" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+red_count = 5
+
+[node name="SpawnImpulse2" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+red_count = 10
+
+[node name="SpawnImpulse4" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+red_count = 40
+
+[node name="SpawnImpulse5" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+
+[node name="SpawnImpulse8" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+
+[node name="SpawnImpulse6" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+purple_count = 8
+
+[node name="SpawnImpulse9" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+
+[node name="SpawnImpulse7" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
+red_count = 30
+purple_count = 8
+
+[node name="SpawnImpulse10" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]

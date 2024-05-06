@@ -8,10 +8,14 @@ extends CharacterBody3D
 @onready var ammo_count = $AmmoCount
 @onready var xp_bar = $XPBar
 @onready var ricochet_count_label = $RicochetCount
+@onready var timer_label = $TimerLabel
+@onready var death_screen = $DeathScreen
 var player_move_speed = 5
 var jump_speed = 5
 var camera_sensitivity = 0.1
 var xp = 0
+var start_time = Time.get_unix_time_from_system()
+var is_dead = false
 
 
 func _ready():
@@ -22,10 +26,9 @@ func _ready():
 	input_handler.escape_pressed.connect(_on_input_handler_escape_pressed)
 	input_handler.mouse_moved.connect(_on_input_handler_mouse_moved)
 	input_handler.main_fire_pressed.connect(_on_input_handler_main_fire_pressed)
-	input_handler.main_fire_released.connect(_on_input_handler_main_fire_released)
 	input_handler.alt_fire_pressed.connect(_on_input_handler_alt_fire_pressed)
-	input_handler.alt_fire_released.connect(_on_input_handler_alt_fire_released)
 	input_handler.reload_pressed.connect(_on_input_handler_reload_pressed)
+	input_handler.enter_pressed.connect(_on_input_handler_enter_pressed)
 	
 	gun.activation_changed.connect(_on_gun_activation_changed)
 	gun.ammo_changed.connect(_on_gun_ammo_changed)
@@ -33,12 +36,17 @@ func _ready():
 
 
 func _process(delta):
+	if is_dead: return
 	velocity.y -= Global.gravity_acceleration * delta
 	
 	move_and_slide()
+	
+	var elapsed_time = Time.get_unix_time_from_system() - start_time
+	timer_label.text = str(snapped(elapsed_time, 0.01))
 
 
 func _on_input_handler_movement_inputted(input_vector: Vector2):
+	if is_dead: return
 	input_vector = input_vector.rotated(get_rotation().y)
 	input_vector = input_vector * player_move_speed
 	velocity.x = input_vector.x
@@ -46,6 +54,7 @@ func _on_input_handler_movement_inputted(input_vector: Vector2):
 
 
 func _on_input_handler_jump_pressed():
+	if is_dead: return
 	if is_on_floor():
 		velocity.y = jump_speed
 
@@ -55,10 +64,12 @@ func _on_input_handler_escape_pressed():
 
 
 func _on_input_handler_reload_pressed():
+	if is_dead: return
 	gun.reload()
 
 
 func _on_input_handler_mouse_moved(input_vector):
+	if is_dead: return
 	input_vector *= camera_sensitivity
 	rotate_y(deg_to_rad(-input_vector.x))
 	
@@ -69,19 +80,18 @@ func _on_input_handler_mouse_moved(input_vector):
 
 
 func _on_input_handler_main_fire_pressed():
+	if is_dead: return
 	gun.shoot()
 
 
-func _on_input_handler_main_fire_released():
-	print("main fire released")
-
-
 func _on_input_handler_alt_fire_pressed():
+	if is_dead: return
 	gun.alt_fire()
 
 
-func _on_input_handler_alt_fire_released():
-	print("alt fire released")
+func _on_input_handler_enter_pressed():
+	if is_dead:
+		get_tree().reload_current_scene()
 
 
 func _on_gun_activation_changed(is_active):
@@ -110,3 +120,8 @@ func collect_xp(value):
 	
 	xp_bar.value = xp
 	ricochet_count_label.text = str(gun.ricochet_count)
+
+
+func die():
+	is_dead = true
+	death_screen.show()

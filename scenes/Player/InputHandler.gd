@@ -10,6 +10,7 @@ signal main_fire_pressed
 signal main_fire_released
 signal alt_fire_pressed
 signal alt_fire_released
+signal enter_pressed
 
 
 func _process(_delta):
@@ -42,6 +43,9 @@ func _process(_delta):
 		alt_fire_pressed.emit()
 	if Input.is_action_just_released("alt_fire"):
 		alt_fire_released.emit()
+	
+	if Input.is_action_just_pressed("ui_accept"):
+		enter_pressed.emit()
 
 
 func _input(event):

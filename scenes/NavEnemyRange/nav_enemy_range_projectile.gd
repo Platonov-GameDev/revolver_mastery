@@ -13,7 +13,7 @@ func _process(_delta):
 		var collider = collision.get_collider()
 		
 		if collider.is_in_group("player"):
-			get_tree().call_deferred("reload_current_scene")
+			collider.die()
 		
 		queue_free()
 

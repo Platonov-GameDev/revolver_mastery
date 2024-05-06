@@ -74,7 +74,7 @@ func _physics_process(delta):
 
 func _on_hurtbox_body_entered(body):
 	if body.is_in_group("player"):
-		get_tree().call_deferred("reload_current_scene")
+		body.die()
 
 
 func _on_nav_agent_velocity_computed(safe_velocity: Vector3):

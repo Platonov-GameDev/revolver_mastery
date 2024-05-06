@@ -1,32 +1,44 @@
 extends Node
 
 
-@export var max_enemy_count = 100
-@export var enemy_scene: PackedScene
-@export var range_enemy_scene: PackedScene
+@export var red_scene: PackedScene
+@export var purple_scene: PackedScene
 @export var player: CharacterBody3D
 @export var nav_region: NavigationRegion3D
 @export var spawn_points: Array[Node3D]
-@onready var timer = $Timer
+@onready var spawn_timer = $SpawnTimer
+@onready var impulse_timer = $ImpulseTimer
+@onready var spawn_impulses = $SpawnImpulses
+var current_impulse_index = 0
+var red_left = 0
+var purple_left = 0
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	timer.timeout.connect(_on_timer_timeout)
+	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	impulse_timer.timeout.connect(_on_impulse_timer_timeout)
+	
+	_on_impulse_timer_timeout()
 
 
-func _on_timer_timeout():
-	if get_child_count() - 1 >= max_enemy_count:
-		return
-	
-	var random_point_index = randi_range(0, spawn_points.size() - 1)
-	var spawn_point = spawn_points[random_point_index].global_position
-	
-	var enemy
-	if get_child_count() % 2 == 0:
-		enemy = enemy_scene.instantiate()
-	else:
-		enemy = range_enemy_scene.instantiate()
-	enemy.player = player
-	enemy.position = spawn_point
-	add_child(enemy)
+func _on_spawn_timer_timeout():
+	for i in range(spawn_points.size()):
+		var enemy
+		if red_left != 0:
+			enemy = red_scene.instantiate()
+			red_left -= 1
+		elif purple_left != 0:
+			enemy = purple_scene.instantiate()
+			purple_left -= 1
+		if enemy != null:
+			enemy.player = player
+			enemy.position = spawn_points[i].global_position
+			add_child(enemy)
+
+
+func _on_impulse_timer_timeout():
+	var current_impulse = spawn_impulses.get_child(current_impulse_index)
+	if current_impulse != null:
+		red_left = current_impulse.red_count
+		purple_left = current_impulse.purple_count
+	current_impulse_index += 1

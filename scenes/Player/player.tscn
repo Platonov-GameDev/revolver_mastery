@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=12 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/InputHandler.gd" id="1_mqogj"]
@@ -12,6 +12,12 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_kb4jv"]
 font_size = 121
+
+[sub_resource type="LabelSettings" id="LabelSettings_q4swy"]
+font_size = 21
+
+[sub_resource type="LabelSettings" id="LabelSettings_wonry"]
+font_size = 41
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 collision_layer = 4
@@ -75,13 +81,15 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.035
-offset_left = 232.0
-offset_top = 29.0
-offset_right = 272.0
-offset_bottom = 29.32
+offset_left = 226.0
+offset_top = 26.0
+offset_right = 266.0
+offset_bottom = 33.32
 grow_horizontal = 2
+pivot_offset = Vector2(0, 15)
 text = "0
 "
+label_settings = SubResource("LabelSettings_q4swy")
 
 [node name="XPBar" type="ProgressBar" parent="."]
 anchors_preset = 5
@@ -93,6 +101,24 @@ offset_right = 218.0
 offset_bottom = 55.0
 grow_horizontal = 2
 show_percentage = false
+
+[node name="TimerLabel" type="Label" parent="."]
+z_index = 1
+offset_left = 18.0
+offset_top = 17.0
+offset_right = 58.0
+offset_bottom = 74.0
+text = "0"
+label_settings = SubResource("LabelSettings_wonry")
+
+[node name="DeathScreen" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
 
 [node name="Gun" type="Node3D" parent="." node_paths=PackedStringArray("camera", "shell_spawner")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)

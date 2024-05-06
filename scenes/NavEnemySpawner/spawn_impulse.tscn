@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6j757xdebkp4"]
+
+[ext_resource type="Script" path="res://scenes/NavEnemySpawner/spawn_impulse.gd" id="1_svg6b"]
+
+[node name="SpawnImpulse" type="Node"]
+script = ExtResource("1_svg6b")
