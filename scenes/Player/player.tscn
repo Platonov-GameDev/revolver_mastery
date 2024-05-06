@@ -69,6 +69,30 @@ grow_vertical = 0
 text = "6"
 label_settings = SubResource("LabelSettings_kb4jv")
 
+[node name="RicochetCount" type="Label" parent="."]
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.035
+offset_left = 232.0
+offset_top = 29.0
+offset_right = 272.0
+offset_bottom = 29.32
+grow_horizontal = 2
+text = "0
+"
+
+[node name="XPBar" type="ProgressBar" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -224.0
+offset_top = 28.0
+offset_right = 218.0
+offset_bottom = 55.0
+grow_horizontal = 2
+show_percentage = false
+
 [node name="Gun" type="Node3D" parent="." node_paths=PackedStringArray("camera", "shell_spawner")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("3_18qho")

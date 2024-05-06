@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://btmryx3815hg"]
+[gd_scene load_steps=8 format=3 uid="uid://btmryx3815hg"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemy/nav_enemy.gd" id="1_ljbok"]
+[ext_resource type="PackedScene" uid="uid://cdfsrca2d8dgm" path="res://scenes/XPBlob/xp_blob.tscn" id="2_l2l3a"]
 [ext_resource type="Texture2D" uid="uid://bfwtoq0kf818n" path="res://addons/kenney_prototype_textures/red/texture_10.png" id="2_xkrg8"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2dnmy"]
@@ -20,6 +21,7 @@ radius = 0.6
 collision_layer = 2
 collision_mask = 7
 script = ExtResource("1_ljbok")
+xp_blob_scene = ExtResource("2_l2l3a")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

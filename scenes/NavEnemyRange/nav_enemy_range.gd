@@ -3,11 +3,12 @@ extends CharacterBody3D
 
 @export var player: CharacterBody3D
 @export var projectile_scene: PackedScene
+@export var xp_blob_scene: PackedScene
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
 @onready var shoot_timer = $ShootTimer
 @onready var muzzle = $Muzzle
-var move_speed = 5
+var move_speed = 4
 var projectile_speed = 15
 var is_reloading = false
 
@@ -75,3 +76,13 @@ func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
 
 func _on_shoot_timer_timeout():
 	is_reloading = false
+
+
+func die():
+	var xp_blob = xp_blob_scene.instantiate()
+	xp_blob.position = position
+	xp_blob.position.y += 0.5
+	xp_blob.player = player
+	get_parent().add_child(xp_blob)
+	
+	queue_free()

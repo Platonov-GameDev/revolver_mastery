@@ -2,9 +2,10 @@ extends CharacterBody3D
 
 
 @export var player: CharacterBody3D
+@export var xp_blob_scene: PackedScene
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
-var move_speed = 7
+var move_speed = 6
 
 
 func _ready():
@@ -36,3 +37,13 @@ func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
 	velocity.x = safe_velocity.x
 	velocity.z = safe_velocity.z
 	move_and_slide()
+
+
+func die():
+	var xp_blob = xp_blob_scene.instantiate()
+	xp_blob.position = position
+	xp_blob.position.y += 0.5
+	xp_blob.player = player
+	get_parent().add_child(xp_blob)
+	
+	queue_free()

@@ -18,7 +18,7 @@ var current_ammo = 6
 var max_ammo = 6
 var bullet_shell_eject_impulse = 5
 var air_shot_push_impulse = 3
-var ricochet_count = 2
+var ricochet_count = 0
 signal activation_changed(new_is_active)
 signal ammo_changed(new_ammo)
 signal reload_state_changed(is_reloading)
@@ -66,7 +66,7 @@ func shoot():
 			ricochet.bounces_remaining = ricochet_count
 			get_parent().get_parent().add_child(ricochet)
 			
-			collider.queue_free()
+			collider.die()
 		elif collider.is_in_group("bullet_shell") && collider.is_class("Area3D"):
 			collider.get_parent().explode()
 	

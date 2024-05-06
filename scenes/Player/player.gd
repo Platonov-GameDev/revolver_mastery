@@ -6,9 +6,12 @@ extends CharacterBody3D
 @onready var gun = $Gun
 @onready var gun_rect = $GunRect
 @onready var ammo_count = $AmmoCount
+@onready var xp_bar = $XPBar
+@onready var ricochet_count_label = $RicochetCount
 var player_move_speed = 5
 var jump_speed = 5
 var camera_sensitivity = 0.1
+var xp = 0
 
 
 func _ready():
@@ -97,3 +100,13 @@ func _on_gun_reload_state_changed(is_reloading):
 		gun_rect.color = Color(1, 1, 0)
 	elif !is_reloading:
 		gun_rect.color = Color(1, 1, 1)
+
+
+func collect_xp():
+	xp += 5 / clampi(gun.ricochet_count, 1, 20)
+	if xp >= 100:
+		xp = 0
+		gun.ricochet_count += 1
+	
+	xp_bar.value = xp
+	ricochet_count_label.text = str(gun.ricochet_count)

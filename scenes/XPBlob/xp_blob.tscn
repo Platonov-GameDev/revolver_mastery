@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://cdfsrca2d8dgm"]
+
+[ext_resource type="Script" path="res://scenes/XPBlob/xp_blob.gd" id="1_uejwk"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_x0c3i"]
+radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oojns"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.207843)
+emission_enabled = true
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 9.65
+
+[sub_resource type="SphereMesh" id="SphereMesh_7qfys"]
+material = SubResource("StandardMaterial3D_oojns")
+radius = 0.2
+height = 0.4
+
+[node name="XPBlob" type="CharacterBody3D"]
+collision_layer = 0
+collision_mask = 5
+script = ExtResource("1_uejwk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_x0c3i")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_7qfys")
+
+[node name="LifetimeTimer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
