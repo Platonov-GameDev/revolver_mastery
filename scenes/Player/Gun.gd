@@ -66,7 +66,7 @@ func shoot():
 			ricochet.bounces_remaining = ricochet_count
 			get_parent().get_parent().add_child(ricochet)
 			
-			collider.die()
+			collider.receive_damage(30)
 		elif collider.is_in_group("bullet_shell") && collider.is_class("Area3D"):
 			collider.get_parent().explode()
 	

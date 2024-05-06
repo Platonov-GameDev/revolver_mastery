@@ -31,7 +31,7 @@ func _on_body_entered(body):
 		if collider.is_in_group("enemy"):
 			$LifetimeTimer.start()
 			
-			collider.die()
+			collider.receive_damage(30)
 			
 			var shot_trail = trail_scene.instantiate()
 			shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100

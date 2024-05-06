@@ -5,6 +5,7 @@ extends CharacterBody3D
 @onready var mesh = $MeshInstance3D
 var player: CharacterBody3D
 var suck_speed = 40
+var value = 1
 
 
 func _ready():
@@ -12,10 +13,13 @@ func _ready():
 
 
 func _process(delta):
+	var new_blob_scale = value / 2.
+	scale = Vector3(new_blob_scale, new_blob_scale, new_blob_scale)
+	
 	var lifetime = lifetime_timer.time_left / lifetime_timer.wait_time
 	if lifetime <= 0.5:
-		var new_scale = lifetime * 2
-		mesh.scale = Vector3(new_scale, new_scale, new_scale)
+		var new_mesh_scale = lifetime * 2
+		mesh.scale = Vector3(new_mesh_scale, new_mesh_scale, new_mesh_scale)
 	
 	if !player.is_on_floor():
 		velocity.y -= Global.gravity_acceleration * delta
@@ -32,7 +36,7 @@ func _process(delta):
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
 		if collider.is_in_group("player"):
-			player.collect_xp()
+			player.collect_xp(value)
 			queue_free()
 			break
 

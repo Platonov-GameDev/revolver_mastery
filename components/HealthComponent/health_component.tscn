@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://b82b7s710juc4"]
+
+[ext_resource type="Script" path="res://components/HealthComponent/health_component.gd" id="1_vkgyf"]
+[ext_resource type="Material" uid="uid://cd67d66enyise" path="res://resources/material_enemy_damaged.tres" id="2_881ia"]
+
+[node name="HealthComponent" type="Node"]
+script = ExtResource("1_vkgyf")
+damaged_material = ExtResource("2_881ia")
+
+[node name="MeshGlowTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true

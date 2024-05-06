@@ -5,12 +5,15 @@ extends CharacterBody3D
 @export var xp_blob_scene: PackedScene
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
+@onready var health_component = $HealthComponent
 var move_speed = 6
+var xp_drop = 1
 
 
 func _ready():
 	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
+	health_component.died.connect(_on_health_component_died)
 
 
 func _physics_process(delta):
@@ -39,7 +42,7 @@ func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
 	move_and_slide()
 
 
-func die():
+func _on_health_component_died():
 	var xp_blob = xp_blob_scene.instantiate()
 	xp_blob.position = position
 	xp_blob.position.y += 0.5
@@ -47,3 +50,7 @@ func die():
 	get_parent().add_child(xp_blob)
 	
 	queue_free()
+
+
+func receive_damage(damage_amount):
+	health_component.receive_damage(damage_amount)

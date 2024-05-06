@@ -10,5 +10,4 @@ enemy_scene = ExtResource("2_30x4m")
 range_enemy_scene = ExtResource("2_l87ud")
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.5
 autostart = true

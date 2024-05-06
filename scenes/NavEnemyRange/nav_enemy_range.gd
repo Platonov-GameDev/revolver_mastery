@@ -8,15 +8,18 @@ extends CharacterBody3D
 @onready var nav_agent = $NavigationAgent3D
 @onready var shoot_timer = $ShootTimer
 @onready var muzzle = $Muzzle
+@onready var health_component = $HealthComponent
 var move_speed = 4
 var projectile_speed = 15
 var is_reloading = false
+var xp_drop = 2
 
 
 func _ready():
 	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
+	health_component.died.connect(_on_health_component_died)
 
 
 func _physics_process(delta):
@@ -78,11 +81,16 @@ func _on_shoot_timer_timeout():
 	is_reloading = false
 
 
-func die():
+func _on_health_component_died():
 	var xp_blob = xp_blob_scene.instantiate()
 	xp_blob.position = position
 	xp_blob.position.y += 0.5
 	xp_blob.player = player
+	xp_blob.value = xp_drop
 	get_parent().add_child(xp_blob)
 	
 	queue_free()
+
+
+func receive_damage(damage_amount):
+	health_component.receive_damage(damage_amount)

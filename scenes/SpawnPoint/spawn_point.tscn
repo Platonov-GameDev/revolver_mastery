@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dk4txkfrrh2g2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4o43l"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.0705882)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 16.6
+
+[sub_resource type="SphereMesh" id="SphereMesh_iju5k"]
+material = SubResource("StandardMaterial3D_4o43l")
+radius = 2.0
+height = 4.0
+
+[node name="SpawnPoint" type="MeshInstance3D"]
+mesh = SubResource("SphereMesh_iju5k")

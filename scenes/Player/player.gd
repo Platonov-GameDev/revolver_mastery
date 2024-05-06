@@ -102,8 +102,8 @@ func _on_gun_reload_state_changed(is_reloading):
 		gun_rect.color = Color(1, 1, 1)
 
 
-func collect_xp():
-	xp += 5 / clampi(gun.ricochet_count, 1, 20)
+func collect_xp(value):
+	xp += 5. * value / clampi(gun.ricochet_count, 1, 20)
 	if xp >= 100:
 		xp = 0
 		gun.ricochet_count += 1
