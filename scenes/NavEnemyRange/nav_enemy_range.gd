@@ -32,7 +32,7 @@ func _physics_process(delta):
 		var player_center_position = player.global_position
 		player_center_position.y += 0.5
 		var player_direction = (player_center_position - raycast_to_player.global_position).normalized()
-		raycast_to_player.target_position = player_direction * 20
+		raycast_to_player.target_position = player_direction * 30
 		raycast_to_player.set_collision_mask_value(3, true)
 		raycast_to_player.force_raycast_update()
 		var raycast_collider = raycast_to_player.get_collider()
@@ -53,7 +53,13 @@ func _physics_process(delta):
 				is_reloading = true
 				shoot_timer.start()
 			else:
-				nav_agent.set_velocity(Vector3(0, velocity.y, 0))
+				nav_agent.set_target_position(player.position)
+				var next_path_position: Vector3 = nav_agent.get_next_path_position()
+				var move_direction = (next_path_position - position).normalized()
+				
+				var delta_velocity = move_direction * move_speed * 0.5
+				var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
+				nav_agent.set_velocity(new_velocity)
 		else:
 			nav_agent.set_target_position(player.position)
 			var next_path_position: Vector3 = nav_agent.get_next_path_position()

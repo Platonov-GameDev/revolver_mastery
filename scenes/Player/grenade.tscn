@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://bj2v5vfywcml1"]
+
+[ext_resource type="Script" path="res://scenes/Player/grenade.gd" id="1_aa1le"]
+[ext_resource type="PackedScene" uid="uid://iyy3li03u1v6" path="res://scenes/Player/grenade_explosion.tscn" id="2_4i7cb"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_jr7af"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wedsu"]
+transparency = 1
+albedo_color = Color(0.639216, 0.647059, 0.635294, 0.270588)
+emission_enabled = true
+emission = Color(1, 0.164706, 0, 1)
+emission_energy_multiplier = 17.3
+ao_light_affect = 1.0
+disable_receive_shadows = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_k0p6q"]
+material = SubResource("StandardMaterial3D_wedsu")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7hdku"]
+radius = 15.0
+
+[node name="Grenade" type="CharacterBody3D"]
+collision_layer = 16
+collision_mask = 3
+script = ExtResource("1_aa1le")
+explosion_scene = ExtResource("2_4i7cb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_jr7af")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_k0p6q")
+
+[node name="AffectArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AffectArea"]
+shape = SubResource("SphereShape3D_7hdku")

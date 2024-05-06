@@ -77,7 +77,7 @@ func _on_input_handler_main_fire_released():
 
 
 func _on_input_handler_alt_fire_pressed():
-	print("alt fire pressed")
+	gun.alt_fire()
 
 
 func _on_input_handler_alt_fire_released():

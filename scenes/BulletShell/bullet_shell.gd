@@ -16,6 +16,8 @@ func explode():
 	
 	for i in range(bodies_to_push.size()):
 		bodies_to_push[i].velocity.y += push_impulse
+		bodies_to_push[i].velocity.x = 0
+		bodies_to_push[i].velocity.z = 0
 	
 	var explosion = explosion_scene.instantiate()
 	explosion.position = global_position

@@ -6,11 +6,13 @@ extends Node3D
 @export var camera: Camera3D
 @export var shell_spawner: Node3D
 @export var ricochet_scene: PackedScene
+@export var grenade_scene: PackedScene
 @onready var ray_cast_timer = $RayCastTimer
 @onready var pre_fan_timer = $PreFanTimer
 @onready var fan_timer = $FanTimer
 @onready var recharge_timer = $RechargeTimer
 @onready var reload_timer = $ReloadTimer
+@onready var alt_recharge_timer = $AltRechargeTimer
 var raycast: RayCast3D
 var shot_trail
 var is_active = true
@@ -19,6 +21,7 @@ var max_ammo = 6
 var bullet_shell_eject_impulse = 5
 var air_shot_push_impulse = 3
 var ricochet_count = 0
+var grenade_launch_speed = 20
 signal activation_changed(new_is_active)
 signal ammo_changed(new_ammo)
 signal reload_state_changed(is_reloading)
@@ -31,6 +34,7 @@ func _ready():
 	fan_timer.timeout.connect(_on_fan_timer_timeout)
 	recharge_timer.timeout.connect(_on_recharge_timer_timeout)
 	reload_timer.timeout.connect(_on_reload_timer_timeout)
+	alt_recharge_timer.timeout.connect(_on_alt_recharge_timer_timeout)
 
 
 func shoot():
@@ -38,8 +42,13 @@ func shoot():
 		return
 	
 	if !is_active:
-		pre_fan_timer.stop()
-		recharge_timer.start()
+		if pre_fan_timer.time_left != 0:
+			pre_fan_timer.stop()
+			recharge_timer.start()
+		if recharge_timer.time_left != 0:
+			recharge_timer.start()
+		if alt_recharge_timer.time_left != 0:
+			alt_recharge_timer.start()
 		return
 	
 	if !get_parent().is_on_floor():
@@ -92,6 +101,35 @@ func shoot():
 		pre_fan_timer.start()
 
 
+func alt_fire():
+	if current_ammo == 0:
+		return
+	
+	if !is_active:
+		if pre_fan_timer.time_left != 0:
+			pre_fan_timer.stop()
+			recharge_timer.start()
+		if recharge_timer.time_left != 0:
+			recharge_timer.start()
+		if alt_recharge_timer.time_left != 0:
+			alt_recharge_timer.start()
+		return
+	
+	if !get_parent().is_on_floor():
+		get_parent().velocity.y = air_shot_push_impulse
+	
+	var grenade = grenade_scene.instantiate()
+	grenade.position = global_position
+	grenade.velocity = -camera.global_basis.z * grenade_launch_speed
+	get_parent().get_parent().add_child(grenade)
+	
+	fan_timer.stop()
+	change_ammo(current_ammo - 1)
+	change_activation(false)
+	if current_ammo != 0:
+		alt_recharge_timer.start()
+
+
 func _on_ray_cast_timer_timeout():
 	raycast.queue_free()
 	shot_trail.queue_free()
@@ -108,6 +146,10 @@ func _on_fan_timer_timeout():
 
 
 func _on_recharge_timer_timeout():
+	change_activation(true)
+
+
+func _on_alt_recharge_timer_timeout():
 	change_activation(true)
 
 
