@@ -1,9 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://bd4ck3emlci54"]
+[gd_scene load_steps=3 format=3 uid="uid://bd4ck3emlci54"]
 
 [ext_resource type="Script" path="res://scenes/ComboGun/combo_gun.gd" id="1_h4sm5"]
+[ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="2_l6rmi"]
 
 [node name="ComboGun" type="Node3D"]
 script = ExtResource("1_h4sm5")
+trail_scene = ExtResource("2_l6rmi")
 
 [node name="DownTimer" type="Timer" parent="."]
 wait_time = 0.5

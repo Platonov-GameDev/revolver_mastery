@@ -149,8 +149,9 @@ one_shot = true
 wait_time = 0.6
 one_shot = true
 
-[node name="ComboGun" parent="." instance=ExtResource("8_2kiry")]
+[node name="ComboGun" parent="." node_paths=PackedStringArray("camera") instance=ExtResource("8_2kiry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+camera = NodePath("../Camera3D")
 
 [node name="DashTimer" type="Timer" parent="."]
 wait_time = 0.15
