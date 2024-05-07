@@ -13,7 +13,7 @@ disable_receive_shadows = true
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lru1n"]
 material = SubResource("StandardMaterial3D_3bjc1")
-top_radius = 0.01
+top_radius = 0.05
 bottom_radius = 0.01
 height = 100.0
 

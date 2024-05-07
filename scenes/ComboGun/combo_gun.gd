@@ -95,7 +95,7 @@ func fire_pressed():
 			down_timer.start()
 
 
-func shoot_ray(damage_amount: int):
+func shoot_ray(damage_amount: int, small_ray = false):
 	var raycast = RayCast3D.new()
 	raycast.position = global_position
 	raycast.rotation = camera.global_rotation
@@ -112,6 +112,9 @@ func shoot_ray(damage_amount: int):
 	
 	var shot_trail = trail_scene.instantiate()
 	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
+	if small_ray:
+		shot_trail.scale.x = 0.3
+		shot_trail.scale.y = 0.3
 	shot_trail.position = global_position
 	shot_trail.rotation = camera.global_rotation
 	get_parent().get_parent().add_child(shot_trail)
@@ -146,7 +149,7 @@ func _on_auto_windup_timer_timeout():
 
 
 func _on_auto_shoot_timer_timeout():
-	shoot_ray(10)
+	shoot_ray(10, true)
 
 
 func _on_fan_wait_timer_timeout():
