@@ -7,7 +7,9 @@ extends Node3D
 @onready var down_timer = $DownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
 @onready var auto_shoot_timer = $AutoShootTimer
-enum State {IDLE, DOWN, FIRE, AUTO}
+@onready var fan_wait_timer = $FanWaitTimer
+@onready var fan_shoot_timer = $FanShootTimer
+enum State {IDLE, DOWN, FIRE, AUTO, FAN}
 var current_state = State.IDLE
 
 # DASH
@@ -19,14 +21,16 @@ var is_dash_shoot_done = false
 var dash_prepared_time = 0
 var dash_preparation_window = .1
 
-# AUTO
-
+# FAN
+var fan_shots_fired = 0
 
 
 func _ready():
 	down_timer.timeout.connect(_on_down_timer_timeout)
 	auto_windup_timer.timeout.connect(_on_auto_windup_timer_timeout)
 	auto_shoot_timer.timeout.connect(_on_auto_shoot_timer_timeout)
+	fan_wait_timer.timeout.connect(_on_fan_wait_timer_timeout)
+	fan_shoot_timer.timeout.connect(_on_fan_shoot_timer_timeout)
 
 
 func _process(_delta):
@@ -67,19 +71,28 @@ func dash():
 
 
 func fire_pressed():
-	if current_state != State.IDLE: return
-	
-	if is_dash_move_done:
-		dash()
-	else:
-		dash_prepared_time = Time.get_unix_time_from_system()
-		is_dash_shoot_done = true
-	
-	shoot_ray(30)
-	
-	auto_windup_timer.start()
-	
-	current_state = State.FIRE
+	if current_state == State.IDLE:
+		if is_dash_move_done:
+			dash()
+		else:
+			dash_prepared_time = Time.get_unix_time_from_system()
+			is_dash_shoot_done = true
+		
+		shoot_ray(30)
+		
+		auto_windup_timer.start()
+		
+		current_state = State.FIRE
+		
+		fan_wait_timer.start()
+	elif current_state == State.FAN:
+		shoot_ray(30)
+		fan_shoot_timer.start()
+		
+		fan_shots_fired += 1
+		if fan_shots_fired == 3:
+			current_state = State.DOWN
+			down_timer.start()
 
 
 func shoot_ray(damage_amount: int):
@@ -110,7 +123,7 @@ func fire_released():
 	auto_windup_timer.stop()
 	auto_shoot_timer.stop()
 	
-	if current_state != State.DOWN && current_state != State.IDLE:
+	if current_state == State.AUTO:
 		current_state = State.DOWN
 		down_timer.start()
 
@@ -134,3 +147,14 @@ func _on_auto_windup_timer_timeout():
 
 func _on_auto_shoot_timer_timeout():
 	shoot_ray(10)
+
+
+func _on_fan_wait_timer_timeout():
+	current_state = State.FAN
+	fan_shoot_timer.start()
+	fan_shots_fired = 0
+
+
+func _on_fan_shoot_timer_timeout():
+	current_state = State.DOWN
+	down_timer.start()
