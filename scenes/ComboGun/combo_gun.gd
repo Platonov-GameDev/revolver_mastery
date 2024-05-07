@@ -5,7 +5,7 @@ extends Node3D
 @export var camera: Camera3D
 @export var trail_scene: PackedScene
 @onready var down_timer = $DownTimer
-enum State {IDLE}
+enum State {IDLE, DOWN}
 var current_state = State.IDLE
 
 # DASH
@@ -89,6 +89,9 @@ func fire_pressed():
 	get_parent().get_parent().add_child(shot_trail)
 	
 	raycast.queue_free()
+	
+	current_state = State.DOWN
+	down_timer.start()
 
 
 func fire_released():
