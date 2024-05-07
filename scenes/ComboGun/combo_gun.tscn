@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bd4ck3emlci54"]
+
+[ext_resource type="Script" path="res://scenes/ComboGun/combo_gun.gd" id="1_h4sm5"]
+
+[node name="ComboGun" type="Node3D"]
+script = ExtResource("1_h4sm5")
+
+[node name="DownTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true

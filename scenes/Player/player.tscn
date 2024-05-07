@@ -1,12 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=9 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
-[ext_resource type="Script" path="res://scenes/Player/InputHandler.gd" id="1_mqogj"]
-[ext_resource type="Script" path="res://scenes/Player/Gun.gd" id="3_18qho"]
-[ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="4_5fvic"]
-[ext_resource type="PackedScene" uid="uid://cbvjbpibi5ni3" path="res://scenes/BulletShell/bullet_shell.tscn" id="4_ucq0v"]
-[ext_resource type="PackedScene" uid="uid://c01bqbn2ci533" path="res://scenes/Player/ricochet.tscn" id="6_3ix4e"]
-[ext_resource type="PackedScene" uid="uid://bj2v5vfywcml1" path="res://scenes/Player/grenade.tscn" id="7_77acw"]
+[ext_resource type="Script" path="res://scenes/Player/input_handler.gd" id="1_mqogj"]
+[ext_resource type="Script" path="res://scenes/Player/gun.gd" id="3_18qho"]
+[ext_resource type="PackedScene" uid="uid://bd4ck3emlci54" path="res://scenes/ComboGun/combo_gun.tscn" id="8_2kiry"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vecmp"]
 
@@ -53,6 +50,7 @@ scale = Vector2(0.05, 0.05)
 pivot_offset = Vector2(20, 20)
 
 [node name="GunRect" type="ColorRect" parent="."]
+visible = false
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -65,6 +63,7 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="AmmoCount" type="Label" parent="."]
+visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -77,6 +76,7 @@ text = "6"
 label_settings = SubResource("LabelSettings_kb4jv")
 
 [node name="RicochetCount" type="Label" parent="."]
+visible = false
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
@@ -92,6 +92,7 @@ text = "0
 label_settings = SubResource("LabelSettings_q4swy")
 
 [node name="XPBar" type="ProgressBar" parent="."]
+visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -120,15 +121,9 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
 
-[node name="Gun" type="Node3D" parent="." node_paths=PackedStringArray("camera", "shell_spawner")]
+[node name="Gun" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("3_18qho")
-bullet_shell_scene = ExtResource("4_ucq0v")
-trail_scene = ExtResource("4_5fvic")
-camera = NodePath("../Camera3D")
-shell_spawner = NodePath("../Camera3D/ShellSpawner")
-ricochet_scene = ExtResource("6_3ix4e")
-grenade_scene = ExtResource("7_77acw")
 
 [node name="RayCastTimer" type="Timer" parent="Gun"]
 wait_time = 0.2
@@ -152,4 +147,11 @@ one_shot = true
 
 [node name="AltRechargeTimer" type="Timer" parent="Gun"]
 wait_time = 0.6
+one_shot = true
+
+[node name="ComboGun" parent="." instance=ExtResource("8_2kiry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.15
 one_shot = true
