@@ -10,3 +10,10 @@ trail_scene = ExtResource("2_l6rmi")
 [node name="DownTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
+
+[node name="AutoWindupTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[node name="AutoShootTimer" type="Timer" parent="."]
+wait_time = 0.1
