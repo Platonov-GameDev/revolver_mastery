@@ -8,6 +8,7 @@ extends CharacterBody3D
 @onready var health_component = $HealthComponent
 var move_speed = 6
 var xp_drop = 1
+var current_state = EnemyState.BASE
 
 
 func _ready():
@@ -17,18 +18,21 @@ func _ready():
 
 
 func _physics_process(delta):
-	velocity.y -= Global.gravity_acceleration * delta
-	
-	if is_on_floor():
-		nav_agent.set_target_position(player.position)
-		var next_path_position: Vector3 = nav_agent.get_next_path_position()
-		var move_direction = (next_path_position - position).normalized()
+	if current_state == EnemyState.BASE:
+		velocity.y -= Global.gravity_acceleration * delta
 		
-		var delta_velocity = move_direction * move_speed
-		var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
-		nav_agent.set_velocity(new_velocity)
-	elif !is_on_floor():
-		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
+		if is_on_floor():
+			nav_agent.set_target_position(player.position)
+			var next_path_position: Vector3 = nav_agent.get_next_path_position()
+			var move_direction = (next_path_position - position).normalized()
+			
+			var delta_velocity = move_direction * move_speed
+			var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
+			nav_agent.set_velocity(new_velocity)
+		elif !is_on_floor():
+			nav_agent.set_velocity(Vector3(0, velocity.y, 0))
+	elif current_state == EnemyState.PULLED:
+		nav_agent.set_velocity(velocity)
 
 
 func _on_hurtbox_body_entered(body):

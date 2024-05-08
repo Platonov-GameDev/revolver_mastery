@@ -6,6 +6,7 @@ extends Node3D
 @export var trail_scene: PackedScene
 @export var ricochet_scene: PackedScene
 @export var grenade_scene: PackedScene
+@export var chain_pull_scene: PackedScene
 @onready var down_timer = $DownTimer
 @onready var alt_down_timer = $AltDownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
@@ -17,7 +18,7 @@ extends Node3D
 @onready var alt_fire_wait_timer = $AltFireWaitTimer
 @onready var alt_fire_shoot_timer = $AltFireShootTimer
 enum State {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT}
-enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN, BLAST}
+enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN, BLAST, CHAIN_PULL}
 var current_state = State.IDLE
 
 # DASH
@@ -119,6 +120,12 @@ func fire_pressed():
 		down_timer.start()
 		
 		fire_shoot_timer.stop()
+	elif current_state == State.ALT_FIRE_SHOOT:
+		shoot_ray(0, ShotType.CHAIN_PULL)
+		
+		current_state = State.DOWN
+		alt_down_timer.start()
+		alt_fire_shoot_timer.stop()
 
 
 func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell = false):
@@ -139,7 +146,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	get_parent().get_parent().get_parent().add_child(raycast)
 	
 	raycast.force_raycast_update()
-	if shot_type != ShotType.BLAST:
+	if shot_type != ShotType.BLAST && shot_type != ShotType.CHAIN_PULL:
 		var collider = raycast.get_collider()
 		if collider:
 			if collider.is_in_group("enemy"):
@@ -169,6 +176,11 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		grenade.position = raycast.get_collision_point()
 		get_parent().get_parent().get_parent().add_child(grenade)
 		grenade.explode()
+	
+	if shot_type == ShotType.CHAIN_PULL:
+		var chain_pull = chain_pull_scene.instantiate()
+		chain_pull.position = raycast.get_collision_point()
+		get_parent().get_parent().get_parent().add_child(chain_pull)
 	
 	raycast.queue_free()
 
