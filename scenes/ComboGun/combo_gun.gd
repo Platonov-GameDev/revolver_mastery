@@ -5,15 +5,19 @@ extends Node3D
 @export var camera: Camera3D
 @export var trail_scene: PackedScene
 @export var ricochet_scene: PackedScene
+@export var grenade_scene: PackedScene
 @onready var down_timer = $DownTimer
+@onready var alt_down_timer = $AltDownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
 @onready var auto_shoot_timer = $AutoShootTimer
 @onready var fire_shoot_timer = $FireShootTimer
 @onready var fire_wait_timer = $FireWaitTimer
 @onready var fan_shoot_timer = $FanShootTimer
 @onready var shotgun_shoot_timer = $ShotgunShootTimer
-enum State {IDLE, DOWN, FIRE, AUTO, FAN}
-enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN}
+@onready var alt_fire_wait_timer = $AltFireWaitTimer
+@onready var alt_fire_shoot_timer = $AltFireShootTimer
+enum State {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT}
+enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN, BLAST}
 var current_state = State.IDLE
 
 # DASH
@@ -31,15 +35,21 @@ var fan_shots_fired = 0
 # SHOTGUN
 var shotgun_shots_fired = 0
 
+# GRENADE
+var grenade_launch_speed = 20
+
 
 func _ready():
 	down_timer.timeout.connect(_on_down_timer_timeout)
+	alt_down_timer.timeout.connect(_on_alt_down_timer_timeout)
 	auto_windup_timer.timeout.connect(_on_auto_windup_timer_timeout)
 	auto_shoot_timer.timeout.connect(_on_auto_shoot_timer_timeout)
 	fan_shoot_timer.timeout.connect(_on_fan_shoot_timer_timeout)
 	fire_shoot_timer.timeout.connect(_on_fire_shoot_timer_timeout)
 	fire_wait_timer.timeout.connect(_on_fire_wait_timer_timeout)
 	shotgun_shoot_timer.timeout.connect(_on_shotgun_shoot_timer_timeout)
+	alt_fire_wait_timer.timeout.connect(_on_alt_fire_wait_timer_timeout)
+	alt_fire_shoot_timer.timeout.connect(_on_alt_fire_shoot_timer_timeout)
 
 
 func _process(_delta):
@@ -129,10 +139,11 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	get_parent().get_parent().get_parent().add_child(raycast)
 	
 	raycast.force_raycast_update()
-	var collider = raycast.get_collider()
-	if collider:
-		if collider.is_in_group("enemy"):
-			collider.receive_damage(damage_amount)
+	if shot_type != ShotType.BLAST:
+		var collider = raycast.get_collider()
+		if collider:
+			if collider.is_in_group("enemy"):
+				collider.receive_damage(damage_amount)
 	
 	var shot_trail = trail_scene.instantiate()
 	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
@@ -149,11 +160,17 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		ricochet.bounces_remaining = 4
 		get_parent().get_parent().get_parent().add_child(ricochet)
 	
-	raycast.queue_free()
-	
 	if shot_type == ShotType.SHOTGUN:
 		for i in range(15):
 			shoot_ray(10, ShotType.BASE, true)
+	
+	if shot_type == ShotType.BLAST:
+		var grenade = grenade_scene.instantiate()
+		grenade.position = raycast.get_collision_point()
+		get_parent().get_parent().get_parent().add_child(grenade)
+		grenade.explode()
+	
+	raycast.queue_free()
 
 
 func fire_released():
@@ -166,7 +183,15 @@ func fire_released():
 
 
 func alt_fire_pressed():
-	if current_state == State.FIRE:
+	if current_state == State.IDLE:
+		var grenade = grenade_scene.instantiate()
+		grenade.position = global_position
+		grenade.velocity = -camera.global_basis.z * grenade_launch_speed
+		get_parent().get_parent().get_parent().add_child(grenade)
+		
+		current_state = State.ALT_FIRE
+		alt_fire_wait_timer.start()
+	elif current_state == State.FIRE:
 		shotgun_shots_fired += 1
 		shoot_ray(10, ShotType.SHOTGUN)
 		fire_shoot_timer.stop()
@@ -178,6 +203,12 @@ func alt_fire_pressed():
 			
 			current_state = State.DOWN
 			down_timer.start()
+	elif current_state == State.ALT_FIRE_SHOOT:
+		shoot_ray(0, ShotType.BLAST)
+		
+		current_state = State.DOWN
+		alt_down_timer.start()
+		alt_fire_shoot_timer.stop()
 
 
 func alt_fire_released():
@@ -185,6 +216,10 @@ func alt_fire_released():
 
 
 func _on_down_timer_timeout():
+	current_state = State.IDLE
+
+
+func _on_alt_down_timer_timeout():
 	current_state = State.IDLE
 
 
@@ -214,5 +249,15 @@ func _on_fan_shoot_timer_timeout():
 
 
 func _on_shotgun_shoot_timer_timeout():
+	current_state = State.DOWN
+	down_timer.start()
+
+
+func _on_alt_fire_wait_timer_timeout():
+	current_state = State.ALT_FIRE_SHOOT
+	alt_fire_shoot_timer.start()
+
+
+func _on_alt_fire_shoot_timer_timeout():
 	current_state = State.DOWN
 	down_timer.start()
