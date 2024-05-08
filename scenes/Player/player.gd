@@ -10,7 +10,7 @@ extends CharacterBody3D
 @onready var ricochet_count_label = $RicochetCount
 @onready var timer_label = $TimerLabel
 @onready var death_screen = $DeathScreen
-@onready var combo_gun = $ComboGun
+@onready var combo_gun = $Camera3D/ComboGun
 @onready var dash_timer = $DashTimer
 var player_move_speed = 5
 var jump_speed = 5
