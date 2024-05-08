@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="2_7i5a1"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qthkr"]
-radius = 8.0
+radius = 16.0
 
 [node name="Ricochet" type="Area3D"]
 collision_layer = 0

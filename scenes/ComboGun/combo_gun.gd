@@ -4,10 +4,12 @@ extends Node3D
 # GENERAL
 @export var camera: Camera3D
 @export var trail_scene: PackedScene
+@export var ricochet_scene: PackedScene
 @onready var down_timer = $DownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
 @onready var auto_shoot_timer = $AutoShootTimer
-@onready var fan_wait_timer = $FanWaitTimer
+@onready var fire_shoot_timer = $FireShootTimer
+@onready var fire_wait_timer = $FireWaitTimer
 @onready var fan_shoot_timer = $FanShootTimer
 enum State {IDLE, DOWN, FIRE, AUTO, FAN}
 var current_state = State.IDLE
@@ -29,8 +31,9 @@ func _ready():
 	down_timer.timeout.connect(_on_down_timer_timeout)
 	auto_windup_timer.timeout.connect(_on_auto_windup_timer_timeout)
 	auto_shoot_timer.timeout.connect(_on_auto_shoot_timer_timeout)
-	fan_wait_timer.timeout.connect(_on_fan_wait_timer_timeout)
 	fan_shoot_timer.timeout.connect(_on_fan_shoot_timer_timeout)
+	fire_shoot_timer.timeout.connect(_on_fire_shoot_timer_timeout)
+	fire_wait_timer.timeout.connect(_on_fire_wait_timer_timeout)
 
 
 func _process(_delta):
@@ -84,7 +87,7 @@ func fire_pressed():
 		
 		current_state = State.FIRE
 		
-		fan_wait_timer.start()
+		fire_shoot_timer.start()
 	elif current_state == State.FAN:
 		shoot_ray(30)
 		fan_shoot_timer.start()
@@ -93,9 +96,14 @@ func fire_pressed():
 		if fan_shots_fired == 3:
 			current_state = State.DOWN
 			down_timer.start()
+	elif current_state == State.FIRE:
+		shoot_ray(30, false, true)
+		
+		current_state = State.DOWN
+		down_timer.start()
 
 
-func shoot_ray(damage_amount: int, small_ray = false):
+func shoot_ray(damage_amount: int, small_ray = false, is_ricochet = false):
 	var raycast = RayCast3D.new()
 	raycast.position = global_position
 	raycast.rotation = camera.global_rotation
@@ -118,6 +126,12 @@ func shoot_ray(damage_amount: int, small_ray = false):
 	shot_trail.position = global_position
 	shot_trail.rotation = camera.global_rotation
 	get_parent().get_parent().add_child(shot_trail)
+	
+	if is_ricochet:
+		var ricochet = ricochet_scene.instantiate()
+		ricochet.position = raycast.get_collision_point()
+		ricochet.bounces_remaining = 4
+		get_parent().get_parent().add_child(ricochet)
 	
 	raycast.queue_free()
 
@@ -152,7 +166,12 @@ func _on_auto_shoot_timer_timeout():
 	shoot_ray(10, true)
 
 
-func _on_fan_wait_timer_timeout():
+func _on_fire_shoot_timer_timeout():
+	fire_wait_timer.start()
+	current_state = State.DOWN
+
+
+func _on_fire_wait_timer_timeout():
 	current_state = State.FAN
 	fan_shoot_timer.start()
 	fan_shots_fired = 0
