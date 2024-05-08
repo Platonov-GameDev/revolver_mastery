@@ -12,6 +12,7 @@ extends Node3D
 @onready var fire_wait_timer = $FireWaitTimer
 @onready var fan_shoot_timer = $FanShootTimer
 enum State {IDLE, DOWN, FIRE, AUTO, FAN}
+enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN}
 var current_state = State.IDLE
 
 # DASH
@@ -97,13 +98,15 @@ func fire_pressed():
 			current_state = State.DOWN
 			down_timer.start()
 	elif current_state == State.FIRE:
-		shoot_ray(30, false, true)
+		shoot_ray(30, ShotType.RICOCHET)
 		
 		current_state = State.DOWN
 		down_timer.start()
+		
+		fire_shoot_timer.stop()
 
 
-func shoot_ray(damage_amount: int, small_ray = false, is_ricochet = false):
+func shoot_ray(damage_amount: int, shot_type = ShotType.BASE):
 	var raycast = RayCast3D.new()
 	raycast.position = global_position
 	raycast.rotation = camera.global_rotation
@@ -120,14 +123,14 @@ func shoot_ray(damage_amount: int, small_ray = false, is_ricochet = false):
 	
 	var shot_trail = trail_scene.instantiate()
 	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
-	if small_ray:
+	if shot_type == ShotType.AUTO:
 		shot_trail.scale.x = 0.3
 		shot_trail.scale.y = 0.3
 	shot_trail.position = global_position
 	shot_trail.rotation = camera.global_rotation
 	get_parent().get_parent().add_child(shot_trail)
 	
-	if is_ricochet:
+	if shot_type == ShotType.RICOCHET:
 		var ricochet = ricochet_scene.instantiate()
 		ricochet.position = raycast.get_collision_point()
 		ricochet.bounces_remaining = 4
@@ -163,7 +166,7 @@ func _on_auto_windup_timer_timeout():
 
 
 func _on_auto_shoot_timer_timeout():
-	shoot_ray(10, true)
+	shoot_ray(10, ShotType.AUTO)
 
 
 func _on_fire_shoot_timer_timeout():
