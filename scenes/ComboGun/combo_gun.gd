@@ -7,6 +7,7 @@ extends Node3D
 @export var ricochet_scene: PackedScene
 @export var grenade_scene: PackedScene
 @export var chain_pull_scene: PackedScene
+@export var pierce_scene: PackedScene
 @onready var down_timer = $DownTimer
 @onready var alt_down_timer = $AltDownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
@@ -17,7 +18,7 @@ extends Node3D
 @onready var shotgun_shoot_timer = $ShotgunShootTimer
 @onready var alt_fire_wait_timer = $AltFireWaitTimer
 @onready var alt_fire_shoot_timer = $AltFireShootTimer
-enum State {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT}
+enum State {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT, CHARGING_PIERCE}
 enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN, BLAST, CHAIN_PULL}
 var current_state = State.IDLE
 
@@ -38,6 +39,10 @@ var shotgun_shots_fired = 0
 
 # GRENADE
 var grenade_launch_speed = 20
+
+# PIERCING
+var piercing_charge_start_time = 0
+var piercing_max_charge_time = 3
 
 
 func _ready():
@@ -120,12 +125,66 @@ func fire_pressed():
 		down_timer.start()
 		
 		fire_shoot_timer.stop()
+	elif current_state == State.ALT_FIRE:
+		current_state = State.CHARGING_PIERCE
+		piercing_charge_start_time = Time.get_unix_time_from_system()
+		
+		alt_fire_wait_timer.stop()
 	elif current_state == State.ALT_FIRE_SHOOT:
 		shoot_ray(0, ShotType.CHAIN_PULL)
 		
 		current_state = State.DOWN
 		alt_down_timer.start()
 		alt_fire_shoot_timer.stop()
+
+
+func fire_released():
+	auto_windup_timer.stop()
+	auto_shoot_timer.stop()
+	
+	if current_state == State.AUTO:
+		current_state = State.DOWN
+		down_timer.start()
+	elif current_state == State.CHARGING_PIERCE:
+		var current_time = Time.get_unix_time_from_system()
+		var pierce_power = clampf((current_time - piercing_charge_start_time) / piercing_max_charge_time, 0, 1)
+		shoot_pierce(pierce_power)
+		
+		current_state = State.DOWN
+		alt_down_timer.start()
+
+
+func alt_fire_pressed():
+	if current_state == State.IDLE:
+		var grenade = grenade_scene.instantiate()
+		grenade.position = global_position
+		grenade.velocity = -camera.global_basis.z * grenade_launch_speed
+		get_parent().get_parent().get_parent().add_child(grenade)
+		
+		current_state = State.ALT_FIRE
+		alt_fire_wait_timer.start()
+	elif current_state == State.FIRE:
+		shotgun_shots_fired += 1
+		shoot_ray(10, ShotType.SHOTGUN)
+		fire_shoot_timer.stop()
+		shotgun_shoot_timer.start()
+		
+		if shotgun_shots_fired == 2:
+			shotgun_shots_fired = 0
+			shotgun_shoot_timer.stop()
+			
+			current_state = State.DOWN
+			down_timer.start()
+	elif current_state == State.ALT_FIRE_SHOOT:
+		shoot_ray(0, ShotType.BLAST)
+		
+		current_state = State.DOWN
+		alt_down_timer.start()
+		alt_fire_shoot_timer.stop()
+
+
+func alt_fire_released():
+	pass
 
 
 func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell = false):
@@ -185,46 +244,14 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	raycast.queue_free()
 
 
-func fire_released():
-	auto_windup_timer.stop()
-	auto_shoot_timer.stop()
-	
-	if current_state == State.AUTO:
-		current_state = State.DOWN
-		down_timer.start()
-
-
-func alt_fire_pressed():
-	if current_state == State.IDLE:
-		var grenade = grenade_scene.instantiate()
-		grenade.position = global_position
-		grenade.velocity = -camera.global_basis.z * grenade_launch_speed
-		get_parent().get_parent().get_parent().add_child(grenade)
-		
-		current_state = State.ALT_FIRE
-		alt_fire_wait_timer.start()
-	elif current_state == State.FIRE:
-		shotgun_shots_fired += 1
-		shoot_ray(10, ShotType.SHOTGUN)
-		fire_shoot_timer.stop()
-		shotgun_shoot_timer.start()
-		
-		if shotgun_shots_fired == 2:
-			shotgun_shots_fired = 0
-			shotgun_shoot_timer.stop()
-			
-			current_state = State.DOWN
-			down_timer.start()
-	elif current_state == State.ALT_FIRE_SHOOT:
-		shoot_ray(0, ShotType.BLAST)
-		
-		current_state = State.DOWN
-		alt_down_timer.start()
-		alt_fire_shoot_timer.stop()
-
-
-func alt_fire_released():
-	pass
+func shoot_pierce(pierce_power):
+	var pierce = pierce_scene.instantiate()
+	pierce.position = global_position
+	pierce.rotation = camera.global_rotation
+	pierce.scale.x = pierce_power
+	pierce.scale.y = pierce_power
+	pierce.power = pierce_power
+	get_parent().get_parent().get_parent().add_child(pierce)
 
 
 func _on_down_timer_timeout():

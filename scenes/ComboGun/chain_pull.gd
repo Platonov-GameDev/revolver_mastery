@@ -24,6 +24,7 @@ func _process(_delta):
 	chain_meshes.clear()
 	
 	for body in pulled_bodies:
+		if !is_instance_valid(body): continue
 		var pull_vector = body.position - position
 		body.velocity = -pull_vector * pull_speed
 		
