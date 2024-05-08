@@ -120,6 +120,10 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		var shotgun_shell_deviation = .1
 		raycast.rotation.x += randf_range(-shotgun_shell_deviation, shotgun_shell_deviation)
 		raycast.rotation.y += randf_range(-shotgun_shell_deviation, shotgun_shell_deviation)
+	elif shot_type == ShotType.AUTO:
+		var auto_deviation = .02
+		raycast.rotation.x += randf_range(-auto_deviation, auto_deviation)
+		raycast.rotation.y += randf_range(-auto_deviation, auto_deviation)
 	raycast.set_collision_mask_value(1, true)
 	raycast.set_collision_mask_value(2, true)
 	get_parent().get_parent().get_parent().add_child(raycast)
