@@ -33,7 +33,7 @@ func _on_explode_timer_timeout():
 	for i in range(bodies.size()):
 		bodies[i].velocity.x = 30
 		bodies[i].velocity.z = 30
-		bodies[i].velocity.y = 10
+		bodies[i].velocity.y = 15
 		
 		if bodies[i].is_in_group("enemy"):
 			bodies[i].receive_damage(20)
