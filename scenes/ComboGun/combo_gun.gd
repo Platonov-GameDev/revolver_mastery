@@ -148,7 +148,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	raycast.queue_free()
 	
 	if shot_type == ShotType.SHOTGUN:
-		for i in range(7):
+		for i in range(15):
 			shoot_ray(10, ShotType.BASE, true)
 
 
