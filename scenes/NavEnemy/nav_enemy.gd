@@ -6,7 +6,7 @@ extends CharacterBody3D
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
 @onready var health_component = $HealthComponent
-var move_speed = 8
+var move_speed = 6
 var xp_drop = 1
 
 

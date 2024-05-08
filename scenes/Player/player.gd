@@ -12,7 +12,7 @@ extends CharacterBody3D
 @onready var death_screen = $DeathScreen
 @onready var combo_gun = $Camera3D/ComboGun
 @onready var dash_timer = $DashTimer
-var player_move_speed = 5
+var player_move_speed = 10
 var jump_speed = 5
 var camera_sensitivity = 0.1
 var xp = 0

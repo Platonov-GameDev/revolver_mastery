@@ -52,4 +52,5 @@ avoidance_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="HealthComponent" parent="." node_paths=PackedStringArray("mesh") instance=ExtResource("5_lufc1")]
+max_health = 200
 mesh = NodePath("../MeshInstance3D")
