@@ -39,7 +39,8 @@ func _on_explode_timer_timeout():
 		if bodies[i].is_in_group("enemy"):
 			bodies[i].receive_damage(50)
 			
-			ChargeMoveQueue.move_performed(move_type)
+			var charge = ChargeMoveQueue.move_performed(move_type)
+			ChargeMoveQueue.spawn_charge_label(bodies[i].position, charge)
 	
 	var explosion = explosion_scene.instantiate()
 	explosion.position = position

@@ -70,13 +70,15 @@ func _ready():
 	charge_drain_timer.timeout.connect(_on_charge_drain_timer_timeout)
 	
 	ChargeMoveQueue.charge_gained.connect(_on_charge_move_queue_charge_gained)
+	
+	change_charge(0)
 
 
 func _process(delta):
 	process_dash()
 	
 	if is_charge_draining:
-		change_charge(clampf(current_charge - delta / 3, 0, charge_max))
+		change_charge(clampf(current_charge - delta / 2, 0, charge_max))
 
 
 func movement_pressed(direction):
@@ -233,13 +235,17 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 				collider.receive_damage(damage_amount)
 				
 				if shot_type == ShotType.FAN:
-					ChargeMoveQueue.move_performed(MoveType.FAN)
+					var charge = ChargeMoveQueue.move_performed(MoveType.FAN)
+					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
 				elif shot_type == ShotType.AUTO:
-					ChargeMoveQueue.move_performed(MoveType.AUTO)
+					var charge = ChargeMoveQueue.move_performed(MoveType.AUTO)
+					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
 				elif shot_type == ShotType.RICOCHET:
-					ChargeMoveQueue.move_performed(MoveType.RICOCHET)
+					var charge = ChargeMoveQueue.move_performed(MoveType.RICOCHET)
+					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
 				elif shot_type == ShotType.SHOTGUN or shot_type == ShotType.SHOTGUN_SHELL:
-					ChargeMoveQueue.move_performed(MoveType.SHOTGUN)
+					var charge = ChargeMoveQueue.move_performed(MoveType.SHOTGUN)
+					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
 	
 	var shot_trail = trail_scene.instantiate()
 	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100

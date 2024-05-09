@@ -25,12 +25,15 @@ func _process(_delta):
 	
 	for body in pulled_bodies:
 		if !is_instance_valid(body): continue
-		var pull_vector = body.position - position
+		var pull_point = body.position
+		pull_point.y += 1
+		
+		var pull_vector = pull_point - position
 		body.velocity = -pull_vector * pull_speed
 		
 		var chain_mesh = chain_mesh_scene.instantiate() as StaticBody3D
 		add_child(chain_mesh)
-		chain_mesh.look_at(body.position)
+		chain_mesh.look_at(pull_point)
 		chain_mesh.scale.z = pull_vector.length() / 100
 		chain_meshes.append(chain_mesh)
 
@@ -39,11 +42,13 @@ func _on_pull_timer_timeout():
 	pulled_bodies = affect_area.get_overlapping_bodies()
 	for body in pulled_bodies:
 		body.current_state = EnemyState.PULLED
+		var charge = ChargeMoveQueue.move_performed(MoveType.CHAIN_PULL)
+		var label_position = body.position
+		label_position.y += 1
+		ChargeMoveQueue.spawn_charge_label(label_position, charge)
 	
 	is_pulling = true
 	pulling_timer.start()
-	
-	ChargeMoveQueue.move_performed(MoveType.CHAIN_PULL, pulled_bodies.size())
 
 
 func _on_pulling_timer_timeout():

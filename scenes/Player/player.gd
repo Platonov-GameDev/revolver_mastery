@@ -182,7 +182,8 @@ func dash(direction):
 	velocity = dash_vector
 	dash_timer.start()
 	
-	ChargeMoveQueue.move_performed(MoveType.DASH)
+	var charge = ChargeMoveQueue.move_performed(MoveType.DASH)
+	ChargeMoveQueue.spawn_charge_label(position, charge)
 
 
 func _on_dash_timer_timeout():

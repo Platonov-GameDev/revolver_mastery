@@ -1,5 +1,6 @@
 extends Node
 
+var charge_label_scene = load("res://scenes/ChargeLabel3D/charge_label_3d.tscn")
 var move_queue: Array[ChargeComboQueueItem]
 var move_coefficients = {
 	MoveType.FAN: 5,
@@ -24,8 +25,9 @@ func move_performed(move_type, hits = 1):
 			move_index = i
 			break
 	
+	var charge = 0
 	if is_move_found:
-		add_hits(move_index, move_type, hits)
+		charge = add_hits(move_index, move_type, hits)
 	else:
 		var new_move_item = ChargeComboQueueItem.new()
 		new_move_item.move_type = move_type
@@ -33,7 +35,9 @@ func move_performed(move_type, hits = 1):
 		move_queue.append(new_move_item)
 		if move_queue.size() >= 4:
 			move_queue = move_queue.slice(-3)
-		add_hits(-1, move_type, hits)
+		charge = add_hits(-1, move_type, hits)
+	
+	return charge
 
 
 func add_hits(move_index, move_type, hits):
@@ -50,7 +54,19 @@ func add_hits(move_index, move_type, hits):
 	
 	if charge > 0:
 		charge_gained.emit(charge)
+	
+	return charge
 
 
 func clear_queue():
 	move_queue.clear()
+
+
+func spawn_charge_label(position, charge_amount):
+	if charge_amount == 0: return
+	
+	var charge_label = charge_label_scene.instantiate()
+	charge_label.position = position
+	charge_label.charge_amount = charge_amount
+	
+	add_child(charge_label)

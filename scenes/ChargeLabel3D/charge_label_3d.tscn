@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://b043rnnymxelq"]
+
+[ext_resource type="Script" path="res://scenes/ChargeLabel3D/charge_label_3d.gd" id="1_vfv55"]
+
+[node name="ChargeLabel3d" type="Label3D"]
+pixel_size = 0.001
+billboard = 1
+no_depth_test = true
+fixed_size = true
+modulate = Color(1, 0.164706, 0, 1)
+outline_modulate = Color(1, 1, 1, 1)
+text = "35"
+outline_size = 8
+script = ExtResource("1_vfv55")
+
+[node name="FadeoutStartTimer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[node name="FadeoutTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true

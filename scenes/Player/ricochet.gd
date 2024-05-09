@@ -42,7 +42,8 @@ func _on_body_entered(body):
 			position = raycast.get_collision_point()
 			bounces_remaining -= 1
 			
-			ChargeMoveQueue.move_performed(MoveType.RICOCHET)
+			var charge = ChargeMoveQueue.move_performed(MoveType.RICOCHET)
+			ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
 	raycast.queue_free()
 
 
