@@ -20,7 +20,7 @@ var xp = 0
 var start_time = Time.get_unix_time_from_system()
 var is_dead = false
 var current_movement_state = PlayerMovementState.DEFAULT
-var dash_speed = 80
+var dash_speed = 120
 
 
 func _ready():
