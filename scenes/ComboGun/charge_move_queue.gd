@@ -33,8 +33,8 @@ func move_performed(move_type, hits = 1):
 		new_move_item.move_type = move_type
 		
 		move_queue.append(new_move_item)
-		if move_queue.size() >= 4:
-			move_queue = move_queue.slice(-3)
+		if move_queue.size() >= 3:
+			move_queue = move_queue.slice(-2)
 		charge = add_hits(-1, move_type, hits)
 	
 	return charge
