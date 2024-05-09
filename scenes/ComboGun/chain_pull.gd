@@ -42,6 +42,8 @@ func _on_pull_timer_timeout():
 	
 	is_pulling = true
 	pulling_timer.start()
+	
+	ChargeMoveQueue.move_performed(MoveType.CHAIN_PULL, pulled_bodies.size())
 
 
 func _on_pulling_timer_timeout():

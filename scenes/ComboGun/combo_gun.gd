@@ -18,8 +18,9 @@ extends Node3D
 @onready var shotgun_shoot_timer = $ShotgunShootTimer
 @onready var alt_fire_wait_timer = $AltFireWaitTimer
 @onready var alt_fire_shoot_timer = $AltFireShootTimer
+@onready var charge_drain_timer = $ChargeDrainTimer
 enum State {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT, CHARGING_PIERCE}
-enum ShotType {BASE, AUTO, RICOCHET, SHOTGUN, BLAST, CHAIN_PULL}
+enum ShotType {BASE, FAN, AUTO, RICOCHET, SHOTGUN, SHOTGUN_SHELL, BLAST, CHAIN_PULL}
 var current_state = State.IDLE
 
 # DASH
@@ -44,6 +45,12 @@ var grenade_launch_speed = 20
 var piercing_charge_start_time = 0
 var piercing_max_charge_time = 3
 
+# CHARGE
+var current_charge = 0
+var charge_max = 7
+signal charge_changed(new_charge)
+var is_charge_draining = false
+
 
 func _ready():
 	down_timer.timeout.connect(_on_down_timer_timeout)
@@ -56,10 +63,16 @@ func _ready():
 	shotgun_shoot_timer.timeout.connect(_on_shotgun_shoot_timer_timeout)
 	alt_fire_wait_timer.timeout.connect(_on_alt_fire_wait_timer_timeout)
 	alt_fire_shoot_timer.timeout.connect(_on_alt_fire_shoot_timer_timeout)
+	charge_drain_timer.timeout.connect(_on_charge_drain_timer_timeout)
+	
+	ChargeMoveQueue.charge_gained.connect(_on_charge_move_queue_charge_gained)
 
 
-func _process(_delta):
+func _process(delta):
 	process_dash()
+	
+	if is_charge_draining:
+		change_charge(clampf(current_charge - delta / 3, 0, charge_max))
 
 
 func movement_pressed(direction):
@@ -111,7 +124,7 @@ func fire_pressed():
 		
 		fire_shoot_timer.start()
 	elif current_state == State.FAN:
-		shoot_ray(30)
+		shoot_ray(30, ShotType.FAN)
 		fan_shoot_timer.start()
 		
 		fan_shots_fired += 1
@@ -210,6 +223,15 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		if collider:
 			if collider.is_in_group("enemy"):
 				collider.receive_damage(damage_amount)
+				
+				if shot_type == ShotType.FAN:
+					ChargeMoveQueue.move_performed(MoveType.FAN)
+				elif shot_type == ShotType.AUTO:
+					ChargeMoveQueue.move_performed(MoveType.AUTO)
+				elif shot_type == ShotType.RICOCHET:
+					ChargeMoveQueue.move_performed(MoveType.RICOCHET)
+				elif shot_type == ShotType.SHOTGUN or shot_type == ShotType.SHOTGUN_SHELL:
+					ChargeMoveQueue.move_performed(MoveType.SHOTGUN)
 	
 	var shot_trail = trail_scene.instantiate()
 	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
@@ -228,11 +250,12 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	
 	if shot_type == ShotType.SHOTGUN:
 		for i in range(15):
-			shoot_ray(10, ShotType.BASE, true)
+			shoot_ray(10, ShotType.SHOTGUN_SHELL, true)
 	
 	if shot_type == ShotType.BLAST:
 		var grenade = grenade_scene.instantiate()
 		grenade.position = raycast.get_collision_point()
+		grenade.move_type = MoveType.BLAST
 		get_parent().get_parent().get_parent().add_child(grenade)
 		grenade.explode()
 	
@@ -301,3 +324,21 @@ func _on_alt_fire_wait_timer_timeout():
 func _on_alt_fire_shoot_timer_timeout():
 	current_state = State.DOWN
 	down_timer.start()
+
+
+func _on_charge_move_queue_charge_gained(charge_amount):
+	var new_charge = clampf(current_charge + charge_amount, 0, charge_max)
+	change_charge(new_charge)
+	is_charge_draining = false
+	charge_drain_timer.start()
+
+
+func change_charge(new_charge):
+	current_charge = new_charge
+	charge_changed.emit(current_charge)
+	if current_charge == 0:
+		ChargeMoveQueue.clear_queue()
+
+
+func _on_charge_drain_timer_timeout():
+	is_charge_draining = true

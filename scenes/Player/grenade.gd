@@ -4,6 +4,7 @@ extends CharacterBody3D
 @export var explosion_scene: PackedScene
 @onready var affect_area = $AffectArea
 @onready var explode_timer = $ExplodeTimer
+var move_type = MoveType.GRENADE
 
 
 func _ready():
@@ -37,6 +38,8 @@ func _on_explode_timer_timeout():
 		
 		if bodies[i].is_in_group("enemy"):
 			bodies[i].receive_damage(20)
+			
+			ChargeMoveQueue.move_performed(move_type)
 	
 	var explosion = explosion_scene.instantiate()
 	explosion.position = position

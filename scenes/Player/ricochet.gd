@@ -41,6 +41,8 @@ func _on_body_entered(body):
 			
 			position = raycast.get_collision_point()
 			bounces_remaining -= 1
+			
+			ChargeMoveQueue.move_performed(MoveType.RICOCHET)
 	raycast.queue_free()
 
 

@@ -12,6 +12,7 @@ extends CharacterBody3D
 @onready var death_screen = $DeathScreen
 @onready var combo_gun = $Camera3D/ComboGun
 @onready var dash_timer = $DashTimer
+@onready var charge_progress_bar = $ChargeProgressBar
 var player_move_speed = 10
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -43,6 +44,8 @@ func _ready():
 	gun.reload_state_changed.connect(_on_gun_reload_state_changed)
 	
 	dash_timer.timeout.connect(_on_dash_timer_timeout)
+	
+	combo_gun.charge_changed.connect(_on_combo_gun_charge_changed)
 
 
 func _process(delta):
@@ -178,8 +181,14 @@ func dash(direction):
 	
 	velocity = dash_vector
 	dash_timer.start()
+	
+	ChargeMoveQueue.move_performed(MoveType.DASH)
 
 
 func _on_dash_timer_timeout():
 	current_movement_state = PlayerMovementState.DEFAULT
 	velocity.y = 0
+
+
+func _on_combo_gun_charge_changed(new_charge):
+	charge_progress_bar.value = new_charge

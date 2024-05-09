@@ -16,6 +16,8 @@ func _on_pierce_timer_timeout():
 	var bodies = affect_area.get_overlapping_bodies()
 	for body in bodies:
 		body.receive_damage(power * 200)
+		
+		ChargeMoveQueue.move_performed(MoveType.PIERCE)
 
 
 func _on_lifetime_timer_timeout():

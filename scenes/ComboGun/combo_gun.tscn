@@ -52,3 +52,6 @@ one_shot = true
 [node name="AltFireShootTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
+
+[node name="ChargeDrainTimer" type="Timer" parent="."]
+one_shot = true

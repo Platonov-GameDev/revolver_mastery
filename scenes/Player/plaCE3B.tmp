@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=9 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/input_handler.gd" id="1_mqogj"]
@@ -15,20 +15,6 @@ font_size = 21
 
 [sub_resource type="LabelSettings" id="LabelSettings_wonry"]
 font_size = 41
-
-[sub_resource type="Gradient" id="Gradient_00aqj"]
-colors = PackedColorArray(0.141176, 0.141176, 0.141176, 0, 0.141176, 0.141176, 0.141176, 0.486275)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_5r3cb"]
-gradient = SubResource("Gradient_00aqj")
-
-[sub_resource type="Gradient" id="Gradient_f617n"]
-colors = PackedColorArray(1, 0.164706, 0, 1, 1, 1, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_eg7o7"]
-gradient = SubResource("Gradient_f617n")
-fill_from = Vector2(1, 1)
-fill_to = Vector2(0.551282, 0)
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 collision_layer = 4
@@ -138,25 +124,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
-
-[node name="ChargeProgressBar" type="TextureProgressBar" parent="."]
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -112.0
-offset_top = -201.0
-offset_right = -62.0
-offset_bottom = 170.0
-grow_horizontal = 0
-grow_vertical = 2
-max_value = 7.0
-step = 0.01
-fill_mode = 3
-nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_5r3cb")
-texture_progress = SubResource("GradientTexture2D_eg7o7")
 
 [node name="Gun" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
