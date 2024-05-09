@@ -53,6 +53,7 @@ func _on_pull_timer_timeout():
 
 func _on_pulling_timer_timeout():
 	for body in pulled_bodies:
+		if !is_instance_valid(body): continue
 		body.current_state = EnemyState.BASE
 	
 	queue_free()
