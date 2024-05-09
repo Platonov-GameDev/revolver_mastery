@@ -49,8 +49,6 @@ func _process(delta):
 	if is_dead: return
 	if current_movement_state == PlayerMovementState.DEFAULT:
 		velocity.y -= Global.gravity_acceleration * delta
-	elif current_movement_state == PlayerMovementState.DASHING:
-		velocity.y = 0
 	
 	move_and_slide()
 	
@@ -174,12 +172,14 @@ func dash(direction):
 		dash_vector = Vector3.RIGHT
 	elif direction == MovementDirection.LEFT:
 		dash_vector = Vector3.LEFT
-	dash_vector = dash_vector.rotated(Vector3.UP, rotation.y) * dash_speed
+	dash_vector = dash_vector.rotated(Vector3.RIGHT, camera.rotation.x)
+	dash_vector = dash_vector.rotated(Vector3.UP, rotation.y)
+	dash_vector *= dash_speed
 	
-	velocity.x = dash_vector.x
-	velocity.z = dash_vector.z
+	velocity = dash_vector
 	dash_timer.start()
 
 
 func _on_dash_timer_timeout():
 	current_movement_state = PlayerMovementState.DEFAULT
+	velocity.y = 0
