@@ -158,6 +158,70 @@ nine_patch_stretch = true
 texture_under = SubResource("GradientTexture1D_5r3cb")
 texture_progress = SubResource("GradientTexture2D_eg7o7")
 
+[node name="ColorRect" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_top = 317.0
+offset_right = 50.0
+offset_bottom = 319.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Граната"
+horizontal_alignment = 2
+
+[node name="ColorRect2" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_top = 265.0
+offset_right = 50.0
+offset_bottom = 267.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect2"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Взрыв
+"
+horizontal_alignment = 2
+
+[node name="ColorRect3" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_top = 159.0
+offset_right = 50.0
+offset_bottom = 161.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect3"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Стяжка"
+horizontal_alignment = 2
+
+[node name="ColorRect4" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 2.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect4"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Пробивание"
+horizontal_alignment = 2
+
 [node name="Gun" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("3_18qho")

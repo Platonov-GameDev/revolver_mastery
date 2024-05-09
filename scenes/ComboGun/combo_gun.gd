@@ -50,6 +50,10 @@ var current_charge = 0
 var charge_max = 7
 signal charge_changed(new_charge)
 var is_charge_draining = false
+var grenade_charge_cost = 1
+var blast_charge_cost = 1
+var chain_pull_charge_cost = 3
+var pierce_charge_cost = 6
 
 
 func _ready():
@@ -139,16 +143,18 @@ func fire_pressed():
 		
 		fire_shoot_timer.stop()
 	elif current_state == State.ALT_FIRE:
-		current_state = State.CHARGING_PIERCE
-		piercing_charge_start_time = Time.get_unix_time_from_system()
-		
-		alt_fire_wait_timer.stop()
+		if try_spend_charge(pierce_charge_cost):
+			current_state = State.CHARGING_PIERCE
+			piercing_charge_start_time = Time.get_unix_time_from_system()
+			
+			alt_fire_wait_timer.stop()
 	elif current_state == State.ALT_FIRE_SHOOT:
-		shoot_ray(0, ShotType.CHAIN_PULL)
-		
-		current_state = State.DOWN
-		alt_down_timer.start()
-		alt_fire_shoot_timer.stop()
+		if try_spend_charge(chain_pull_charge_cost):
+			shoot_ray(0, ShotType.CHAIN_PULL)
+			
+			current_state = State.DOWN
+			alt_down_timer.start()
+			alt_fire_shoot_timer.stop()
 
 
 func fire_released():
@@ -169,13 +175,14 @@ func fire_released():
 
 func alt_fire_pressed():
 	if current_state == State.IDLE:
-		var grenade = grenade_scene.instantiate()
-		grenade.position = global_position
-		grenade.velocity = -camera.global_basis.z * grenade_launch_speed
-		get_parent().get_parent().get_parent().add_child(grenade)
-		
-		current_state = State.ALT_FIRE
-		alt_fire_wait_timer.start()
+		if try_spend_charge(grenade_charge_cost):
+			var grenade = grenade_scene.instantiate()
+			grenade.position = global_position
+			grenade.velocity = -camera.global_basis.z * grenade_launch_speed
+			get_parent().get_parent().get_parent().add_child(grenade)
+			
+			current_state = State.ALT_FIRE
+			alt_fire_wait_timer.start()
 	elif current_state == State.FIRE:
 		shotgun_shots_fired += 1
 		shoot_ray(10, ShotType.SHOTGUN)
@@ -189,11 +196,12 @@ func alt_fire_pressed():
 			current_state = State.DOWN
 			down_timer.start()
 	elif current_state == State.ALT_FIRE_SHOOT:
-		shoot_ray(0, ShotType.BLAST)
-		
-		current_state = State.DOWN
-		alt_down_timer.start()
-		alt_fire_shoot_timer.stop()
+		if try_spend_charge(blast_charge_cost):
+			shoot_ray(0, ShotType.BLAST)
+			
+			current_state = State.DOWN
+			alt_down_timer.start()
+			alt_fire_shoot_timer.stop()
 
 
 func alt_fire_released():
@@ -342,3 +350,11 @@ func change_charge(new_charge):
 
 func _on_charge_drain_timer_timeout():
 	is_charge_draining = true
+
+
+func try_spend_charge(charge_amount):
+	if current_charge >= charge_amount:
+		change_charge(current_charge - charge_amount)
+		return true
+	else:
+		return false

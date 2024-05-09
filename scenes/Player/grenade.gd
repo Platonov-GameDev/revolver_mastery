@@ -37,7 +37,7 @@ func _on_explode_timer_timeout():
 		bodies[i].velocity.y = 15
 		
 		if bodies[i].is_in_group("enemy"):
-			bodies[i].receive_damage(20)
+			bodies[i].receive_damage(50)
 			
 			ChargeMoveQueue.move_performed(move_type)
 	
