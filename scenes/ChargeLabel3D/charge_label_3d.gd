@@ -9,7 +9,7 @@ func _ready():
 	$FadeoutStartTimer.timeout.connect(_on_fadeout_start_timer_timeout)
 	$FadeoutTimer.timeout.connect(_on_fadeout_timer_timeout)
 	
-	text = str(snapped(charge_amount * 100, 1))
+	text = str(snapped(charge_amount * 300, 1))
 
 
 func _process(delta):
