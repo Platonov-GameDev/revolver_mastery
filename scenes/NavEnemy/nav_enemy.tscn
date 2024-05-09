@@ -43,7 +43,7 @@ shape = SubResource("CylinderShape3D_7f0dd")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 avoidance_enabled = true
+max_speed = 10000.0
 
 [node name="HealthComponent" parent="." node_paths=PackedStringArray("mesh") instance=ExtResource("4_kt2le")]
-max_health = 50
 mesh = NodePath("../MeshInstance3D")

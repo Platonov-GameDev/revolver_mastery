@@ -2,6 +2,9 @@ extends Node
 
 
 signal movement_inputted(input_vector)
+signal movement_pressed(direction: MovementDirection)
+signal movement_released(direction: MovementDirection)
+
 signal jump_pressed
 signal escape_pressed
 signal reload_pressed
@@ -25,6 +28,23 @@ func _process(_delta):
 		movement_input_vector.x -= 1
 	movement_input_vector = movement_input_vector.normalized()
 	movement_inputted.emit(movement_input_vector)
+	
+	if Input.is_action_just_pressed("move_forward"):
+		movement_pressed.emit(MovementDirection.FORWARD)
+	if Input.is_action_just_released("move_forward"):
+		movement_released.emit(MovementDirection.FORWARD)
+	if Input.is_action_just_pressed("move_back"):
+		movement_pressed.emit(MovementDirection.BACK)
+	if Input.is_action_just_released("move_back"):
+		movement_released.emit(MovementDirection.BACK)
+	if Input.is_action_just_pressed("move_right"):
+		movement_pressed.emit(MovementDirection.RIGHT)
+	if Input.is_action_just_released("move_right"):
+		movement_released.emit(MovementDirection.RIGHT)
+	if Input.is_action_just_pressed("move_left"):
+		movement_pressed.emit(MovementDirection.LEFT)
+	if Input.is_action_just_released("move_left"):
+		movement_released.emit(MovementDirection.LEFT)
 	
 	if Input.is_action_just_pressed("jump"):
 		jump_pressed.emit()

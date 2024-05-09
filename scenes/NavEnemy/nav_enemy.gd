@@ -6,8 +6,9 @@ extends CharacterBody3D
 @onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
 @onready var health_component = $HealthComponent
-var move_speed = 8
+var move_speed = 6
 var xp_drop = 1
+var current_state = EnemyState.BASE
 
 
 func _ready():
@@ -17,18 +18,21 @@ func _ready():
 
 
 func _physics_process(delta):
-	velocity.y -= Global.gravity_acceleration * delta
-	
-	if is_on_floor():
-		nav_agent.set_target_position(player.position)
-		var next_path_position: Vector3 = nav_agent.get_next_path_position()
-		var move_direction = (next_path_position - position).normalized()
+	if current_state == EnemyState.BASE:
+		velocity.y -= Global.gravity_acceleration * delta
 		
-		var delta_velocity = move_direction * move_speed
-		var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
-		nav_agent.set_velocity(new_velocity)
-	elif !is_on_floor():
-		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
+		if is_on_floor():
+			nav_agent.set_target_position(player.position)
+			var next_path_position: Vector3 = nav_agent.get_next_path_position()
+			var move_direction = (next_path_position - position).normalized()
+			
+			var delta_velocity = move_direction * move_speed
+			var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
+			nav_agent.set_velocity(new_velocity)
+		elif !is_on_floor():
+			nav_agent.set_velocity(Vector3(0, velocity.y, 0))
+	elif current_state == EnemyState.PULLED:
+		nav_agent.set_velocity(velocity)
 
 
 func _on_hurtbox_body_entered(body):
@@ -43,11 +47,11 @@ func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
 
 
 func _on_health_component_died():
-	var xp_blob = xp_blob_scene.instantiate()
-	xp_blob.position = position
-	xp_blob.position.y += 0.5
-	xp_blob.player = player
-	get_parent().add_child(xp_blob)
+	#var xp_blob = xp_blob_scene.instantiate()
+	#xp_blob.position = position
+	#xp_blob.position.y += 0.5
+	#xp_blob.player = player
+	#get_parent().add_child(xp_blob)
 	
 	queue_free()
 

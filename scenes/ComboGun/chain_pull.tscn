@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5hv775t0jra7"]
+
+[ext_resource type="Script" path="res://scenes/ComboGun/chain_pull.gd" id="1_0frlp"]
+[ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="2_3kcai"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_3u71v"]
+radius = 25.0
+
+[node name="ChainPull" type="Node3D"]
+script = ExtResource("1_0frlp")
+chain_mesh_scene = ExtResource("2_3kcai")
+
+[node name="AffectArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AffectArea"]
+shape = SubResource("SphereShape3D_3u71v")
+
+[node name="PullTimer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+autostart = true
+
+[node name="PullingTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true

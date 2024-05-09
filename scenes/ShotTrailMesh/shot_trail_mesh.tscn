@@ -13,7 +13,7 @@ disable_receive_shadows = true
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lru1n"]
 material = SubResource("StandardMaterial3D_3bjc1")
-top_radius = 0.01
+top_radius = 0.05
 bottom_radius = 0.01
 height = 100.0
 
@@ -25,5 +25,5 @@ transform = Transform3D(1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.371
 mesh = SubResource("CylinderMesh_lru1n")
 
 [node name="LifetimeTimer" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.07
 autostart = true

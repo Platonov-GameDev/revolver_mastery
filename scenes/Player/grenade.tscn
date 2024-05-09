@@ -34,8 +34,13 @@ mesh = SubResource("SphereMesh_k0p6q")
 
 [node name="AffectArea" type="Area3D" parent="."]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 6
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AffectArea"]
 shape = SubResource("SphereShape3D_7hdku")
+
+[node name="ExplodeTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.05
+one_shot = true

@@ -8,5 +8,5 @@ script = ExtResource("1_vkgyf")
 damaged_material = ExtResource("2_881ia")
 
 [node name="MeshGlowTimer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.05
 one_shot = true
