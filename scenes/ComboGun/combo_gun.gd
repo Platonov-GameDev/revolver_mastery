@@ -30,7 +30,7 @@ var dash_move_tap_window = .1
 var is_dash_move_done = false
 var is_dash_shoot_done = false
 var dash_prepared_time = 0
-var dash_preparation_window = .1
+var dash_preparation_window = .2
 
 # FAN
 var fan_shots_fired = 0
@@ -109,9 +109,10 @@ func process_dash():
 
 
 func dash():
-	is_dash_move_done = false
-	is_dash_shoot_done = false
-	get_parent().get_parent().dash(last_movement_direction)
+	#is_dash_move_done = false
+	#is_dash_shoot_done = false
+	#get_parent().get_parent().dash(last_movement_direction)
+	pass
 
 
 func fire_pressed():

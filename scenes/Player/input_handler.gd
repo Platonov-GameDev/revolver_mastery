@@ -14,6 +14,7 @@ signal main_fire_released
 signal alt_fire_pressed
 signal alt_fire_released
 signal enter_pressed
+signal dash_pressed
 
 
 func _process(_delta):
@@ -66,6 +67,9 @@ func _process(_delta):
 	
 	if Input.is_action_just_pressed("ui_accept"):
 		enter_pressed.emit()
+	
+	if Input.is_action_just_pressed("dash"):
+		dash_pressed.emit()
 
 
 func _input(event):

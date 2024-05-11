@@ -13,6 +13,7 @@ extends CharacterBody3D
 @onready var combo_gun = $Camera3D/ComboGun
 @onready var dash_timer = $DashTimer
 @onready var charge_progress_bar = $ChargeProgressBar
+@onready var dash_cooldown_timer = $DashCooldownTimer
 var player_move_speed = 10
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -21,6 +22,8 @@ var start_time = Time.get_unix_time_from_system()
 var is_dead = false
 var current_movement_state = PlayerMovementState.DEFAULT
 var dash_speed = 120
+var is_dash_recharging = false
+var last_movement_input
 
 
 func _ready():
@@ -38,6 +41,7 @@ func _ready():
 	input_handler.alt_fire_released.connect(_on_input_handler_alt_fire_released)
 	input_handler.reload_pressed.connect(_on_input_handler_reload_pressed)
 	input_handler.enter_pressed.connect(_on_input_handler_enter_pressed)
+	input_handler.dash_pressed.connect(_on_input_handler_dash_pressed)
 	
 	gun.activation_changed.connect(_on_gun_activation_changed)
 	gun.ammo_changed.connect(_on_gun_ammo_changed)
@@ -46,6 +50,8 @@ func _ready():
 	dash_timer.timeout.connect(_on_dash_timer_timeout)
 	
 	combo_gun.charge_changed.connect(_on_combo_gun_charge_changed)
+	
+	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timer_timeout)
 
 
 func _process(delta):
@@ -71,6 +77,7 @@ func _on_input_handler_movement_inputted(input_vector: Vector2):
 
 func _on_input_handler_movement_pressed(direction):
 	combo_gun.movement_pressed(direction)
+	last_movement_input = direction
 
 
 func _on_input_handler_movement_released(direction):
@@ -184,6 +191,8 @@ func dash(direction):
 	
 	var charge = ChargeMoveQueue.move_performed(MoveType.DASH)
 	ChargeMoveQueue.spawn_charge_label(position, charge)
+	
+	is_dash_recharging = true
 
 
 func _on_dash_timer_timeout():
@@ -193,3 +202,13 @@ func _on_dash_timer_timeout():
 
 func _on_combo_gun_charge_changed(new_charge):
 	charge_progress_bar.value = new_charge
+
+
+func _on_input_handler_dash_pressed():
+	if is_dash_recharging: return
+	dash(last_movement_input)
+	dash_cooldown_timer.start()
+
+
+func _on_dash_cooldown_timer_timeout():
+	is_dash_recharging = false
