@@ -19,9 +19,9 @@ extends Node3D
 @onready var alt_fire_wait_timer = $AltFireWaitTimer
 @onready var alt_fire_shoot_timer = $AltFireShootTimer
 @onready var charge_drain_timer = $ChargeDrainTimer
-enum State {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT, CHARGING_PIERCE}
 enum ShotType {BASE, FAN, AUTO, RICOCHET, SHOTGUN, SHOTGUN_SHELL, BLAST, CHAIN_PULL}
-var current_state = State.IDLE
+var current_state = ComboGunState.IDLE
+signal state_changed(new_state)
 
 # DASH
 var last_movement_time = 0
@@ -116,7 +116,7 @@ func dash():
 
 
 func fire_pressed():
-	if current_state == State.IDLE:
+	if current_state == ComboGunState.IDLE:
 		if is_dash_move_done:
 			dash()
 		else:
@@ -127,35 +127,35 @@ func fire_pressed():
 		
 		auto_windup_timer.start()
 		
-		current_state = State.FIRE
+		change_state(ComboGunState.FIRE)
 		
 		fire_shoot_timer.start()
-	elif current_state == State.FAN:
+	elif current_state == ComboGunState.FAN:
 		shoot_ray(30, ShotType.FAN)
 		fan_shoot_timer.start()
 		
 		fan_shots_fired += 1
 		if fan_shots_fired == 5:
-			current_state = State.DOWN
+			change_state(ComboGunState.DOWN)
 			down_timer.start()
-	elif current_state == State.FIRE:
+	elif current_state == ComboGunState.FIRE:
 		shoot_ray(30, ShotType.RICOCHET)
 		
-		current_state = State.DOWN
+		change_state(ComboGunState.DOWN)
 		down_timer.start()
 		
 		fire_shoot_timer.stop()
-	elif current_state == State.ALT_FIRE:
+	elif current_state == ComboGunState.ALT_FIRE:
 		if try_spend_charge(pierce_charge_cost):
-			current_state = State.CHARGING_PIERCE
+			change_state(ComboGunState.CHARGING_PIERCE)
 			piercing_charge_start_time = Time.get_unix_time_from_system()
 			
 			alt_fire_wait_timer.stop()
-	elif current_state == State.ALT_FIRE_SHOOT:
+	elif current_state == ComboGunState.ALT_FIRE_SHOOT:
 		if try_spend_charge(chain_pull_charge_cost):
 			shoot_ray(0, ShotType.CHAIN_PULL)
 			
-			current_state = State.DOWN
+			change_state(ComboGunState.DOWN)
 			alt_down_timer.start()
 			alt_fire_shoot_timer.stop()
 
@@ -164,29 +164,29 @@ func fire_released():
 	auto_windup_timer.stop()
 	auto_shoot_timer.stop()
 	
-	if current_state == State.AUTO:
-		current_state = State.DOWN
+	if current_state == ComboGunState.AUTO:
+		change_state(ComboGunState.DOWN)
 		down_timer.start()
-	elif current_state == State.CHARGING_PIERCE:
+	elif current_state == ComboGunState.CHARGING_PIERCE:
 		var current_time = Time.get_unix_time_from_system()
 		var pierce_power = clampf((current_time - piercing_charge_start_time) / piercing_max_charge_time, 0, 1)
 		shoot_pierce(pierce_power)
 		
-		current_state = State.DOWN
+		change_state(ComboGunState.DOWN)
 		alt_down_timer.start()
 
 
 func alt_fire_pressed():
-	if current_state == State.IDLE:
+	if current_state == ComboGunState.IDLE:
 		if try_spend_charge(grenade_charge_cost):
 			var grenade = grenade_scene.instantiate()
 			grenade.position = global_position
 			grenade.velocity = -camera.global_basis.z * grenade_launch_speed
 			get_parent().get_parent().get_parent().add_child(grenade)
 			
-			current_state = State.ALT_FIRE
+			change_state(ComboGunState.ALT_FIRE)
 			alt_fire_wait_timer.start()
-	elif current_state == State.FIRE:
+	elif current_state == ComboGunState.FIRE:
 		shotgun_shots_fired += 1
 		shoot_ray(10, ShotType.SHOTGUN)
 		fire_shoot_timer.stop()
@@ -196,13 +196,13 @@ func alt_fire_pressed():
 			shotgun_shots_fired = 0
 			shotgun_shoot_timer.stop()
 			
-			current_state = State.DOWN
+			change_state(ComboGunState.DOWN)
 			down_timer.start()
-	elif current_state == State.ALT_FIRE_SHOOT:
+	elif current_state == ComboGunState.ALT_FIRE_SHOOT:
 		if try_spend_charge(blast_charge_cost):
 			shoot_ray(0, ShotType.BLAST)
 			
-			current_state = State.DOWN
+			change_state(ComboGunState.DOWN)
 			alt_down_timer.start()
 			alt_fire_shoot_timer.stop()
 
@@ -293,15 +293,15 @@ func shoot_pierce(pierce_power):
 
 
 func _on_down_timer_timeout():
-	current_state = State.IDLE
+	change_state(ComboGunState.IDLE)
 
 
 func _on_alt_down_timer_timeout():
-	current_state = State.IDLE
+	change_state(ComboGunState.IDLE)
 
 
 func _on_auto_windup_timer_timeout():
-	current_state = State.AUTO
+	change_state(ComboGunState.AUTO)
 	fire_wait_timer.stop()
 	auto_shoot_timer.start()
 
@@ -312,32 +312,32 @@ func _on_auto_shoot_timer_timeout():
 
 func _on_fire_shoot_timer_timeout():
 	fire_wait_timer.start()
-	current_state = State.DOWN
+	change_state(ComboGunState.DOWN)
 
 
 func _on_fire_wait_timer_timeout():
-	current_state = State.FAN
+	change_state(ComboGunState.FAN)
 	fan_shoot_timer.start()
 	fan_shots_fired = 0
 
 
 func _on_fan_shoot_timer_timeout():
-	current_state = State.DOWN
+	change_state(ComboGunState.DOWN)
 	down_timer.start()
 
 
 func _on_shotgun_shoot_timer_timeout():
-	current_state = State.DOWN
+	change_state(ComboGunState.DOWN)
 	down_timer.start()
 
 
 func _on_alt_fire_wait_timer_timeout():
-	current_state = State.ALT_FIRE_SHOOT
+	change_state(ComboGunState.ALT_FIRE_SHOOT)
 	alt_fire_shoot_timer.start()
 
 
 func _on_alt_fire_shoot_timer_timeout():
-	current_state = State.DOWN
+	change_state(ComboGunState.DOWN)
 	down_timer.start()
 
 
@@ -365,3 +365,8 @@ func try_spend_charge(charge_amount):
 		return true
 	else:
 		return false
+
+
+func change_state(new_state):
+	current_state = new_state
+	state_changed.emit(new_state)

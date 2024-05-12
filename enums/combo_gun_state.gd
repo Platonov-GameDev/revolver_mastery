@@ -1,0 +1,3 @@
+class_name ComboGunState
+
+enum {IDLE, DOWN, FIRE, AUTO, FAN, ALT_FIRE, ALT_FIRE_SHOOT, CHARGING_PIERCE}

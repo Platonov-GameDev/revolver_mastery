@@ -90,3 +90,7 @@ restart={
 3d_physics/layer_3="player"
 3d_physics/layer_4="bullet_shell"
 3d_physics/layer_5="grenade"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

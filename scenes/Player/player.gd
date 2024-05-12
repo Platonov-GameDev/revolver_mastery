@@ -14,6 +14,7 @@ extends CharacterBody3D
 @onready var dash_timer = $DashTimer
 @onready var charge_progress_bar = $ChargeProgressBar
 @onready var dash_cooldown_timer = $DashCooldownTimer
+@onready var downtime_indicator = $DowntimeIndicator
 var player_move_speed = 10
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -49,6 +50,7 @@ func _ready():
 	dash_timer.timeout.connect(_on_dash_timer_timeout)
 	
 	combo_gun.charge_changed.connect(_on_combo_gun_charge_changed)
+	combo_gun.state_changed.connect(_on_combo_gun_state_changed)
 	
 	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timer_timeout)
 
@@ -205,3 +207,10 @@ func _on_input_handler_dash_pressed():
 
 func _on_dash_cooldown_timer_timeout():
 	is_dash_recharging = false
+
+
+func _on_combo_gun_state_changed(new_state):
+	if new_state == ComboGunState.DOWN:
+		downtime_indicator.hide()
+	else:
+		downtime_indicator.show()
