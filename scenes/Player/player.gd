@@ -15,6 +15,10 @@ extends CharacterBody3D
 @onready var charge_progress_bar = $ChargeProgressBar
 @onready var dash_cooldown_timer = $DashCooldownTimer
 @onready var downtime_indicator = $DowntimeIndicator
+@onready var indicator_1 = $ChargeIndicators/Indicator1
+@onready var indicator_2 = $ChargeIndicators/Indicator2
+@onready var indicator_3 = $ChargeIndicators/Indicator3
+@onready var indicator_4 = $ChargeIndicators/Indicator4
 var player_move_speed = 10
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -197,6 +201,25 @@ func _on_dash_timer_timeout():
 
 func _on_combo_gun_charge_changed(new_charge):
 	charge_progress_bar.value = new_charge
+	
+	var charged_color = Color("#ff2a00")
+	var uncharged_color = Color("#ffffff")
+	if new_charge >= 1:
+		indicator_1.modulate = charged_color
+	else:
+		indicator_1.modulate = uncharged_color
+	if new_charge >= 2:
+		indicator_2.modulate = charged_color
+	else:
+		indicator_2.modulate = uncharged_color
+	if new_charge >= 4:
+		indicator_3.modulate = charged_color
+	else:
+		indicator_3.modulate = uncharged_color
+	if new_charge >= 7:
+		indicator_4.modulate = charged_color
+	else:
+		indicator_4.modulate = uncharged_color
 
 
 func _on_input_handler_dash_pressed():
