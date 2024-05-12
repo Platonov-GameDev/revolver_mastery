@@ -7,6 +7,6 @@ func _ready():
 
 func _on_body_entered(body):
 	if body.is_in_group("player"):
-		get_tree().call_deferred("reload_current_scene")
+		body.die()
 	else:
 		body.queue_free()

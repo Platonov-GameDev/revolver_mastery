@@ -39,8 +39,7 @@ func _ready():
 	input_handler.main_fire_released.connect(_on_input_handler_main_fire_released)
 	input_handler.alt_fire_pressed.connect(_on_input_handler_alt_fire_pressed)
 	input_handler.alt_fire_released.connect(_on_input_handler_alt_fire_released)
-	input_handler.reload_pressed.connect(_on_input_handler_reload_pressed)
-	input_handler.enter_pressed.connect(_on_input_handler_enter_pressed)
+	input_handler.restart_pressed.connect(_on_input_handler_restart_pressed)
 	input_handler.dash_pressed.connect(_on_input_handler_dash_pressed)
 	
 	gun.activation_changed.connect(_on_gun_activation_changed)
@@ -94,11 +93,6 @@ func _on_input_handler_escape_pressed():
 	get_tree().quit()
 
 
-func _on_input_handler_reload_pressed():
-	if is_dead: return
-	#gun.reload()
-
-
 func _on_input_handler_mouse_moved(input_vector):
 	if is_dead: return
 	input_vector *= camera_sensitivity
@@ -132,9 +126,8 @@ func _on_input_handler_alt_fire_released():
 	combo_gun.alt_fire_released()
 
 
-func _on_input_handler_enter_pressed():
-	if is_dead:
-		get_tree().reload_current_scene()
+func _on_input_handler_restart_pressed():
+	get_tree().reload_current_scene()
 
 
 func _on_gun_activation_changed(is_active):

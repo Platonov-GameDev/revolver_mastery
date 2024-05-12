@@ -7,13 +7,12 @@ signal movement_released(direction: MovementDirection)
 
 signal jump_pressed
 signal escape_pressed
-signal reload_pressed
+signal restart_pressed
 signal mouse_moved(input_vector)
 signal main_fire_pressed
 signal main_fire_released
 signal alt_fire_pressed
 signal alt_fire_released
-signal enter_pressed
 signal dash_pressed
 
 
@@ -53,8 +52,8 @@ func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):
 		escape_pressed.emit()
 	
-	if Input.is_action_just_pressed("reload"):
-		reload_pressed.emit()
+	if Input.is_action_just_pressed("restart"):
+		restart_pressed.emit()
 	
 	if Input.is_action_just_pressed("main_fire"):
 		main_fire_pressed.emit()
@@ -64,9 +63,6 @@ func _process(_delta):
 		alt_fire_pressed.emit()
 	if Input.is_action_just_released("alt_fire"):
 		alt_fire_released.emit()
-	
-	if Input.is_action_just_pressed("ui_accept"):
-		enter_pressed.emit()
 	
 	if Input.is_action_just_pressed("dash"):
 		dash_pressed.emit()
