@@ -1,19 +1,20 @@
-[gd_scene load_steps=9 format=3 uid="uid://dw5ghu82f2tf0"]
+[gd_scene load_steps=10 format=3 uid="uid://dw5ghu82f2tf0"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemyRange/nav_enemy_range.gd" id="1_58h51"]
 [ext_resource type="PackedScene" uid="uid://duy07kxsr2yvc" path="res://scenes/NavEnemyRange/nav_enemy_range_projectile.tscn" id="2_ejuqg"]
 [ext_resource type="Texture2D" uid="uid://bofdp5tep2b5a" path="res://addons/kenney_prototype_textures/purple/texture_10.png" id="2_h0g00"]
 [ext_resource type="PackedScene" uid="uid://cdfsrca2d8dgm" path="res://scenes/XPBlob/xp_blob.tscn" id="3_wd17h"]
 [ext_resource type="PackedScene" uid="uid://b82b7s710juc4" path="res://components/HealthComponent/health_component.tscn" id="5_lufc1"]
+[ext_resource type="PackedScene" uid="uid://bnoeglqjan8fj" path="res://components/MarkedComponent/marked_component.tscn" id="6_dmjq7"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2dnmy"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w048s"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_luq7o"]
 albedo_texture = ExtResource("2_h0g00")
 uv1_triplanar = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8oypo"]
-material = SubResource("StandardMaterial3D_w048s")
+material = SubResource("StandardMaterial3D_luq7o")
 
 [node name="NavEnemyRange" type="CharacterBody3D" groups=["enemy"]]
 collision_layer = 2
@@ -42,3 +43,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 [node name="HealthComponent" parent="." node_paths=PackedStringArray("mesh") instance=ExtResource("5_lufc1")]
 max_health = 200
 mesh = NodePath("../MeshInstance3D")
+
+[node name="MarkedComponent" parent="." node_paths=PackedStringArray("entity_mesh") instance=ExtResource("6_dmjq7")]
+entity_mesh = NodePath("../MeshInstance3D")

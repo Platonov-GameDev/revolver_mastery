@@ -9,6 +9,8 @@ extends CharacterBody3D
 @onready var hurtbox = $Hurtbox
 @onready var hurtbox_show_timer = $Hurtbox/HurtboxShowTimer
 @onready var hurtbox_mesh = $Hurtbox/HurtboxMesh
+@onready var marked_component = $MarkedComponent
+@onready var mesh = $MeshInstance3D
 var move_speed = 6
 var xp_drop = 1
 var current_state = EnemyState.BASE
@@ -58,6 +60,8 @@ func _on_health_component_died():
 
 
 func receive_damage(damage_amount):
+	if marked_component.is_marked:
+		damage_amount *= 2
 	health_component.receive_damage(damage_amount)
 
 

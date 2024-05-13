@@ -8,6 +8,7 @@ extends CharacterBody3D
 @onready var shoot_timer = $ShootTimer
 @onready var muzzle = $Muzzle
 @onready var health_component = $HealthComponent
+@onready var marked_component = $MarkedComponent
 var move_speed = 4
 var projectile_speed = 15
 var is_reloading = false
@@ -85,15 +86,10 @@ func _on_shoot_timer_timeout():
 
 
 func _on_health_component_died():
-	#var xp_blob = xp_blob_scene.instantiate()
-	#xp_blob.position = position
-	#xp_blob.position.y += 0.5
-	#xp_blob.player = player
-	#xp_blob.value = xp_drop
-	#get_parent().add_child(xp_blob)
-	
 	queue_free()
 
 
 func receive_damage(damage_amount):
+	if marked_component.is_marked:
+		damage_amount *= 2
 	health_component.receive_damage(damage_amount)

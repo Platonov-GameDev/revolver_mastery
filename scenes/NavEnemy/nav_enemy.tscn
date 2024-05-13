@@ -1,18 +1,19 @@
-[gd_scene load_steps=12 format=3 uid="uid://btmryx3815hg"]
+[gd_scene load_steps=13 format=3 uid="uid://btmryx3815hg"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemy/nav_enemy.gd" id="1_ljbok"]
 [ext_resource type="PackedScene" uid="uid://cdfsrca2d8dgm" path="res://scenes/XPBlob/xp_blob.tscn" id="2_l2l3a"]
-[ext_resource type="Texture2D" uid="uid://bfwtoq0kf818n" path="res://addons/kenney_prototype_textures/red/texture_10.png" id="2_xkrg8"]
+[ext_resource type="Texture2D" uid="uid://cksdbe8ix4r4p" path="res://addons/kenney_prototype_textures/green/texture_10.png" id="3_rx3ug"]
 [ext_resource type="PackedScene" uid="uid://b82b7s710juc4" path="res://components/HealthComponent/health_component.tscn" id="4_kt2le"]
+[ext_resource type="PackedScene" uid="uid://bnoeglqjan8fj" path="res://components/MarkedComponent/marked_component.tscn" id="5_dbg6u"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2dnmy"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w048s"]
-albedo_texture = ExtResource("2_xkrg8")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rsbyn"]
+albedo_texture = ExtResource("3_rx3ug")
 uv1_triplanar = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8oypo"]
-material = SubResource("StandardMaterial3D_w048s")
+material = SubResource("StandardMaterial3D_rsbyn")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gw37a"]
 size = Vector3(0.8, 2, 1)
@@ -75,3 +76,6 @@ transform = Transform3D(1.4, 0, 0, 0, 2, 0, 0, 0, 1.8, 1.2, 1, 0)
 visible = false
 mesh = SubResource("BoxMesh_knms4")
 skeleton = NodePath("../..")
+
+[node name="MarkedComponent" parent="." node_paths=PackedStringArray("entity_mesh") instance=ExtResource("5_dbg6u")]
+entity_mesh = NodePath("../MeshInstance3D")

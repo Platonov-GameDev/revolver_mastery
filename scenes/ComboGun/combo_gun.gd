@@ -238,6 +238,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 				if shot_type == ShotType.FAN:
 					var charge = ChargeMoveQueue.move_performed(MoveType.FAN)
 					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
+					collider.marked_component.activate()
 				elif shot_type == ShotType.AUTO:
 					var charge = ChargeMoveQueue.move_performed(MoveType.AUTO)
 					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
