@@ -45,7 +45,6 @@ func _ready():
 	input_handler.alt_fire_pressed.connect(_on_input_handler_alt_fire_pressed)
 	input_handler.alt_fire_released.connect(_on_input_handler_alt_fire_released)
 	input_handler.restart_pressed.connect(_on_input_handler_restart_pressed)
-	input_handler.dash_pressed.connect(_on_input_handler_dash_pressed)
 	
 	gun.activation_changed.connect(_on_gun_activation_changed)
 	gun.ammo_changed.connect(_on_gun_ammo_changed)
@@ -220,12 +219,6 @@ func _on_combo_gun_charge_changed(new_charge):
 		indicator_4.modulate = charged_color
 	else:
 		indicator_4.modulate = uncharged_color
-
-
-func _on_input_handler_dash_pressed():
-	if is_dash_recharging: return
-	dash(last_movement_input)
-	dash_cooldown_timer.start()
 
 
 func _on_dash_cooldown_timer_timeout():
