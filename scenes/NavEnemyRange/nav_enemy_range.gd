@@ -9,17 +9,20 @@ extends CharacterBody3D
 @onready var muzzle = $Muzzle
 @onready var health_component = $HealthComponent
 @onready var marked_component = $MarkedComponent
+@onready var slowed_component = $SlowedComponent
 var move_speed = 4
 var projectile_speed = 15
 var is_reloading = false
 var xp_drop = 2
 var current_state = EnemyState.BASE
+var default_shoot_wait = 1
 
 
 func _ready():
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
 	health_component.died.connect(_on_health_component_died)
+	slowed_component.slow_changed.connect(_on_slowed_component_slow_changed)
 
 
 func _physics_process(delta):
@@ -59,6 +62,8 @@ func _physics_process(delta):
 					var move_direction = (next_path_position - position).normalized()
 					
 					var delta_velocity = move_direction * move_speed * 0.5
+					if slowed_component.is_slowed:
+						delta_velocity *= slowed_component.slow_ratio
 					var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
 					nav_agent.set_velocity(new_velocity)
 			else:
@@ -67,6 +72,8 @@ func _physics_process(delta):
 				var move_direction = (next_path_position - position).normalized()
 				
 				var delta_velocity = move_direction * move_speed
+				if slowed_component.is_slowed:
+					delta_velocity *= slowed_component.slow_ratio
 				var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
 				nav_agent.set_velocity(new_velocity)
 		elif !is_on_floor():
@@ -93,3 +100,9 @@ func receive_damage(damage_amount):
 	if marked_component.is_marked:
 		damage_amount *= 2
 	health_component.receive_damage(damage_amount)
+
+
+func _on_slowed_component_slow_changed(new_is_slowed):
+	shoot_timer.wait_time = default_shoot_wait
+	if new_is_slowed:
+		shoot_timer.wait_time /= slowed_component.slow_ratio

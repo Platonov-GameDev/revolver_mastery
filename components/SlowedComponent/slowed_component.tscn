@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmjta07tfwxri"]
+
+[ext_resource type="Script" path="res://components/SlowedComponent/slowed_component.gd" id="1_72bm2"]
+
+[node name="SlowedComponent" type="Node"]
+script = ExtResource("1_72bm2")
+
+[node name="SlowTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true

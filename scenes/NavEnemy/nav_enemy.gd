@@ -11,6 +11,7 @@ extends CharacterBody3D
 @onready var hurtbox_mesh = $Hurtbox/HurtboxMesh
 @onready var marked_component = $MarkedComponent
 @onready var mesh = $MeshInstance3D
+@onready var slowed_component = $SlowedComponent
 var move_speed = 6
 var xp_drop = 1
 var current_state = EnemyState.BASE
@@ -32,6 +33,8 @@ func _physics_process(delta):
 			var move_direction = (next_path_position - position).normalized()
 			
 			var delta_velocity = move_direction * move_speed
+			if slowed_component.is_slowed:
+				delta_velocity *= slowed_component.slow_ratio
 			var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
 			nav_agent.set_velocity(new_velocity)
 			
