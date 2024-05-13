@@ -375,7 +375,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.988235, 0, 0, 0.352941)
+color = Color(0.988235, 0, 0, 0.552941)
 
 [node name="DeathScreen" type="PanelContainer" parent="."]
 visible = false
