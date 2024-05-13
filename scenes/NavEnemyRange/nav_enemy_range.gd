@@ -4,7 +4,6 @@ extends CharacterBody3D
 @export var player: CharacterBody3D
 @export var projectile_scene: PackedScene
 @export var xp_blob_scene: PackedScene
-@onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
 @onready var shoot_timer = $ShootTimer
 @onready var muzzle = $Muzzle
@@ -17,7 +16,6 @@ var current_state = EnemyState.BASE
 
 
 func _ready():
-	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
 	health_component.died.connect(_on_health_component_died)
@@ -74,11 +72,6 @@ func _physics_process(delta):
 			nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 	elif current_state == EnemyState.PULLED:
 		nav_agent.set_velocity(velocity)
-
-
-func _on_hurtbox_body_entered(body):
-	if body.is_in_group("player"):
-		body.die()
 
 
 func _on_nav_agent_velocity_computed(safe_velocity: Vector3):

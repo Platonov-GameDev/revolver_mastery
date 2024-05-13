@@ -3,18 +3,21 @@ extends CharacterBody3D
 
 @export var player: CharacterBody3D
 @export var xp_blob_scene: PackedScene
-@onready var hurtbox = $HurtBox
 @onready var nav_agent = $NavigationAgent3D
 @onready var health_component = $HealthComponent
+@onready var player_detection_area = $PlayerDetectionArea
+@onready var hurtbox = $Hurtbox
+@onready var hurtbox_show_timer = $Hurtbox/HurtboxShowTimer
+@onready var hurtbox_mesh = $Hurtbox/HurtboxMesh
 var move_speed = 6
 var xp_drop = 1
 var current_state = EnemyState.BASE
 
 
 func _ready():
-	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
 	health_component.died.connect(_on_health_component_died)
+	hurtbox_show_timer.timeout.connect(_on_hurtbox_show_timer_timeout)
 
 
 func _physics_process(delta):
@@ -29,15 +32,19 @@ func _physics_process(delta):
 			var delta_velocity = move_direction * move_speed
 			var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
 			nav_agent.set_velocity(new_velocity)
+			
+			var new_rotation = move_direction.dot(Vector3.FORWARD.rotated(Vector3.UP, rotation.y))
+			rotate_y(new_rotation)
+			
+			var detected_bodies = player_detection_area.get_overlapping_bodies()
+			if detected_bodies.size() == 1:
+				attack()
 		elif !is_on_floor():
 			nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 	elif current_state == EnemyState.PULLED:
 		nav_agent.set_velocity(velocity)
-
-
-func _on_hurtbox_body_entered(body):
-	if body.is_in_group("player"):
-		body.die()
+	elif current_state == EnemyState.MELEE_ATTACK:
+		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 
 
 func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
@@ -47,14 +54,26 @@ func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
 
 
 func _on_health_component_died():
-	#var xp_blob = xp_blob_scene.instantiate()
-	#xp_blob.position = position
-	#xp_blob.position.y += 0.5
-	#xp_blob.player = player
-	#get_parent().add_child(xp_blob)
-	
 	queue_free()
 
 
 func receive_damage(damage_amount):
 	health_component.receive_damage(damage_amount)
+
+
+func attack():
+	var bodies = hurtbox.get_overlapping_bodies()
+	if bodies.size() == 0: return
+	
+	var player = bodies[0]
+	player.health_component.receive_damage(20)
+	
+	hurtbox_mesh.show()
+	hurtbox_show_timer.start()
+	
+	current_state = EnemyState.MELEE_ATTACK
+
+
+func _on_hurtbox_show_timer_timeout():
+	hurtbox_mesh.hide()
+	current_state = EnemyState.BASE

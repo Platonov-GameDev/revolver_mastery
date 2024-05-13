@@ -19,6 +19,10 @@ extends CharacterBody3D
 @onready var indicator_2 = $ChargeIndicators/Indicator2
 @onready var indicator_3 = $ChargeIndicators/Indicator3
 @onready var indicator_4 = $ChargeIndicators/Indicator4
+@onready var health_bar = $HealthBar
+@onready var health_component = $HealthComponent
+@onready var damage_overlay_timer = $DamageOverlayTimer
+@onready var damage_overlay = $DamageOverlay
 var player_move_speed = 10
 var jump_speed = 5
 var camera_sensitivity = 0.1
@@ -56,6 +60,10 @@ func _ready():
 	combo_gun.state_changed.connect(_on_combo_gun_state_changed)
 	
 	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timer_timeout)
+	
+	health_component.died.connect(die)
+	health_component.damage_received.connect(_on_health_component_damage_received)
+	health_component.health_changed.connect(_on_health_component_health_changed)
 
 
 func _process(delta):
@@ -67,6 +75,8 @@ func _process(delta):
 	
 	var elapsed_time = Time.get_unix_time_from_system() - start_time
 	timer_label.text = str(snapped(elapsed_time, 0.01))
+	
+	damage_overlay.modulate.a = damage_overlay_timer.time_left / damage_overlay_timer.wait_time
 
 
 func _on_input_handler_movement_inputted(input_vector: Vector2):
@@ -230,3 +240,11 @@ func _on_combo_gun_state_changed(new_state):
 		downtime_indicator.hide()
 	else:
 		downtime_indicator.show()
+
+
+func _on_health_component_damage_received():
+	damage_overlay_timer.start()
+
+
+func _on_health_component_health_changed(new_health):
+	health_bar.value = new_health

@@ -7,6 +7,8 @@ extends Node
 @onready var mesh_glow_timer = $MeshGlowTimer
 var current_health
 signal died
+signal damage_received
+signal health_changed(new_health)
 
 
 func _ready():
@@ -16,15 +18,20 @@ func _ready():
 
 func receive_damage(damage_amount: int):
 	current_health -= damage_amount
-	mesh.set_surface_override_material(0, damaged_material)
-	mesh_glow_timer.start()
-	
-	var enemy = get_parent()
-	if !enemy.is_on_floor():
-		enemy.velocity.y = 3
+	damage_received.emit()
+	health_changed.emit(current_health)
 	
 	if current_health <= 0:
 		died.emit()
+	
+	var parent = get_parent()
+	if parent.is_in_group("enemy"):
+		mesh.set_surface_override_material(0, damaged_material)
+		mesh_glow_timer.start()
+		
+		var enemy = get_parent()
+		if !enemy.is_on_floor():
+			enemy.velocity.y = 3
 
 
 func _on_mesh_glow_timer_timeout():

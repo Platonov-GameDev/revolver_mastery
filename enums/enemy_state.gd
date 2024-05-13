@@ -1,3 +1,3 @@
 class_name EnemyState
 
-enum {BASE, PULLED}
+enum {BASE, PULLED, MELEE_ATTACK}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dw5ghu82f2tf0"]
+[gd_scene load_steps=9 format=3 uid="uid://dw5ghu82f2tf0"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemyRange/nav_enemy_range.gd" id="1_58h51"]
 [ext_resource type="PackedScene" uid="uid://duy07kxsr2yvc" path="res://scenes/NavEnemyRange/nav_enemy_range_projectile.tscn" id="2_ejuqg"]
@@ -15,10 +15,6 @@ uv1_triplanar = true
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8oypo"]
 material = SubResource("StandardMaterial3D_w048s")
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_7f0dd"]
-height = 2.2
-radius = 0.6
-
 [node name="NavEnemyRange" type="CharacterBody3D" groups=["enemy"]]
 collision_layer = 2
 collision_mask = 7
@@ -33,15 +29,6 @@ shape = SubResource("CapsuleShape3D_2dnmy")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_8oypo")
-
-[node name="HurtBox" type="Area3D" parent="."]
-collision_layer = 0
-collision_mask = 4
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CylinderShape3D_7f0dd")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 avoidance_enabled = true

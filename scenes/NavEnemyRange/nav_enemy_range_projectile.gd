@@ -13,7 +13,7 @@ func _process(_delta):
 		var collider = collision.get_collider()
 		
 		if collider.is_in_group("player"):
-			collider.die()
+			collider.health_component.receive_damage(15)
 		
 		queue_free()
 

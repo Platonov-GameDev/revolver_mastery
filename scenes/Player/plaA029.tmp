@@ -354,22 +354,12 @@ offset_top = -83.0
 offset_right = 428.0
 offset_bottom = -43.0
 grow_vertical = 0
-value = 100.0
+value = 46.0
 nine_patch_stretch = true
 texture_under = SubResource("GradientTexture2D_x47hj")
 texture_progress = SubResource("GradientTexture2D_i5mut")
 
-[node name="DamageOverlay" type="Control" parent="."]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="DamageOverlay"]
-layout_mode = 1
+[node name="ColorRect" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -430,5 +420,3 @@ one_shot = true
 [node name="HealthComponent" parent="." instance=ExtResource("6_h1g0r")]
 
 [node name="DamageOverlayTimer" type="Timer" parent="."]
-wait_time = 0.3
-one_shot = true
