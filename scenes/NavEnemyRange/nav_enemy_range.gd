@@ -10,6 +10,7 @@ extends CharacterBody3D
 @onready var health_component = $HealthComponent
 @onready var marked_component = $MarkedComponent
 @onready var slowed_component = $SlowedComponent
+@onready var stun_component = $StunComponent
 var move_speed = 4
 var projectile_speed = 15
 var is_reloading = false
@@ -23,6 +24,7 @@ func _ready():
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
 	health_component.died.connect(_on_health_component_died)
 	slowed_component.slow_changed.connect(_on_slowed_component_slow_changed)
+	stun_component.stun_changed.connect(_on_stun_component_stun_changed)
 
 
 func _physics_process(delta):
@@ -80,6 +82,8 @@ func _physics_process(delta):
 			nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 	elif current_state == EnemyState.PULLED:
 		nav_agent.set_velocity(velocity)
+	elif current_state == EnemyState.STUNNED:
+		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 
 
 func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
@@ -106,3 +110,10 @@ func _on_slowed_component_slow_changed(new_is_slowed):
 	shoot_timer.wait_time = default_shoot_wait
 	if new_is_slowed:
 		shoot_timer.wait_time /= slowed_component.slow_ratio
+
+
+func _on_stun_component_stun_changed(new_is_stunned):
+	if new_is_stunned:
+		current_state = EnemyState.STUNNED
+	else:
+		current_state = EnemyState.BASE

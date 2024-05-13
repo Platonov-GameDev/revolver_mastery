@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://btmryx3815hg"]
+[gd_scene load_steps=15 format=3 uid="uid://btmryx3815hg"]
 
 [ext_resource type="Script" path="res://scenes/NavEnemy/nav_enemy.gd" id="1_ljbok"]
 [ext_resource type="PackedScene" uid="uid://cdfsrca2d8dgm" path="res://scenes/XPBlob/xp_blob.tscn" id="2_l2l3a"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b82b7s710juc4" path="res://components/HealthComponent/health_component.tscn" id="4_kt2le"]
 [ext_resource type="PackedScene" uid="uid://bnoeglqjan8fj" path="res://components/MarkedComponent/marked_component.tscn" id="5_dbg6u"]
 [ext_resource type="PackedScene" uid="uid://cmjta07tfwxri" path="res://components/SlowedComponent/slowed_component.tscn" id="6_sf6to"]
+[ext_resource type="PackedScene" uid="uid://bdds236a35nmp" path="res://components/StunComponent/stun_component.tscn" id="7_d7tou"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2dnmy"]
 
@@ -82,3 +83,5 @@ skeleton = NodePath("../..")
 entity_mesh = NodePath("../MeshInstance3D")
 
 [node name="SlowedComponent" parent="." instance=ExtResource("6_sf6to")]
+
+[node name="StunComponent" parent="." instance=ExtResource("7_d7tou")]

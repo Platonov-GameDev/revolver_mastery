@@ -9,6 +9,7 @@ extends Node3D
 @export var chain_pull_scene: PackedScene
 @export var pierce_scene: PackedScene
 @export var auto_slow_aura_scene: PackedScene
+@export var shotgun_stun_aura_scene: PackedScene
 @onready var down_timer = $DownTimer
 @onready var alt_down_timer = $AltDownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
@@ -268,6 +269,10 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	if shot_type == ShotType.SHOTGUN:
 		for i in range(15):
 			shoot_ray(10, ShotType.SHOTGUN_SHELL, true)
+		
+		var shotgun_stun_aura = shotgun_stun_aura_scene.instantiate()
+		shotgun_stun_aura.position = global_position
+		get_parent().get_parent().get_parent().add_child(shotgun_stun_aura)
 	
 	if shot_type == ShotType.BLAST:
 		var grenade = grenade_scene.instantiate()

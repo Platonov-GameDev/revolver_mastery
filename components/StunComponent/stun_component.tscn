@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdds236a35nmp"]
+
+[ext_resource type="Script" path="res://components/StunComponent/stun_component.gd" id="1_wtivs"]
+
+[node name="StunComponent" type="Node"]
+script = ExtResource("1_wtivs")
+
+[node name="StunTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bd4ck3emlci54"]
+[gd_scene load_steps=9 format=3 uid="uid://bd4ck3emlci54"]
 
 [ext_resource type="Script" path="res://scenes/ComboGun/combo_gun.gd" id="1_h4sm5"]
 [ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="2_l6rmi"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://c5hv775t0jra7" path="res://scenes/ComboGun/chain_pull.tscn" id="5_qlcwm"]
 [ext_resource type="PackedScene" uid="uid://dyrbvw2cepgb" path="res://scenes/ComboGun/pierce.tscn" id="6_3j1m5"]
 [ext_resource type="PackedScene" uid="uid://b2eeacwensscs" path="res://scenes/AutoSlowAura/auto_slow_aura.tscn" id="7_otdg5"]
+[ext_resource type="PackedScene" uid="uid://dqtejs38oypyv" path="res://scenes/ShotgunStunAura/shotgun_stun_aura.tscn" id="8_xayy5"]
 
 [node name="ComboGun" type="Node3D"]
 script = ExtResource("1_h4sm5")
@@ -16,6 +17,7 @@ grenade_scene = ExtResource("4_7rj7a")
 chain_pull_scene = ExtResource("5_qlcwm")
 pierce_scene = ExtResource("6_3j1m5")
 auto_slow_aura_scene = ExtResource("7_otdg5")
+shotgun_stun_aura_scene = ExtResource("8_xayy5")
 
 [node name="DownTimer" type="Timer" parent="."]
 wait_time = 0.5

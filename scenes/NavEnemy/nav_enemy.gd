@@ -12,6 +12,7 @@ extends CharacterBody3D
 @onready var marked_component = $MarkedComponent
 @onready var mesh = $MeshInstance3D
 @onready var slowed_component = $SlowedComponent
+@onready var stun_component = $StunComponent
 var move_speed = 6
 var xp_drop = 1
 var current_state = EnemyState.BASE
@@ -21,6 +22,7 @@ func _ready():
 	nav_agent.velocity_computed.connect(_on_nav_agent_velocity_computed)
 	health_component.died.connect(_on_health_component_died)
 	hurtbox_show_timer.timeout.connect(_on_hurtbox_show_timer_timeout)
+	stun_component.stun_changed.connect(_on_stun_component_stun_changed)
 
 
 func _physics_process(delta):
@@ -49,6 +51,8 @@ func _physics_process(delta):
 	elif current_state == EnemyState.PULLED:
 		nav_agent.set_velocity(velocity)
 	elif current_state == EnemyState.MELEE_ATTACK:
+		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
+	elif current_state == EnemyState.STUNNED:
 		nav_agent.set_velocity(Vector3(0, velocity.y, 0))
 
 
@@ -84,3 +88,10 @@ func attack():
 func _on_hurtbox_show_timer_timeout():
 	hurtbox_mesh.hide()
 	current_state = EnemyState.BASE
+
+
+func _on_stun_component_stun_changed(new_is_stunned):
+	if new_is_stunned:
+		current_state = EnemyState.STUNNED
+	else:
+		current_state = EnemyState.BASE
