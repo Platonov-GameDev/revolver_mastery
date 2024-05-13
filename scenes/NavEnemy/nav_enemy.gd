@@ -76,8 +76,8 @@ func attack():
 	var bodies = hurtbox.get_overlapping_bodies()
 	if bodies.size() == 0: return
 	
-	var player = bodies[0]
-	player.health_component.receive_damage(20)
+	var player_body = bodies[0]
+	player_body.health_component.receive_damage(20)
 	
 	hurtbox_mesh.show()
 	hurtbox_show_timer.start()
