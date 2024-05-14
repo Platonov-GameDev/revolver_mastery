@@ -66,8 +66,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 [node name="ShellSpawner" type="Node3D" parent="Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.3, -0.9)
 
-[node name="ComboGun" parent="Camera3D" node_paths=PackedStringArray("camera") instance=ExtResource("8_2kiry")]
+[node name="ComboGun" parent="Camera3D" node_paths=PackedStringArray("player", "camera") instance=ExtResource("8_2kiry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -0.1)
+player = NodePath("../..")
 camera = NodePath("..")
 
 [node name="AimRect" type="ColorRect" parent="."]

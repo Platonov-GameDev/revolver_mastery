@@ -2,6 +2,7 @@ extends Node3D
 
 
 # GENERAL
+@export var player: CharacterBody3D
 @export var camera: Camera3D
 @export var trail_scene: PackedScene
 @export var ricochet_scene: PackedScene
@@ -39,6 +40,7 @@ var fan_shots_fired = 0
 
 # SHOTGUN
 var shotgun_shots_fired = 0
+var shotgun_toss_force = 15
 
 # GRENADE
 var grenade_launch_speed = 20
@@ -193,6 +195,11 @@ func alt_fire_pressed():
 		shoot_ray(10, ShotType.SHOTGUN)
 		fire_shoot_timer.stop()
 		shotgun_shoot_timer.start()
+		
+		if !player.is_on_floor():
+			var toss_direction = camera.global_basis.z
+			var toss_velocity = toss_direction * shotgun_toss_force
+			player.toss(toss_velocity, true)
 		
 		if shotgun_shots_fired == 2:
 			shotgun_shots_fired = 0
