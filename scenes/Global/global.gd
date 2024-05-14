@@ -1,4 +1,4 @@
 extends Node
 
 
-var gravity_acceleration = 9.8
+var gravity_acceleration = 18

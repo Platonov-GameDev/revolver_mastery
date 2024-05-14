@@ -23,8 +23,7 @@ extends CharacterBody3D
 @onready var health_component = $HealthComponent
 @onready var damage_overlay_timer = $DamageOverlayTimer
 @onready var damage_overlay = $DamageOverlay
-var player_move_speed = 10
-var jump_speed = 5
+var jump_speed = 10
 var camera_sensitivity = 0.1
 var xp = 0
 var start_time = Time.get_unix_time_from_system()
@@ -33,6 +32,15 @@ var current_movement_state = PlayerMovementState.DEFAULT
 var dash_speed = 120
 var is_dash_recharging = false
 var last_movement_input
+
+var player_move_speed = 200
+var player_airborne_delta_speed = 30
+var movement_input_vector = Vector2.ZERO
+var ground_deceleration = 90
+var max_ground_speed = 10
+var max_airborne_speed = 50
+
+var initial_airborne_horizontal_velocity_magnitude = 0
 
 
 func _ready():
@@ -71,6 +79,34 @@ func _process(delta):
 	if current_movement_state == PlayerMovementState.DEFAULT:
 		velocity.y -= Global.gravity_acceleration * delta
 	
+	var movement_vector = movement_input_vector.rotated(get_rotation().y)
+	movement_vector.y *= -1
+	var current_horizontal_velocity = Vector2(velocity.x, velocity.z)
+	if is_on_floor():
+		var new_horizontal_velocity = current_horizontal_velocity + movement_vector * player_move_speed * delta
+		if movement_vector.length() == 0:
+			var deceleration_velocity = new_horizontal_velocity.normalized() * ground_deceleration * delta
+			var velocity_after_deceleration = new_horizontal_velocity - deceleration_velocity
+			if velocity_after_deceleration.angle_to(new_horizontal_velocity) >= 0.01:
+				velocity_after_deceleration = Vector2.ZERO
+			velocity_after_deceleration = velocity_after_deceleration.limit_length(max_ground_speed)
+			
+			velocity.x = velocity_after_deceleration.x
+			velocity.z = velocity_after_deceleration.y
+		else:
+			new_horizontal_velocity = new_horizontal_velocity.limit_length(max_ground_speed)
+			
+			velocity.x = new_horizontal_velocity.x
+			velocity.z = new_horizontal_velocity.y
+	elif !is_on_floor():
+		var new_horizontal_velocity = current_horizontal_velocity + (
+			movement_vector * player_airborne_delta_speed * delta)
+		new_horizontal_velocity = new_horizontal_velocity.limit_length(
+			initial_airborne_horizontal_velocity_magnitude)
+		
+		velocity.x = new_horizontal_velocity.x
+		velocity.z = new_horizontal_velocity.y
+	
 	move_and_slide()
 	
 	var elapsed_time = Time.get_unix_time_from_system() - start_time
@@ -83,10 +119,7 @@ func _on_input_handler_movement_inputted(input_vector: Vector2):
 	if is_dead: return
 	if current_movement_state == PlayerMovementState.DASHING: return
 	
-	input_vector = input_vector.rotated(get_rotation().y)
-	input_vector = input_vector * player_move_speed
-	velocity.x = input_vector.x
-	velocity.z = -input_vector.y
+	movement_input_vector = input_vector
 
 
 func _on_input_handler_movement_pressed(direction):
@@ -102,6 +135,12 @@ func _on_input_handler_jump_pressed():
 	if is_dead: return
 	if is_on_floor():
 		velocity.y = jump_speed
+		
+		var horizontal_velocity = Vector2(velocity.x, velocity.z)
+		initial_airborne_horizontal_velocity_magnitude = clampf(
+			horizontal_velocity.length(),
+			max_ground_speed,
+			max_airborne_speed)
 
 
 func _on_input_handler_escape_pressed():
