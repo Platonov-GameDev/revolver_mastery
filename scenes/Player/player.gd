@@ -83,6 +83,8 @@ func _process(delta):
 	movement_vector.y *= -1
 	var current_horizontal_velocity = Vector2(velocity.x, velocity.z)
 	if is_on_floor():
+		initial_airborne_horizontal_velocity_magnitude = max_ground_speed
+		
 		var new_horizontal_velocity = current_horizontal_velocity + movement_vector * player_move_speed * delta
 		if movement_vector.length() == 0:
 			var deceleration_velocity = new_horizontal_velocity.normalized() * ground_deceleration * delta
@@ -287,3 +289,15 @@ func _on_health_component_damage_received():
 
 func _on_health_component_health_changed(new_health):
 	health_bar.value = new_health
+
+
+func toss(toss_velocity: Vector3, resets_velocity = false):
+	if resets_velocity:
+		velocity = toss_velocity
+	elif !resets_velocity:
+		velocity += toss_velocity
+	var horizontal_velocity = Vector2(velocity.x, velocity.z)
+	initial_airborne_horizontal_velocity_magnitude = clampf(
+		horizontal_velocity.length(),
+		max_ground_speed,
+		max_airborne_speed)
