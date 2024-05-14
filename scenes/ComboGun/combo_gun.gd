@@ -41,6 +41,7 @@ var fan_shots_fired = 0
 # SHOTGUN
 var shotgun_shots_fired = 0
 var shotgun_toss_force = 15
+var shotgun_spread_goodness = 0
 
 # GRENADE
 var grenade_launch_speed = 20
@@ -195,6 +196,11 @@ func alt_fire_pressed():
 			change_state(ComboGunState.ALT_FIRE)
 			alt_fire_wait_timer.start()
 	elif current_state == ComboGunState.FIRE:
+		if fire_shoot_timer.time_left != 0:
+			shotgun_spread_goodness = 1 - fire_shoot_timer.time_left / fire_shoot_timer.wait_time
+		elif shotgun_shoot_timer.time_left != 0:
+			shotgun_spread_goodness = 1 - shotgun_shoot_timer.time_left / shotgun_shoot_timer.wait_time
+		
 		shotgun_shots_fired += 1
 		shoot_ray(10, ShotType.SHOTGUN)
 		fire_shoot_timer.stop()
@@ -230,7 +236,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	raycast.rotation = camera.global_rotation
 	raycast.target_position = Vector3(0, 0, -100)
 	if is_shotgun_shell || shot_type == ShotType.SHOTGUN:
-		var shotgun_shell_deviation = .1
+		var shotgun_shell_deviation = .03 + (1 - shotgun_spread_goodness) * 0.25
 		raycast.rotation.x += randf_range(-shotgun_shell_deviation, shotgun_shell_deviation)
 		raycast.rotation.y += randf_range(-shotgun_shell_deviation, shotgun_shell_deviation)
 	elif shot_type == ShotType.AUTO:
