@@ -78,6 +78,7 @@ func _ready():
 
 func _process(delta):
 	if is_dead: return
+	
 	if current_movement_state == PlayerMovementState.DEFAULT:
 		if !combo_gun.is_charging_piercing:
 			velocity.y -= Global.gravity_acceleration * delta
@@ -126,6 +127,8 @@ func _process(delta):
 	timer_label.text = str(snapped(elapsed_time, 0.01))
 	
 	damage_overlay.modulate.a = damage_overlay_timer.time_left / damage_overlay_timer.wait_time
+	
+	health_component.regen_health(delta)
 
 
 func _on_input_handler_movement_inputted(input_vector: Vector2):

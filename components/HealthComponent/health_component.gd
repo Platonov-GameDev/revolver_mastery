@@ -16,6 +16,12 @@ func _ready():
 	mesh_glow_timer.timeout.connect(_on_mesh_glow_timer_timeout)
 
 
+func regen_health(regen_amount):
+	current_health = clampf(current_health + regen_amount, 0, max_health)
+	
+	health_changed.emit(current_health)
+
+
 func receive_damage(damage_amount: int):
 	current_health -= damage_amount
 	damage_received.emit()
