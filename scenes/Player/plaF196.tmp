@@ -1,0 +1,435 @@
+[gd_scene load_steps=19 format=3 uid="uid://bwj64f6gyrrc4"]
+
+[ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
+[ext_resource type="Script" path="res://scenes/Player/input_handler.gd" id="1_mqogj"]
+[ext_resource type="Script" path="res://scenes/Player/gun.gd" id="3_18qho"]
+[ext_resource type="Texture2D" uid="uid://ce47dd5irp6bg" path="res://resources/downtime_indicator.png" id="5_rk1d4"]
+[ext_resource type="PackedScene" uid="uid://b82b7s710juc4" path="res://components/HealthComponent/health_component.tscn" id="6_h1g0r"]
+[ext_resource type="PackedScene" uid="uid://bd4ck3emlci54" path="res://scenes/ComboGun/combo_gun.tscn" id="8_2kiry"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vecmp"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kb4jv"]
+font_size = 121
+
+[sub_resource type="LabelSettings" id="LabelSettings_q4swy"]
+font_size = 21
+
+[sub_resource type="LabelSettings" id="LabelSettings_wonry"]
+font_size = 41
+
+[sub_resource type="Gradient" id="Gradient_00aqj"]
+colors = PackedColorArray(0.141176, 0.141176, 0.141176, 0, 0.141176, 0.141176, 0.141176, 0.486275)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5r3cb"]
+gradient = SubResource("Gradient_00aqj")
+
+[sub_resource type="Gradient" id="Gradient_f617n"]
+colors = PackedColorArray(1, 0.164706, 0, 1, 1, 1, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eg7o7"]
+gradient = SubResource("Gradient_f617n")
+fill_from = Vector2(1, 1)
+fill_to = Vector2(0.551282, 0)
+
+[sub_resource type="Gradient" id="Gradient_mq72i"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.144063, 0.144063, 0.144063, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_x47hj"]
+gradient = SubResource("Gradient_mq72i")
+
+[sub_resource type="Gradient" id="Gradient_24air"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0.823529, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_i5mut"]
+gradient = SubResource("Gradient_24air")
+width = 260
+height = 40
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_4bq6a")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_vecmp")
+
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("1_mqogj")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="ShellSpawner" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.3, -0.9)
+
+[node name="ComboGun" parent="Camera3D" node_paths=PackedStringArray("player", "camera") instance=ExtResource("8_2kiry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -0.1)
+player = NodePath("../..")
+camera = NodePath("..")
+
+[node name="AimRect" type="ColorRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.05, 0.05)
+pivot_offset = Vector2(20, 20)
+
+[node name="DowntimeIndicator" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(20, 20)
+texture = ExtResource("5_rk1d4")
+
+[node name="GunRect" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -375.0
+offset_top = -242.0
+offset_right = -112.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="ChargeIndicators" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(20, 20)
+
+[node name="Indicator1" type="Control" parent="ChargeIndicators"]
+anchors_preset = 0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 32.0
+pivot_offset = Vector2(20, 1)
+
+[node name="ColorRect" type="ColorRect" parent="ChargeIndicators/Indicator1"]
+layout_mode = 0
+offset_left = 34.0
+offset_right = 46.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="ChargeIndicators/Indicator1"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 7.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="Indicator2" type="Control" parent="ChargeIndicators"]
+anchors_preset = 0
+offset_top = 23.0
+offset_right = 40.0
+offset_bottom = 25.0
+pivot_offset = Vector2(20, 1)
+
+[node name="ColorRect" type="ColorRect" parent="ChargeIndicators/Indicator2"]
+layout_mode = 0
+offset_left = 34.0
+offset_right = 46.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="ChargeIndicators/Indicator2"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 7.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="Indicator3" type="Control" parent="ChargeIndicators"]
+anchors_preset = 0
+offset_top = 15.0
+offset_right = 40.0
+offset_bottom = 17.0
+pivot_offset = Vector2(20, 1)
+
+[node name="ColorRect" type="ColorRect" parent="ChargeIndicators/Indicator3"]
+layout_mode = 0
+offset_left = 34.0
+offset_right = 46.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="ChargeIndicators/Indicator3"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 7.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="Indicator4" type="Control" parent="ChargeIndicators"]
+anchors_preset = 0
+offset_top = 8.0
+offset_right = 40.0
+offset_bottom = 10.0
+pivot_offset = Vector2(20, 1)
+
+[node name="ColorRect" type="ColorRect" parent="ChargeIndicators/Indicator4"]
+layout_mode = 0
+offset_left = 34.0
+offset_right = 46.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="ChargeIndicators/Indicator4"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 7.0
+offset_bottom = 2.0
+pivot_offset = Vector2(6, 1)
+
+[node name="AmmoCount" type="Label" parent="."]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 105.0
+offset_top = -231.0
+offset_right = 180.0
+offset_bottom = -51.0
+grow_vertical = 0
+text = "6"
+label_settings = SubResource("LabelSettings_kb4jv")
+
+[node name="RicochetCount" type="Label" parent="."]
+visible = false
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.035
+offset_left = 226.0
+offset_top = 26.0
+offset_right = 266.0
+offset_bottom = 33.32
+grow_horizontal = 2
+pivot_offset = Vector2(0, 15)
+text = "0
+"
+label_settings = SubResource("LabelSettings_q4swy")
+
+[node name="XPBar" type="ProgressBar" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -224.0
+offset_top = 28.0
+offset_right = 218.0
+offset_bottom = 55.0
+grow_horizontal = 2
+show_percentage = false
+
+[node name="TimerLabel" type="Label" parent="."]
+z_index = 1
+offset_left = 18.0
+offset_top = 17.0
+offset_right = 58.0
+offset_bottom = 74.0
+text = "0"
+label_settings = SubResource("LabelSettings_wonry")
+
+[node name="ChargeProgressBar" type="TextureProgressBar" parent="."]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -112.0
+offset_top = -201.0
+offset_right = -62.0
+offset_bottom = 170.0
+grow_horizontal = 0
+grow_vertical = 2
+max_value = 7.0
+step = 0.01
+fill_mode = 3
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_5r3cb")
+texture_progress = SubResource("GradientTexture2D_eg7o7")
+
+[node name="ColorRect" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_top = 317.0
+offset_right = 50.0
+offset_bottom = 319.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Граната"
+horizontal_alignment = 2
+
+[node name="ColorRect2" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_top = 265.0
+offset_right = 50.0
+offset_bottom = 267.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect2"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Взрыв
+"
+horizontal_alignment = 2
+
+[node name="ColorRect3" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_top = 159.0
+offset_right = 50.0
+offset_bottom = 161.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect3"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Стяжка"
+horizontal_alignment = 2
+
+[node name="ColorRect4" type="ColorRect" parent="ChargeProgressBar"]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 2.0
+
+[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect4"]
+layout_mode = 0
+offset_left = -145.0
+offset_top = -6.0
+offset_right = -5.0
+offset_bottom = 17.0
+pivot_offset = Vector2(40, 7)
+text = "Пробивание"
+horizontal_alignment = 2
+
+[node name="HealthBar" type="TextureProgressBar" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 37.0
+offset_top = -83.0
+offset_right = 428.0
+offset_bottom = -43.0
+grow_vertical = 0
+value = 100.0
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture2D_x47hj")
+texture_progress = SubResource("GradientTexture2D_i5mut")
+
+[node name="DamageOverlay" type="Control" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="DamageOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.988235, 0, 0, 0.552941)
+
+[node name="DeathScreen" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+
+[node name="Label" type="Label" parent="DeathScreen"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "\"R\" for restart"
+
+[node name="Gun" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+script = ExtResource("3_18qho")
+
+[node name="RayCastTimer" type="Timer" parent="Gun"]
+wait_time = 0.2
+one_shot = true
+
+[node name="PreFanTimer" type="Timer" parent="Gun"]
+wait_time = 0.3
+one_shot = true
+
+[node name="FanTimer" type="Timer" parent="Gun"]
+wait_time = 0.3
+one_shot = true
+
+[node name="RechargeTimer" type="Timer" parent="Gun"]
+wait_time = 0.3
+one_shot = true
+
+[node name="ReloadTimer" type="Timer" parent="Gun"]
+wait_time = 1.5
+one_shot = true
+
+[node name="AltRechargeTimer" type="Timer" parent="Gun"]
+wait_time = 0.6
+one_shot = true
+
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+
+[node name="DashCooldownTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="HealthComponent" parent="." instance=ExtResource("6_h1g0r")]
+
+[node name="DamageOverlayTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true

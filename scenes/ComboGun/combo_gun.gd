@@ -146,13 +146,6 @@ func fire_pressed():
 			down_timer.start()
 		
 		player.knockup()
-	elif current_state == ComboGunState.FIRE:
-		shoot_ray(30, ShotType.RICOCHET)
-		
-		change_state(ComboGunState.DOWN)
-		down_timer.start()
-		
-		fire_shoot_timer.stop()
 	elif current_state == ComboGunState.ALT_FIRE:
 		if try_spend_charge(pierce_charge_cost):
 			change_state(ComboGunState.CHARGING_PIERCE)
@@ -262,6 +255,40 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 				elif shot_type == ShotType.SHOTGUN or shot_type == ShotType.SHOTGUN_SHELL:
 					var charge = ChargeMoveQueue.move_performed(MoveType.SHOTGUN)
 					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
+			elif !collider.is_in_group("enemy"):
+				if shot_type == ShotType.AUTO:
+					var collision_normal = raycast.get_collision_normal().normalized()
+					var raycast_direction = -raycast.transform.basis.z
+					var ricochet_direction = (
+						raycast_direction - 2 * raycast_direction.dot(collision_normal) * collision_normal)
+					
+					var ricochet_raycast = RayCast3D.new()
+					ricochet_raycast.look_at_from_position(Vector3.ZERO, ricochet_direction)
+					ricochet_raycast.position = raycast.get_collision_point()
+					ricochet_raycast.target_position = Vector3(0, 0, -100)
+					ricochet_raycast.set_collision_mask_value(1, true)
+					ricochet_raycast.set_collision_mask_value(2, true)
+					get_parent().get_parent().get_parent().add_child(ricochet_raycast)
+					
+					ricochet_raycast.force_raycast_update()
+					var ricochet_collider = ricochet_raycast.get_collider()
+					if ricochet_collider:
+						if ricochet_collider.is_in_group("enemy"):
+							ricochet_collider.receive_damage(damage_amount)
+							
+							var charge = ChargeMoveQueue.move_performed(MoveType.AUTO)
+							ChargeMoveQueue.spawn_charge_label(ricochet_raycast.get_collision_point(), charge)
+					
+					var shot_trail = trail_scene.instantiate()
+					shot_trail.scale.z = ricochet_raycast.position.distance_to(ricochet_raycast.get_collision_point()) / 100
+					if shot_type == ShotType.AUTO || shot_type == ShotType.SHOTGUN || is_shotgun_shell:
+						shot_trail.scale.x = 0.3
+						shot_trail.scale.y = 0.3
+					shot_trail.position = raycast.get_collision_point()
+					shot_trail.rotation = ricochet_raycast.rotation
+					get_parent().get_parent().get_parent().add_child(shot_trail)
+					
+					ricochet_raycast.queue_free()
 	
 	var shot_trail = trail_scene.instantiate()
 	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
