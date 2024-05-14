@@ -11,7 +11,7 @@ extends CharacterBody3D
 @onready var marked_component = $MarkedComponent
 @onready var slowed_component = $SlowedComponent
 @onready var stun_component = $StunComponent
-var move_speed = 4
+var move_speed = 6
 var projectile_speed = 15
 var is_reloading = false
 var xp_drop = 2

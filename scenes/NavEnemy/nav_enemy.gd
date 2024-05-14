@@ -13,7 +13,7 @@ extends CharacterBody3D
 @onready var mesh = $MeshInstance3D
 @onready var slowed_component = $SlowedComponent
 @onready var stun_component = $StunComponent
-var move_speed = 6
+var move_speed = 10
 var xp_drop = 1
 var current_state = EnemyState.BASE
 
