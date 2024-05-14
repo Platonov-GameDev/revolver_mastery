@@ -35,12 +35,14 @@ var last_movement_input
 
 var player_move_speed = 200
 var player_airborne_delta_speed = 30
+var player_hover_delta_speed = 10
 var movement_input_vector = Vector2.ZERO
 var ground_deceleration = 90
 var max_ground_speed = 10
 var max_airborne_speed = 50
 
 var initial_airborne_horizontal_velocity_magnitude = 0
+var is_hovering = false
 
 
 func _ready():
@@ -101,10 +103,16 @@ func _process(delta):
 			velocity.x = new_horizontal_velocity.x
 			velocity.z = new_horizontal_velocity.y
 	elif !is_on_floor():
-		var new_horizontal_velocity = current_horizontal_velocity + (
-			movement_vector * player_airborne_delta_speed * delta)
+		var new_horizontal_velocity = current_horizontal_velocity
+		if !is_hovering:
+			new_horizontal_velocity += movement_vector * player_airborne_delta_speed * delta
+		elif is_hovering:
+			new_horizontal_velocity += movement_vector * player_hover_delta_speed * delta
 		new_horizontal_velocity = new_horizontal_velocity.limit_length(
 			initial_airborne_horizontal_velocity_magnitude)
+		
+		if new_horizontal_velocity.length() <= max_ground_speed:
+			initial_airborne_horizontal_velocity_magnitude = max_ground_speed
 		
 		velocity.x = new_horizontal_velocity.x
 		velocity.z = new_horizontal_velocity.y
@@ -301,3 +309,7 @@ func toss(toss_velocity: Vector3, resets_velocity = false):
 		horizontal_velocity.length(),
 		max_ground_speed,
 		max_airborne_speed)
+
+
+func hover():
+	velocity.y = clampf(velocity.y, 0, 9999)

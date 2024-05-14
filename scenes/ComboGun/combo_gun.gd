@@ -171,6 +171,7 @@ func fire_released():
 	if current_state == ComboGunState.AUTO:
 		change_state(ComboGunState.DOWN)
 		down_timer.start()
+		player.is_hovering = false
 	elif current_state == ComboGunState.CHARGING_PIERCE:
 		var current_time = Time.get_unix_time_from_system()
 		var pierce_power = clampf((current_time - piercing_charge_start_time) / piercing_max_charge_time, 0, 1)
@@ -327,6 +328,9 @@ func _on_auto_windup_timer_timeout():
 
 func _on_auto_shoot_timer_timeout():
 	shoot_ray(10, ShotType.AUTO)
+	
+	player.hover()
+	player.is_hovering = true
 
 
 func _on_fire_shoot_timer_timeout():
