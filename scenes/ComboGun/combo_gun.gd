@@ -48,6 +48,7 @@ var grenade_launch_speed = 20
 # PIERCING
 var piercing_charge_start_time = 0
 var piercing_max_charge_time = 3
+var is_charging_piercing = false
 
 # CHARGE
 var current_charge = 0
@@ -152,6 +153,8 @@ func fire_pressed():
 			piercing_charge_start_time = Time.get_unix_time_from_system()
 			
 			alt_fire_wait_timer.stop()
+			
+			is_charging_piercing = true
 	elif current_state == ComboGunState.ALT_FIRE_SHOOT:
 		if try_spend_charge(chain_pull_charge_cost):
 			shoot_ray(0, ShotType.CHAIN_PULL)
@@ -176,6 +179,9 @@ func fire_released():
 		
 		change_state(ComboGunState.DOWN)
 		alt_down_timer.start()
+		
+		is_charging_piercing = false
+		player.knockup()
 
 
 func alt_fire_pressed():

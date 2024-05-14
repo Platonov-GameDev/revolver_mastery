@@ -79,7 +79,10 @@ func _ready():
 func _process(delta):
 	if is_dead: return
 	if current_movement_state == PlayerMovementState.DEFAULT:
-		velocity.y -= Global.gravity_acceleration * delta
+		if !combo_gun.is_charging_piercing:
+			velocity.y -= Global.gravity_acceleration * delta
+		elif combo_gun.is_charging_piercing:
+			velocity.y -= Global.gravity_acceleration * delta * 0.1
 	
 	var movement_vector = movement_input_vector.rotated(get_rotation().y)
 	movement_vector.y *= -1
