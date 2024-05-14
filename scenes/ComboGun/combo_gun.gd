@@ -134,6 +134,8 @@ func fire_pressed():
 		change_state(ComboGunState.FIRE)
 		
 		fire_shoot_timer.start()
+		
+		player.knockup()
 	elif current_state == ComboGunState.FAN:
 		shoot_ray(30, ShotType.FAN)
 		fan_shoot_timer.start()
@@ -142,6 +144,8 @@ func fire_pressed():
 		if fan_shots_fired == 5:
 			change_state(ComboGunState.DOWN)
 			down_timer.start()
+		
+		player.knockup()
 	elif current_state == ComboGunState.FIRE:
 		shoot_ray(30, ShotType.RICOCHET)
 		

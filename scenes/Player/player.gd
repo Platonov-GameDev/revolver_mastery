@@ -313,3 +313,8 @@ func toss(toss_velocity: Vector3, resets_velocity = false):
 
 func hover():
 	velocity.y = clampf(velocity.y, 0, 9999)
+
+
+func knockup():
+	if !is_on_floor():
+		velocity.y = clampf(velocity.y, 3, 9999)
