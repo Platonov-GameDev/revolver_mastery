@@ -34,7 +34,7 @@ one_shot = true
 wait_time = 0.1
 
 [node name="FireShootTimer" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.4
 one_shot = true
 
 [node name="FireWaitTimer" type="Timer" parent="."]
@@ -46,7 +46,7 @@ wait_time = 0.3
 one_shot = true
 
 [node name="ShotgunShootTimer" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.4
 one_shot = true
 
 [node name="AltFireWaitTimer" type="Timer" parent="."]

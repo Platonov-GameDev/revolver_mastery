@@ -359,6 +359,7 @@ func _on_alt_down_timer_timeout():
 
 func _on_auto_windup_timer_timeout():
 	change_state(ComboGunState.AUTO)
+	fire_shoot_timer.stop()
 	fire_wait_timer.stop()
 	auto_shoot_timer.start()
 
@@ -389,6 +390,8 @@ func _on_fan_shoot_timer_timeout():
 func _on_shotgun_shoot_timer_timeout():
 	change_state(ComboGunState.DOWN)
 	down_timer.start()
+	
+	shotgun_shots_fired = 0
 
 
 func _on_alt_fire_wait_timer_timeout():
