@@ -295,7 +295,7 @@ offset_top = -6.0
 offset_right = -5.0
 offset_bottom = 17.0
 pivot_offset = Vector2(40, 7)
-text = "Граната"
+text = "Grenade"
 horizontal_alignment = 2
 
 [node name="ColorRect2" type="ColorRect" parent="ChargeProgressBar"]
@@ -311,8 +311,7 @@ offset_top = -6.0
 offset_right = -5.0
 offset_bottom = 17.0
 pivot_offset = Vector2(40, 7)
-text = "Взрыв
-"
+text = "Blast"
 horizontal_alignment = 2
 
 [node name="ColorRect3" type="ColorRect" parent="ChargeProgressBar"]
@@ -328,7 +327,7 @@ offset_top = -6.0
 offset_right = -5.0
 offset_bottom = 17.0
 pivot_offset = Vector2(40, 7)
-text = "Стяжка"
+text = "Chain pull"
 horizontal_alignment = 2
 
 [node name="ColorRect4" type="ColorRect" parent="ChargeProgressBar"]
@@ -343,7 +342,7 @@ offset_top = -6.0
 offset_right = -5.0
 offset_bottom = 17.0
 pivot_offset = Vector2(40, 7)
-text = "Пробивание"
+text = "Pierce"
 horizontal_alignment = 2
 
 [node name="HealthBar" type="TextureProgressBar" parent="."]
