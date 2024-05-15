@@ -10,7 +10,7 @@ fixed_size = true
 modulate = Color(1, 0.270588, 0, 1)
 outline_modulate = Color(0.0562916, 0.0562916, 0.0562916, 1)
 text = "35"
-outline_size = 8
+outline_size = 0
 script = ExtResource("1_vfv55")
 
 [node name="FadeoutStartTimer" type="Timer" parent="."]
