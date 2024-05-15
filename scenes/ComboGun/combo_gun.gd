@@ -11,6 +11,7 @@ extends Node3D
 @export var pierce_scene: PackedScene
 @export var auto_slow_aura_scene: PackedScene
 @export var shotgun_stun_aura_scene: PackedScene
+@export var fan_wallbang_decal_scene: PackedScene
 @onready var down_timer = $DownTimer
 @onready var alt_down_timer = $AltDownTimer
 @onready var auto_windup_timer = $AutoWindupTimer
@@ -237,12 +238,15 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	raycast.target_position = Vector3(0, 0, -100)
 	if is_shotgun_shell || shot_type == ShotType.SHOTGUN:
 		var shotgun_shell_deviation = .03 + (1 - shotgun_spread_goodness) * 0.25
-		raycast.rotation.x += randf_range(-shotgun_shell_deviation, shotgun_shell_deviation)
-		raycast.rotation.y += randf_range(-shotgun_shell_deviation, shotgun_shell_deviation)
+		raycast.rotate_x(randf_range(-shotgun_shell_deviation, shotgun_shell_deviation))
+		raycast.rotate_y(randf_range(-shotgun_shell_deviation, shotgun_shell_deviation))
+		raycast.rotate_z(randf_range(-shotgun_shell_deviation, shotgun_shell_deviation))
 	elif shot_type == ShotType.AUTO:
 		var auto_deviation = .02
-		raycast.rotation.x += randf_range(-auto_deviation, auto_deviation)
-		raycast.rotation.y += randf_range(-auto_deviation, auto_deviation)
+		raycast.rotate_x(randf_range(-auto_deviation, auto_deviation))
+		raycast.rotate_y(randf_range(-auto_deviation, auto_deviation))
+		raycast.rotate_z(randf_range(-auto_deviation, auto_deviation))
+		
 	raycast.set_collision_mask_value(1, true)
 	raycast.set_collision_mask_value(2, true)
 	get_parent().get_parent().get_parent().add_child(raycast)
@@ -268,7 +272,29 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 					var charge = ChargeMoveQueue.move_performed(MoveType.SHOTGUN)
 					ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
 			elif !collider.is_in_group("enemy"):
-				if shot_type == ShotType.AUTO:
+				if shot_type == ShotType.FAN:
+					var did_hit_wall = true
+					while did_hit_wall:
+						raycast.add_exception(collider)
+						raycast.force_raycast_update()
+						collider = raycast.get_collider()
+						
+						var fan_wallbang_decal = fan_wallbang_decal_scene.instantiate()
+						fan_wallbang_decal.position = raycast.get_collision_point()
+						get_parent().get_parent().get_parent().add_child(fan_wallbang_decal)
+						fan_wallbang_decal.look_at(-raycast.transform.basis.z)
+						
+						if !collider:
+							did_hit_wall = false
+						elif collider.is_in_group("enemy"):
+							collider.receive_damage(damage_amount)
+							
+							var charge = ChargeMoveQueue.move_performed(MoveType.FAN)
+							ChargeMoveQueue.spawn_charge_label(raycast.get_collision_point(), charge)
+							collider.marked_component.activate()
+							
+							did_hit_wall = false
+				elif shot_type == ShotType.AUTO:
 					var collision_normal = raycast.get_collision_normal().normalized()
 					var raycast_direction = -raycast.transform.basis.z
 					var ricochet_direction = (
@@ -303,7 +329,8 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 					ricochet_raycast.queue_free()
 	
 	var shot_trail = trail_scene.instantiate()
-	shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
+	if raycast.get_collider():
+		shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
 	if shot_type == ShotType.AUTO || shot_type == ShotType.SHOTGUN || is_shotgun_shell:
 		shot_trail.scale.x = 0.3
 		shot_trail.scale.y = 0.3
