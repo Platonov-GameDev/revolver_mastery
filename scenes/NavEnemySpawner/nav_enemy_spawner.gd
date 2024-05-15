@@ -10,6 +10,7 @@ extends Node
 @onready var impulse_timer = $ImpulseTimer
 @onready var spawn_impulses = $SpawnImpulses
 var current_impulse_index = 0
+var last_impulse_index = 0
 var red_left = 0
 var purple_left = 0
 
@@ -39,6 +40,11 @@ func _on_spawn_timer_timeout():
 func _on_impulse_timer_timeout():
 	var current_impulse = spawn_impulses.get_child(current_impulse_index)
 	if current_impulse != null:
+		red_left = current_impulse.red_count
+		purple_left = current_impulse.purple_count
+		last_impulse_index = current_impulse_index
+	elif current_impulse == null:
+		current_impulse = spawn_impulses.get_child(last_impulse_index)
 		red_left = current_impulse.red_count
 		purple_left = current_impulse.purple_count
 	current_impulse_index += 1
