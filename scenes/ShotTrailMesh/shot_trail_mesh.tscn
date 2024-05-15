@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0bg7mhjnrj6f"]
+[gd_scene load_steps=7 format=3 uid="uid://b0bg7mhjnrj6f"]
 
 [ext_resource type="Script" path="res://scenes/ShotTrailMesh/shot_trail_mesh.gd" id="1_j5ipu"]
 
@@ -13,9 +13,59 @@ disable_receive_shadows = true
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lru1n"]
 material = SubResource("StandardMaterial3D_3bjc1")
-top_radius = 0.05
+top_radius = 0.01
 bottom_radius = 0.01
 height = 100.0
+
+[sub_resource type="Animation" id="Animation_doyc8"]
+resource_name = "default"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.28),
+"transitions": PackedFloat32Array(1, 5185.81),
+"update": 0,
+"values": [Color(0.639216, 0.647059, 0.635294, 0.270588), Color(0.639216, 0.647059, 0.635294, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ao46w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.639216, 0.647059, 0.635294, 0.270588)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0roua"]
+_data = {
+"RESET": SubResource("Animation_ao46w"),
+"default": SubResource("Animation_doyc8")
+}
 
 [node name="ShotTrailMesh" type="StaticBody3D"]
 script = ExtResource("1_j5ipu")
@@ -24,6 +74,8 @@ script = ExtResource("1_j5ipu")
 transform = Transform3D(1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 0, 0, -50)
 mesh = SubResource("CylinderMesh_lru1n")
 
-[node name="LifetimeTimer" type="Timer" parent="."]
-wait_time = 0.07
-autostart = true
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0roua")
+}
+autoplay = "default"
