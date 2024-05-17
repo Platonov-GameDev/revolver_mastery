@@ -1,11 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://b8kpvspnu5q6x"]
+[gd_scene load_steps=13 format=3 uid="uid://b8kpvspnu5q6x"]
 
 [ext_resource type="PackedScene" uid="uid://bwj64f6gyrrc4" path="res://scenes/Player/player.tscn" id="1_ppx16"]
 [ext_resource type="Texture2D" uid="uid://b3bwpi2cimxt7" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_ikrhn"]
 [ext_resource type="PackedScene" uid="uid://dj1ddrxbaymmj" path="res://scenes/EnemySpawner/enemy_spawner.tscn" id="3_2sxpg"]
+[ext_resource type="PackedScene" uid="uid://bqgc76wlnvgnj" path="res://scenes/BasicEnemy/basic_enemy.tscn" id="4_ckv6p"]
+[ext_resource type="PackedScene" uid="uid://dkpg3e7pir8ag" path="res://scenes/NavEnemySpawner/nav_enemy_spawner.tscn" id="5_d6gy7"]
+[ext_resource type="PackedScene" uid="uid://dk4txkfrrh2g2" path="res://scenes/SpawnPoint/spawn_point.tscn" id="6_1gpfq"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8s2qk"]
-size = Vector3(100, 1, 100)
+[sub_resource type="NavigationMesh" id="NavigationMesh_djp10"]
+vertices = PackedVector3Array(-49.5, 1, -49.5, -49.5, 1, 49.5, 49.5, 1, 49.5, 49.5, 1, -49.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o24vh"]
 albedo_texture = ExtResource("2_ikrhn")
@@ -14,6 +18,9 @@ uv1_triplanar = true
 [sub_resource type="BoxMesh" id="BoxMesh_4mnsj"]
 material = SubResource("StandardMaterial3D_o24vh")
 size = Vector3(100, 1, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_2bjgx"]
+data = PackedVector3Array(-50, 0.5, 50, 50, 0.5, 50, -50, -0.5, 50, 50, 0.5, 50, 50, -0.5, 50, -50, -0.5, 50, 50, 0.5, -50, -50, 0.5, -50, 50, -0.5, -50, -50, 0.5, -50, -50, -0.5, -50, 50, -0.5, -50, 50, 0.5, 50, 50, 0.5, -50, 50, -0.5, 50, 50, 0.5, -50, 50, -0.5, -50, 50, -0.5, 50, -50, 0.5, -50, -50, 0.5, 50, -50, -0.5, -50, -50, 0.5, 50, -50, -0.5, 50, -50, -0.5, -50, 50, 0.5, 50, -50, 0.5, 50, 50, 0.5, -50, -50, 0.5, 50, -50, 0.5, -50, 50, 0.5, -50, -50, -0.5, 50, 50, -0.5, 50, -50, -0.5, -50, 50, -0.5, 50, 50, -0.5, -50, -50, -0.5, -50)
 
 [sub_resource type="Environment" id="Environment_jdwgu"]
 background_mode = 1
@@ -34,13 +41,33 @@ point_count = 5
 
 [node name="Geometry" type="Node3D" parent="."]
 
-[node name="Ground" type="StaticBody3D" parent="Geometry"]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Geometry"]
+navigation_mesh = SubResource("NavigationMesh_djp10")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Ground"]
-shape = SubResource("BoxShape3D_8s2qk")
+[node name="Ground" type="StaticBody3D" parent="Geometry/NavigationRegion3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Geometry/Ground/CollisionShape3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Geometry/NavigationRegion3D/Ground"]
 mesh = SubResource("BoxMesh_4mnsj")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Geometry/NavigationRegion3D/Ground"]
+shape = SubResource("ConcavePolygonShape3D_2bjgx")
+
+[node name="SpawnPoint" parent="Geometry" instance=ExtResource("6_1gpfq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 4, 37)
+skeleton = NodePath("../..")
+
+[node name="SpawnPoint2" parent="Geometry" instance=ExtResource("6_1gpfq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 4, 37)
+skeleton = NodePath("../..")
+
+[node name="SpawnPoint3" parent="Geometry" instance=ExtResource("6_1gpfq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 4, -40)
+skeleton = NodePath("../..")
+
+[node name="SpawnPoint4" parent="Geometry" instance=ExtResource("6_1gpfq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43, 4, -42)
+skeleton = NodePath("../..")
 
 [node name="Lighting" type="Node3D" parent="."]
 
@@ -63,5 +90,12 @@ curve = SubResource("Curve3D_kh6cj")
 transform = Transform3D(-0.00107889, 0.00285701, 0.999995, 0, 0.999996, -0.00285701, -0.999999, -3.0824e-06, -0.00107888, 47.1528, 1.73386, 46.8995)
 
 [node name="EnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "spawn_path_follow") instance=ExtResource("3_2sxpg")]
+is_enabled = false
+enemy_scene = ExtResource("4_ckv6p")
 player = NodePath("../Player")
 spawn_path_follow = NodePath("../EnemySpawnerPath/PathFollow3D")
+
+[node name="NavEnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "nav_region", "spawn_points") instance=ExtResource("5_d6gy7")]
+player = NodePath("../Player")
+nav_region = NodePath("../../Geometry/NavigationRegion3D")
+spawn_points = [NodePath("../../Geometry/SpawnPoint"), NodePath("../../Geometry/SpawnPoint2"), NodePath("../../Geometry/SpawnPoint3"), NodePath("../../Geometry/SpawnPoint4")]

@@ -1,6 +1,7 @@
 extends Node
 
 
+@export var is_enabled = true
 @export var enemy_scene: PackedScene
 @export var player: CharacterBody3D
 @export var spawn_path_follow: PathFollow3D
@@ -9,6 +10,7 @@ extends Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if !is_enabled: return
 	timer.timeout.connect(_on_timer_timeout)
 
 

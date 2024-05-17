@@ -23,6 +23,7 @@ extends Node3D
 @onready var alt_fire_wait_timer = $AltFireWaitTimer
 @onready var alt_fire_shoot_timer = $AltFireShootTimer
 @onready var charge_drain_timer = $ChargeDrainTimer
+@onready var level = player.get_parent().get_parent()
 enum ShotType {BASE, FAN, AUTO, RICOCHET, SHOTGUN, SHOTGUN_SHELL, BLAST, CHAIN_PULL}
 var current_state = ComboGunState.IDLE
 signal state_changed(new_state)
@@ -192,7 +193,7 @@ func alt_fire_pressed():
 			var grenade = grenade_scene.instantiate()
 			grenade.position = global_position
 			grenade.velocity = -camera.global_basis.z * grenade_launch_speed
-			get_parent().get_parent().get_parent().add_child(grenade)
+			level.add_child(grenade)
 			
 			change_state(ComboGunState.ALT_FIRE)
 			alt_fire_wait_timer.start()
@@ -249,7 +250,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		
 	raycast.set_collision_mask_value(1, true)
 	raycast.set_collision_mask_value(2, true)
-	get_parent().get_parent().get_parent().add_child(raycast)
+	level.add_child(raycast)
 	
 	raycast.force_raycast_update()
 	if shot_type != ShotType.BLAST && shot_type != ShotType.CHAIN_PULL:
@@ -281,7 +282,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 						
 						var fan_wallbang_decal = fan_wallbang_decal_scene.instantiate()
 						fan_wallbang_decal.position = raycast.get_collision_point()
-						get_parent().get_parent().get_parent().add_child(fan_wallbang_decal)
+						level.add_child(fan_wallbang_decal)
 						fan_wallbang_decal.look_at(-raycast.transform.basis.z)
 						
 						if !collider:
@@ -306,7 +307,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 					ricochet_raycast.target_position = Vector3(0, 0, -100)
 					ricochet_raycast.set_collision_mask_value(1, true)
 					ricochet_raycast.set_collision_mask_value(2, true)
-					get_parent().get_parent().get_parent().add_child(ricochet_raycast)
+					level.add_child(ricochet_raycast)
 					
 					ricochet_raycast.force_raycast_update()
 					var ricochet_collider = ricochet_raycast.get_collider()
@@ -324,7 +325,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 						ricochet_shot_trail.scale.y = 0.3
 					ricochet_shot_trail.position = raycast.get_collision_point()
 					ricochet_shot_trail.rotation = ricochet_raycast.rotation
-					get_parent().get_parent().get_parent().add_child(ricochet_shot_trail)
+					level.add_child(ricochet_shot_trail)
 					
 					ricochet_raycast.queue_free()
 	
@@ -336,13 +337,13 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		shot_trail.scale.y = 0.3
 	shot_trail.position = global_position
 	shot_trail.rotation = raycast.rotation
-	get_parent().get_parent().get_parent().add_child(shot_trail)
+	level.add_child(shot_trail)
 	
 	if shot_type == ShotType.RICOCHET:
 		var ricochet = ricochet_scene.instantiate()
 		ricochet.position = raycast.get_collision_point()
 		ricochet.bounces_remaining = 4
-		get_parent().get_parent().get_parent().add_child(ricochet)
+		level.add_child(ricochet)
 	
 	if shot_type == ShotType.SHOTGUN:
 		for i in range(15):
@@ -350,24 +351,24 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		
 		var shotgun_stun_aura = shotgun_stun_aura_scene.instantiate()
 		shotgun_stun_aura.position = global_position
-		get_parent().get_parent().get_parent().add_child(shotgun_stun_aura)
+		level.add_child(shotgun_stun_aura)
 	
 	if shot_type == ShotType.BLAST:
 		var grenade = grenade_scene.instantiate()
 		grenade.position = raycast.get_collision_point()
 		grenade.move_type = MoveType.BLAST
-		get_parent().get_parent().get_parent().add_child(grenade)
+		level.add_child(grenade)
 		grenade.explode()
 	
 	if shot_type == ShotType.CHAIN_PULL:
 		var chain_pull = chain_pull_scene.instantiate()
 		chain_pull.position = raycast.get_collision_point()
-		get_parent().get_parent().get_parent().add_child(chain_pull)
+		level.add_child(chain_pull)
 	
 	if shot_type == ShotType.AUTO:
 		var auto_slow_aura = auto_slow_aura_scene.instantiate()
 		auto_slow_aura.position = global_position
-		get_parent().get_parent().get_parent().add_child(auto_slow_aura)
+		level.add_child(auto_slow_aura)
 	
 	raycast.queue_free()
 
@@ -379,7 +380,7 @@ func shoot_pierce(pierce_power):
 	pierce.scale.x = pierce_power
 	pierce.scale.y = pierce_power
 	pierce.power = pierce_power
-	get_parent().get_parent().get_parent().add_child(pierce)
+	level.add_child(pierce)
 
 
 func _on_down_timer_timeout():
