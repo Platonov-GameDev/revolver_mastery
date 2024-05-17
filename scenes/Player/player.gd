@@ -23,6 +23,7 @@ extends CharacterBody3D
 @onready var health_component = $HealthComponent
 @onready var damage_overlay_timer = $DamageOverlayTimer
 @onready var damage_overlay = $DamageOverlay
+@onready var kpm_label = $KPMLabel
 var jump_speed = 10
 var camera_sensitivity = 0.1
 var xp = 0
@@ -74,6 +75,8 @@ func _ready():
 	health_component.died.connect(die)
 	health_component.damage_received.connect(_on_health_component_damage_received)
 	health_component.health_changed.connect(_on_health_component_health_changed)
+	
+	GameManager.kpm_changed.connect(_on_game_manager_kpm_changed)
 
 
 func _process(delta):
@@ -197,6 +200,7 @@ func _on_input_handler_alt_fire_released():
 
 
 func _on_input_handler_restart_pressed():
+	GameManager.reset()
 	get_tree().reload_current_scene()
 
 
@@ -324,3 +328,7 @@ func hover():
 func knockup():
 	if !is_on_floor():
 		velocity.y = clampf(velocity.y, 3, 9999)
+
+
+func _on_game_manager_kpm_changed(new_kpm):
+	kpm_label.text = "KPM: " + str(new_kpm)

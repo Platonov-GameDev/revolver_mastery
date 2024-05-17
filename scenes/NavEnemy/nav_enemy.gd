@@ -63,6 +63,7 @@ func _on_nav_agent_velocity_computed(safe_velocity: Vector3):
 
 
 func _on_health_component_died():
+	GameManager.record_enemy_died()
 	queue_free()
 
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=20 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/input_handler.gd" id="1_mqogj"]
@@ -15,8 +15,11 @@ font_size = 121
 [sub_resource type="LabelSettings" id="LabelSettings_q4swy"]
 font_size = 21
 
-[sub_resource type="LabelSettings" id="LabelSettings_wonry"]
+[sub_resource type="LabelSettings" id="LabelSettings_1h3xd"]
 font_size = 41
+
+[sub_resource type="LabelSettings" id="LabelSettings_wonry"]
+font_size = 30
 
 [sub_resource type="Gradient" id="Gradient_00aqj"]
 colors = PackedColorArray(0.141176, 0.141176, 0.141176, 0, 0.141176, 0.141176, 0.141176, 0.486275)
@@ -254,12 +257,20 @@ offset_bottom = 55.0
 grow_horizontal = 2
 show_percentage = false
 
+[node name="KPMLabel" type="Label" parent="."]
+offset_left = 18.0
+offset_top = 17.0
+offset_right = 129.0
+offset_bottom = 74.0
+text = "KPM: 0"
+label_settings = SubResource("LabelSettings_1h3xd")
+
 [node name="TimerLabel" type="Label" parent="."]
 z_index = 1
 offset_left = 18.0
-offset_top = 17.0
+offset_top = 81.0
 offset_right = 58.0
-offset_bottom = 74.0
+offset_bottom = 138.0
 text = "0"
 label_settings = SubResource("LabelSettings_wonry")
 

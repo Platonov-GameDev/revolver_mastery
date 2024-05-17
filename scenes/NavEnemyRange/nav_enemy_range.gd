@@ -97,6 +97,7 @@ func _on_shoot_timer_timeout():
 
 
 func _on_health_component_died():
+	GameManager.record_enemy_died()
 	queue_free()
 
 
