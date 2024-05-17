@@ -1,9 +1,13 @@
 extends Node
 
 
+var all_time_highest_kpm := 0
+var highest_kpm := 0
 var current_kpm := 0
 var kill_timestamps: Array[float] = []
 signal kpm_changed(new_kpm)
+signal highest_kpm_changed(new_highest_kpm)
+signal got_new_record()
 
 
 func _process(_delta):
@@ -30,9 +34,17 @@ func record_enemy_died():
 
 func update_kpm():
 	current_kpm = kill_timestamps.size()
+	if current_kpm > highest_kpm:
+		highest_kpm = current_kpm
+		highest_kpm_changed.emit(highest_kpm)
+		if highest_kpm > all_time_highest_kpm:
+			SaveManager.save_game()
+			got_new_record.emit()
 	kpm_changed.emit(current_kpm)
 
 
 func reset():
 	current_kpm = 0
+	highest_kpm = 0
+	SaveManager.load_game()
 	kill_timestamps.clear()

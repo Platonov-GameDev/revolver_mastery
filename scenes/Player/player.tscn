@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=21 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/input_handler.gd" id="1_mqogj"]
@@ -14,12 +14,6 @@ font_size = 121
 
 [sub_resource type="LabelSettings" id="LabelSettings_q4swy"]
 font_size = 21
-
-[sub_resource type="LabelSettings" id="LabelSettings_1h3xd"]
-font_size = 41
-
-[sub_resource type="LabelSettings" id="LabelSettings_wonry"]
-font_size = 30
 
 [sub_resource type="Gradient" id="Gradient_00aqj"]
 colors = PackedColorArray(0.141176, 0.141176, 0.141176, 0, 0.141176, 0.141176, 0.141176, 0.486275)
@@ -50,6 +44,16 @@ colors = PackedColorArray(0, 0.823529, 0, 1)
 gradient = SubResource("Gradient_24air")
 width = 260
 height = 40
+
+[sub_resource type="LabelSettings" id="LabelSettings_7nylb"]
+font_size = 38
+font_color = Color(1, 0.364706, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1h3xd"]
+font_size = 30
+
+[sub_resource type="LabelSettings" id="LabelSettings_wonry"]
+font_size = 30
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 collision_layer = 4
@@ -257,23 +261,6 @@ offset_bottom = 55.0
 grow_horizontal = 2
 show_percentage = false
 
-[node name="KPMLabel" type="Label" parent="."]
-offset_left = 18.0
-offset_top = 17.0
-offset_right = 129.0
-offset_bottom = 74.0
-text = "KPM: 0"
-label_settings = SubResource("LabelSettings_1h3xd")
-
-[node name="TimerLabel" type="Label" parent="."]
-z_index = 1
-offset_left = 18.0
-offset_top = 81.0
-offset_right = 58.0
-offset_bottom = 138.0
-text = "0"
-label_settings = SubResource("LabelSettings_wonry")
-
 [node name="ChargeProgressBar" type="TextureProgressBar" parent="."]
 anchors_preset = 6
 anchor_left = 1.0
@@ -397,10 +384,75 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
 
-[node name="Label" type="Label" parent="DeathScreen"]
+[node name="Control" type="Control" parent="DeathScreen"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="DeathScreen/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -54.0
+offset_top = -78.0
+offset_right = 54.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 0
 size_flags_horizontal = 4
 text = "\"R\" for restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NewRecordLabel" type="Label" parent="DeathScreen/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 18.0
+offset_right = 120.0
+offset_bottom = 75.0
+grow_horizontal = 2
+text = "New Record"
+label_settings = SubResource("LabelSettings_7nylb")
+horizontal_alignment = 1
+
+[node name="AllTimeHighestKPMLabel" type="Label" parent="."]
+offset_left = 18.0
+offset_top = 7.0
+offset_right = 314.0
+offset_bottom = 64.0
+size_flags_horizontal = 0
+text = "All-Time Highest KPM: 0"
+label_settings = SubResource("LabelSettings_1h3xd")
+
+[node name="HighestKPMLabel" type="Label" parent="."]
+offset_left = 18.0
+offset_top = 45.0
+offset_right = 314.0
+offset_bottom = 102.0
+size_flags_horizontal = 0
+text = "Highest KPM: 0"
+label_settings = SubResource("LabelSettings_1h3xd")
+
+[node name="KPMLabel" type="Label" parent="."]
+offset_left = 18.0
+offset_top = 83.0
+offset_right = 152.0
+offset_bottom = 140.0
+text = "KPM: 0"
+label_settings = SubResource("LabelSettings_1h3xd")
+
+[node name="TimerLabel" type="Label" parent="."]
+offset_left = 18.0
+offset_top = 123.0
+offset_right = 58.0
+offset_bottom = 180.0
+text = "0"
+label_settings = SubResource("LabelSettings_wonry")
 
 [node name="Gun" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)

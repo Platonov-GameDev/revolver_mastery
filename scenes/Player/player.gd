@@ -24,6 +24,9 @@ extends CharacterBody3D
 @onready var damage_overlay_timer = $DamageOverlayTimer
 @onready var damage_overlay = $DamageOverlay
 @onready var kpm_label = $KPMLabel
+@onready var new_record_label = $DeathScreen/Control/NewRecordLabel
+@onready var highest_kpm_label = $HighestKPMLabel
+@onready var all_time_highest_kpm_label = $AllTimeHighestKPMLabel
 var jump_speed = 10
 var camera_sensitivity = 0.1
 var xp = 0
@@ -77,6 +80,10 @@ func _ready():
 	health_component.health_changed.connect(_on_health_component_health_changed)
 	
 	GameManager.kpm_changed.connect(_on_game_manager_kpm_changed)
+	GameManager.got_new_record.connect(_on_game_manager_got_new_record)
+	GameManager.highest_kpm_changed.connect(_on_game_manager_highest_kpm_changed)
+	
+	all_time_highest_kpm_label.text = "All-Time Highest KPM: " + str(GameManager.all_time_highest_kpm)
 
 
 func _process(delta):
@@ -332,3 +339,11 @@ func knockup():
 
 func _on_game_manager_kpm_changed(new_kpm):
 	kpm_label.text = "KPM: " + str(new_kpm)
+
+
+func _on_game_manager_got_new_record():
+	new_record_label.show()
+
+
+func _on_game_manager_highest_kpm_changed(new_highest_kpm):
+	highest_kpm_label.text = "Highest KPM: " + str(new_highest_kpm)
