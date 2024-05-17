@@ -30,8 +30,6 @@ red_count = 40
 
 [node name="SpawnImpulse5" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
 
-[node name="SpawnImpulse8" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
-
 [node name="SpawnImpulse6" parent="SpawnImpulses" instance=ExtResource("4_xcawn")]
 purple_count = 8
 
