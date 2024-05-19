@@ -25,6 +25,9 @@ func _on_detection_timer_timeout():
 	check_raycast.set_collision_mask_value(1, true)
 	check_raycast.set_collision_mask_value(2, true)
 	check_raycast.force_raycast_update()
+	
+	if !check_raycast.get_collider(): return
+	
 	if check_raycast.get_collider().is_in_group("enemy"):
 		var hit_enemy = check_raycast.get_collider()
 		var ricochet_shot_trail = trail_scene.instantiate()
