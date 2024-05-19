@@ -94,7 +94,7 @@ environment = SubResource("Environment_jdwgu")
 [node name="Player" parent="Entities" instance=ExtResource("2_8tjn7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.8, 12.8, -4.1)
 
-[node name="NavEnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "nav_region", "spawn_points") instance=ExtResource("3_5doyf")]
+[node name="NavEnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "nav_region", "spawn_points_node") instance=ExtResource("3_5doyf")]
 player = NodePath("../Player")
 nav_region = NodePath("../../Geometry/NavigationRegion3D")
-spawn_points = [NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint10"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint11"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint12"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint13"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint14"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint15"), NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints/SpawnPoint17")]
+spawn_points_node = NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints")

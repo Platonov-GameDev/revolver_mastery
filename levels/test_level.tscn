@@ -95,7 +95,6 @@ enemy_scene = ExtResource("4_ckv6p")
 player = NodePath("../Player")
 spawn_path_follow = NodePath("../EnemySpawnerPath/PathFollow3D")
 
-[node name="NavEnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "nav_region", "spawn_points") instance=ExtResource("5_d6gy7")]
+[node name="NavEnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "nav_region") instance=ExtResource("5_d6gy7")]
 player = NodePath("../Player")
 nav_region = NodePath("../../Geometry/NavigationRegion3D")
-spawn_points = [NodePath("../../Geometry/SpawnPoint"), NodePath("../../Geometry/SpawnPoint2"), NodePath("../../Geometry/SpawnPoint3"), NodePath("../../Geometry/SpawnPoint4")]

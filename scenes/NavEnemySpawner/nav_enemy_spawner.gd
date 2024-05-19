@@ -5,7 +5,8 @@ extends Node
 @export var purple_scene: PackedScene
 @export var player: CharacterBody3D
 @export var nav_region: NavigationRegion3D
-@export var spawn_points: Array[Node3D]
+@export var spawn_points_node: Node3D
+var spawn_points: Array[Node3D]
 @onready var spawn_timer = $SpawnTimer
 @onready var impulse_timer = $ImpulseTimer
 @onready var spawn_impulses = $SpawnImpulses
@@ -18,6 +19,9 @@ var purple_left = 0
 func _ready():
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	impulse_timer.timeout.connect(_on_impulse_timer_timeout)
+	
+	for node in spawn_points_node.get_children():
+		spawn_points.append(node as Node3D)
 	
 	_on_impulse_timer_timeout()
 
