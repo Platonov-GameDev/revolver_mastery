@@ -1,0 +1,97 @@
+[gd_scene load_steps=8 format=3 uid="uid://crt2anbr515cu"]
+
+[ext_resource type="Script" path="res://scenes/RicochetWave/ricochet_wave.gd" id="1_umsdb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_omsag"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.639216, 0.647059, 0.635294, 0.270588)
+emission_enabled = true
+emission = Color(1, 0.164706, 0, 1)
+emission_energy_multiplier = 17.3
+ao_light_affect = 1.0
+disable_receive_shadows = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_njbo6"]
+material = SubResource("StandardMaterial3D_omsag")
+top_radius = 0.0
+bottom_radius = 0.3
+height = 1.0
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_27ag3"]
+points = PackedVector3Array(-0.3, -0.5, 0, -0.29859, -0.5, -0.0294244, -0.29859, -0.5, 0.0293657, -0.240035, -0.30002, 0, -0.17919, -0.100039, -0.0176782, -0.294244, -0.5, -0.0585552, -0.294244, -0.5, 0.0584965, -0.17919, -0.100039, 0.0176194, -0.120047, 0.0999413, 0, 0, 0.5, 0, -0.287138, -0.5, -0.0870987, -0.114879, 0.0999413, -0.0348864, -0.287138, -0.5, 0.0870399, -0.114879, 0.0999413, 0.0348277, 0.3, -0.5, 0, 0.179131, -0.100039, -0.0176782, 0.294186, -0.5, -0.0585552, 0.287079, -0.5, -0.0870987, 0.277153, -0.5, -0.11482, 0.264526, -0.5, -0.141425, 0.211609, -0.30002, -0.113175, 0.249432, -0.5, -0.16668, 0.139135, -0.100039, -0.114233, 0.127271, -0.100039, -0.12733, 0.114174, -0.100039, -0.139193, 0.166621, -0.5, -0.249491, 0.113117, -0.30002, -0.211668, 0.114761, -0.5, -0.277212, 0.0348277, 0.0999413, -0.114879, 0.0584965, -0.5, -0.294244, 0.0176194, -0.100039, -0.17919, 0, 0.0999413, -0.120047, -0.0176782, -0.100039, -0.17919, -0.0585552, -0.5, -0.294244, -0.0348864, 0.0999413, -0.114879, -0.11482, -0.5, -0.277212, -0.113175, -0.30002, -0.211668, -0.0566171, 0.0999413, -0.105834, -0.0333594, 0.299922, -0.0499217, -0.0381167, 0.299922, -0.0463978, -0.0424628, 0.299922, -0.0424628, -0.0463978, 0.299922, -0.0381167, -0.0499217, 0.299922, -0.0333594, -0.105834, 0.0999413, -0.0566171, -0.211668, -0.30002, -0.113175, -0.277212, -0.5, -0.11482, -0.277212, -0.5, 0.114761, -0.211668, -0.30002, 0.113117, -0.249491, -0.5, 0.166621, -0.139193, -0.100039, 0.114174, -0.12733, -0.100039, 0.127271, -0.114233, -0.100039, 0.139135, -0.16668, -0.5, 0.249432, -0.113175, -0.30002, 0.211609, -0.141425, -0.5, 0.264526, -0.11482, -0.5, 0.277153, -0.0870987, -0.5, 0.287079, -0.0585552, -0.5, 0.294186, -0.0176782, -0.100039, 0.179131, 0, -0.5, 0.3, 0.0293657, -0.5, 0.298532, 0.0584965, -0.5, 0.294186, 0.0870399, -0.5, 0.287079, 0.114761, -0.5, 0.277153, 0.141366, -0.5, 0.264526, 0.166621, -0.5, 0.249432, 0.19029, -0.5, 0.231872, 0.127271, -0.100039, 0.127271, 0.231872, -0.5, 0.19029, 0.249432, -0.5, 0.166621, 0.264526, -0.5, 0.141366, 0.277153, -0.5, 0.114761, 0.287079, -0.5, 0.0870399, 0.294186, -0.5, 0.0584965, 0.298532, -0.5, 0.0293657, 0.298532, -0.5, -0.0294244, 0.231872, -0.5, -0.190348, 0.212079, -0.5, -0.212138, 0.19029, -0.5, -0.23193, 0.141366, -0.5, -0.264585, 0.0870399, -0.5, -0.287138, 0.0293657, -0.5, -0.29859, 0, -0.30002, -0.240035, -0.0294244, -0.5, -0.29859, -0.0870987, -0.5, -0.287138, -0.141425, -0.5, -0.264585, -0.16668, -0.5, -0.249491, -0.114233, -0.100039, -0.139193, -0.12733, -0.100039, -0.12733, -0.139193, -0.100039, -0.114233, -0.249491, -0.5, -0.16668, -0.264585, -0.5, -0.141425, -0.264585, -0.5, 0.141366, -0.23193, -0.5, 0.19029, -0.212138, -0.5, 0.212079, -0.190348, -0.5, 0.231872, -0.0294244, -0.5, 0.298532, 0.212079, -0.5, 0.212079, 0, -0.5, -0.3, -0.190348, -0.5, -0.23193, -0.212138, -0.5, -0.212138, -0.23193, -0.5, -0.190348)
+
+[sub_resource type="Animation" id="Animation_2eslo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.639216, 0.647059, 0.635294, 0.270588)]
+}
+
+[sub_resource type="Animation" id="Animation_q6iwu"]
+resource_name = "default"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0.639216, 0.647059, 0.635294, 0.270588), Color(0.639216, 0.647059, 0.635294, 0), Color(0.639216, 0.647059, 0.635294, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fc4x1"]
+_data = {
+"RESET": SubResource("Animation_2eslo"),
+"default": SubResource("Animation_q6iwu")
+}
+
+[node name="RicochetWave" type="Area3D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_umsdb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.5)
+mesh = SubResource("CylinderMesh_njbo6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.5)
+shape = SubResource("ConvexPolygonShape3D_27ag3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_fc4x1")
+}
+autoplay = "default"
+
+[node name="DamageTimer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+autostart = true

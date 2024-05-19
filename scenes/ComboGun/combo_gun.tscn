@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bd4ck3emlci54"]
+[gd_scene load_steps=12 format=3 uid="uid://bd4ck3emlci54"]
 
 [ext_resource type="Script" path="res://scenes/ComboGun/combo_gun.gd" id="1_h4sm5"]
 [ext_resource type="PackedScene" uid="uid://b0bg7mhjnrj6f" path="res://scenes/ShotTrailMesh/shot_trail_mesh.tscn" id="2_l6rmi"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://b2eeacwensscs" path="res://scenes/AutoSlowAura/auto_slow_aura.tscn" id="7_otdg5"]
 [ext_resource type="PackedScene" uid="uid://dqtejs38oypyv" path="res://scenes/ShotgunStunAura/shotgun_stun_aura.tscn" id="8_xayy5"]
 [ext_resource type="PackedScene" uid="uid://bw0evl4g1dn1t" path="res://scenes/FanWallbangDecal/fan_wallbang_decal.tscn" id="9_y3g21"]
+[ext_resource type="PackedScene" uid="uid://crt2anbr515cu" path="res://scenes/RicochetWave/ricochet_wave.tscn" id="10_aepqx"]
+[ext_resource type="PackedScene" uid="uid://cdc2ji48t4ytn" path="res://scenes/AutoRicochetDetector/auto_ricochet_detector.tscn" id="11_yxb3s"]
 
 [node name="ComboGun" type="Node3D"]
 script = ExtResource("1_h4sm5")
@@ -20,6 +22,8 @@ pierce_scene = ExtResource("6_3j1m5")
 auto_slow_aura_scene = ExtResource("7_otdg5")
 shotgun_stun_aura_scene = ExtResource("8_xayy5")
 fan_wallbang_decal_scene = ExtResource("9_y3g21")
+ricochet_wave_scene = ExtResource("10_aepqx")
+auto_ricochet_detector_scene = ExtResource("11_yxb3s")
 
 [node name="DownTimer" type="Timer" parent="."]
 wait_time = 0.5
