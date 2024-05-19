@@ -43,5 +43,5 @@ func _on_detection_timer_timeout():
 		
 		hit_enemy.receive_damage(10)
 	
-	#check_raycast.queue_free()
+	check_raycast.queue_free()
 	queue_free()
