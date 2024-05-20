@@ -30,7 +30,9 @@ func _physics_process(delta):
 		velocity.y -= Global.gravity_acceleration * delta
 		
 		if is_on_floor():
-			nav_agent.set_target_position(player.position)
+			if nav_agent.target_position.distance_to(player.position) >= 1:
+				nav_agent.set_target_position(player.position)
+			
 			var next_path_position: Vector3 = nav_agent.get_next_path_position()
 			var move_direction = (next_path_position - position).normalized()
 			

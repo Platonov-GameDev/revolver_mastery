@@ -59,7 +59,8 @@ func _physics_process(delta):
 					is_reloading = true
 					shoot_timer.start()
 				else:
-					nav_agent.set_target_position(player.position)
+					if nav_agent.target_position.distance_to(player.position) >= 1:
+						nav_agent.set_target_position(player.position)
 					var next_path_position: Vector3 = nav_agent.get_next_path_position()
 					var move_direction = (next_path_position - position).normalized()
 					
@@ -69,7 +70,8 @@ func _physics_process(delta):
 					var new_velocity = Vector3(delta_velocity.x, velocity.y, delta_velocity.z)
 					nav_agent.set_velocity(new_velocity)
 			else:
-				nav_agent.set_target_position(player.position)
+				if nav_agent.target_position.distance_to(player.position) >= 1:
+					nav_agent.set_target_position(player.position)
 				var next_path_position: Vector3 = nav_agent.get_next_path_position()
 				var move_direction = (next_path_position - position).normalized()
 				
