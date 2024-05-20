@@ -13,6 +13,9 @@ var noise_image: Image
 var big_noise_image: Image
 var chunk_size = 5
 var chunk_resolution = .05
+var polygon_offset = 1 / chunk_resolution
+var chunk_offset = polygon_offset * chunk_size
+var chunk_grid = {}
 
 
 func _ready():
@@ -25,7 +28,7 @@ func _ready():
 	await big_noise_texture.changed
 	big_noise_image = big_noise_texture.get_image()
 	
-	spawn_chunk(Vector2.ZERO)
+	var new_chunk = spawn_chunk(Vector2.ZERO)
 
 
 func _process(_delta):
@@ -33,10 +36,8 @@ func _process(_delta):
 	player_vision_area.position.z = player.position.z
 
 
-func spawn_chunk(new_position: Vector2, initiator_chunk = null) -> DesertChunk:
-	for chunk in chunks.get_children():
-		if chunk.position.x == new_position.x and chunk.position.z == new_position.y and is_instance_valid(chunk):
-			return null
+func spawn_chunk(new_position: Vector2) -> DesertChunk:
+	if chunk_grid.has(new_position): return
 	
 	var new_chunk = desert_chunk_scene.instantiate()
 	new_chunk.position.x = new_position.x
@@ -49,10 +50,7 @@ func spawn_chunk(new_position: Vector2, initiator_chunk = null) -> DesertChunk:
 	new_chunk.big_noise_image = big_noise_image
 	
 	chunks.add_child(new_chunk)
-	
-	if initiator_chunk:
-		initiator_chunk.neighbour_chunks.append(new_chunk)
-		new_chunk.neighbour_chunks.append(initiator_chunk)
+	chunk_grid[new_position] = new_chunk
 	
 	return new_chunk
 
@@ -61,18 +59,25 @@ func _on_player_vision_area_body_entered(body):
 	var chunk = body
 	var chunk_position = chunk.position
 	
-	var polygon_offset = 1 / chunk_resolution
-	var chunk_offset = polygon_offset * chunk_size
-	spawn_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.y), chunk)
-	spawn_chunk(Vector2(chunk_position.x, chunk_position.y + chunk_offset), chunk)
-	spawn_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.y), chunk)
-	spawn_chunk(Vector2(chunk_position.x, chunk_position.y - chunk_offset), chunk)
+	spawn_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
+	spawn_chunk(Vector2(chunk_position.x, chunk_position.z + chunk_offset))
+	spawn_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.z))
+	spawn_chunk(Vector2(chunk_position.x, chunk_position.z - chunk_offset))
 
 
 func _on_player_vision_area_body_exited(body):
 	var chunk = body
+	var chunk_position = chunk.position
 	
-	for neighbour_chunk in chunk.neighbour_chunks:
-		if not is_instance_valid(neighbour_chunk): continue
-		if player_vision_area.overlaps_body(neighbour_chunk): continue
-		neighbour_chunk.queue_free()
+	try_delete_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
+	try_delete_chunk(Vector2(chunk_position.x, chunk_position.z + chunk_offset))
+	try_delete_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.z))
+	try_delete_chunk(Vector2(chunk_position.x, chunk_position.z - chunk_offset))
+
+
+func try_delete_chunk(chunk_position: Vector2):
+	if not chunk_grid.has(chunk_position): return
+	if player_vision_area.overlaps_body(chunk_grid[chunk_position]): return
+	
+	chunk_grid[chunk_position].queue_free()
+	chunk_grid.erase(chunk_position)

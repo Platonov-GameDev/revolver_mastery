@@ -99,7 +99,6 @@ environment = SubResource("Environment_jdwgu")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.8, 33.785, -4.1)
 
 [node name="NavEnemySpawner" parent="Entities" node_paths=PackedStringArray("player", "nav_region", "spawn_points_node") instance=ExtResource("3_5doyf")]
-is_enabled = false
 player = NodePath("../Player")
 nav_region = NodePath("../../Geometry/NavigationRegion3D")
 spawn_points_node = NodePath("../../Geometry/NavigationRegion3D/DebrisTower/SpawnPoints")

@@ -12,7 +12,6 @@ var noise_image: Image
 var big_noise_image: Image
 
 var st = SurfaceTool.new()
-var neighbour_chunks: Array[DesertChunk]
 
 
 func _ready():
