@@ -1,13 +1,13 @@
-extends StaticBody3D
+extends NavigationRegion3D
 class_name DesertChunk
 
 
-@onready var collision_shape_3d = $CollisionShape3D
+@onready var collision_shape_3d = $StaticBody3D/CollisionShape3D
+@onready var static_body_3d = $StaticBody3D
 
 var chunk_size: int
 var chunk_resolution: float
 var material: Material
-var nav_region: NavigationRegion3D
 var noise_image: Image
 var big_noise_image: Image
 
@@ -15,9 +15,9 @@ var st = SurfaceTool.new()
 
 
 func _ready():
-	set_collision_layer_value(6, true)
+	static_body_3d.set_collision_layer_value(6, true)
 	var mesh_instance = MeshInstance3D.new()
-	add_child(mesh_instance)
+	static_body_3d.add_child(mesh_instance)
 	
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
@@ -43,7 +43,7 @@ func _ready():
 	new_collision_shape.set_faces(new_mesh.get_faces())
 	collision_shape_3d.shape = new_collision_shape
 	
-	nav_region.bake_navigation_mesh()
+	call_deferred("bake_navigation_mesh")
 
 
 func add_vertex(x: int, y: int):

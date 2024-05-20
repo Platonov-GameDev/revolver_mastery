@@ -28,7 +28,7 @@ func _ready():
 	await big_noise_texture.changed
 	big_noise_image = big_noise_texture.get_image()
 	
-	var new_chunk = spawn_chunk(Vector2.ZERO)
+	spawn_chunk(Vector2.ZERO)
 
 
 func _process(_delta):
@@ -45,28 +45,29 @@ func spawn_chunk(new_position: Vector2) -> DesertChunk:
 	new_chunk.chunk_size = chunk_size
 	new_chunk.chunk_resolution = chunk_resolution
 	new_chunk.material = material
-	new_chunk.nav_region = nav_region
 	new_chunk.noise_image = noise_image
 	new_chunk.big_noise_image = big_noise_image
 	
 	chunks.add_child(new_chunk)
 	chunk_grid[new_position] = new_chunk
 	
+	await new_chunk.bake_finished
+	
 	return new_chunk
 
 
 func _on_player_vision_area_body_entered(body):
-	var chunk = body
+	var chunk = body.get_parent()
 	var chunk_position = chunk.position
 	
-	spawn_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
-	spawn_chunk(Vector2(chunk_position.x, chunk_position.z + chunk_offset))
-	spawn_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.z))
-	spawn_chunk(Vector2(chunk_position.x, chunk_position.z - chunk_offset))
+	await spawn_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
+	await spawn_chunk(Vector2(chunk_position.x, chunk_position.z + chunk_offset))
+	await spawn_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.z))
+	await spawn_chunk(Vector2(chunk_position.x, chunk_position.z - chunk_offset))
 
 
 func _on_player_vision_area_body_exited(body):
-	var chunk = body
+	var chunk = body.get_parent()
 	var chunk_position = chunk.position
 	
 	try_delete_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
@@ -77,7 +78,7 @@ func _on_player_vision_area_body_exited(body):
 
 func try_delete_chunk(chunk_position: Vector2):
 	if not chunk_grid.has(chunk_position): return
-	if player_vision_area.overlaps_body(chunk_grid[chunk_position]): return
+	if player_vision_area.overlaps_body(chunk_grid[chunk_position].static_body_3d): return
 	
 	chunk_grid[chunk_position].queue_free()
 	chunk_grid.erase(chunk_position)

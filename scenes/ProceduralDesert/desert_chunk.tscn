@@ -1,10 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://cb1h7a8gu0lmv"]
+[gd_scene load_steps=3 format=3 uid="uid://cb1h7a8gu0lmv"]
 
 [ext_resource type="Script" path="res://scenes/ProceduralDesert/desert_chunk.gd" id="1_5md8l"]
 
-[node name="DesertChunk" type="StaticBody3D" groups=["desert_chunk"]]
-collision_layer = 33
-collision_mask = 0
+[sub_resource type="NavigationMesh" id="NavigationMesh_2adlv"]
+resource_local_to_scene = true
+
+[node name="DesertChunk" type="NavigationRegion3D" groups=["desert_chunk"]]
+navigation_mesh = SubResource("NavigationMesh_2adlv")
 script = ExtResource("1_5md8l")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
