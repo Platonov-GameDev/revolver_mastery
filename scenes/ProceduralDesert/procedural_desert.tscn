@@ -1,0 +1,44 @@
+[gd_scene load_steps=10 format=3 uid="uid://blt8hptogttd3"]
+
+[ext_resource type="Script" path="res://scenes/ProceduralDesert/procedural_desert.gd" id="1_i3r1f"]
+[ext_resource type="Texture2D" uid="uid://b3bwpi2cimxt7" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_y2sd0"]
+[ext_resource type="PackedScene" uid="uid://cb1h7a8gu0lmv" path="res://scenes/ProceduralDesert/desert_chunk.tscn" id="3_upqr2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_g0cxq"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kl48d"]
+seamless = true
+noise = SubResource("FastNoiseLite_g0cxq")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_my7l1"]
+frequency = 0.004
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lgd6u"]
+seamless = true
+noise = SubResource("FastNoiseLite_my7l1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e7g3i"]
+albedo_texture = ExtResource("2_y2sd0")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_impov"]
+height = 500.0
+radius = 60.0
+
+[node name="ProceduralDesert" type="StaticBody3D"]
+collision_mask = 0
+script = ExtResource("1_i3r1f")
+noise_texture = SubResource("NoiseTexture2D_kl48d")
+big_noise_texture = SubResource("NoiseTexture2D_lgd6u")
+material = SubResource("StandardMaterial3D_e7g3i")
+desert_chunk_scene = ExtResource("3_upqr2")
+
+[node name="PlayerVisionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerVisionArea"]
+shape = SubResource("CylinderShape3D_impov")
+
+[node name="Chunks" type="Node3D" parent="."]

@@ -92,6 +92,8 @@ restart={
 3d_physics/layer_3="player"
 3d_physics/layer_4="bullet_shell"
 3d_physics/layer_5="grenade"
+3d_physics/layer_6="desert_chunk"
+3d_physics/layer_7="desert_chunk_embryo"
 
 [rendering]
 

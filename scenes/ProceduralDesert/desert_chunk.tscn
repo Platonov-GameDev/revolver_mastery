@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb1h7a8gu0lmv"]
+
+[ext_resource type="Script" path="res://scenes/ProceduralDesert/desert_chunk.gd" id="1_5md8l"]
+
+[node name="DesertChunk" type="StaticBody3D" groups=["desert_chunk"]]
+collision_layer = 33
+collision_mask = 0
+script = ExtResource("1_5md8l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
