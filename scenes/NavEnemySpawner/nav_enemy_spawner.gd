@@ -1,6 +1,7 @@
 extends Node
 
 
+@export var is_enabled := true
 @export var red_scene: PackedScene
 @export var purple_scene: PackedScene
 @export var player: CharacterBody3D
@@ -27,6 +28,8 @@ func _ready():
 
 
 func _on_spawn_timer_timeout():
+	if !is_enabled: return
+	
 	for i in range(spawn_points.size()):
 		var enemy
 		if red_left != 0:
