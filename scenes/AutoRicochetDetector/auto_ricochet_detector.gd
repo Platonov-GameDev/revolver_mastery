@@ -12,7 +12,9 @@ func _ready():
 
 func _on_detection_timer_timeout():
 	var bodies = get_overlapping_bodies()
-	if bodies.is_empty(): return
+	if bodies.is_empty():
+		queue_free()
+		return
 	
 	var enemy = bodies.pick_random()
 	
@@ -26,7 +28,9 @@ func _on_detection_timer_timeout():
 	check_raycast.set_collision_mask_value(2, true)
 	check_raycast.force_raycast_update()
 	
-	if !check_raycast.get_collider(): return
+	if !check_raycast.get_collider():
+		queue_free()
+		return
 	
 	if check_raycast.get_collider().is_in_group("enemy"):
 		var hit_enemy = check_raycast.get_collider()

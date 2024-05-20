@@ -297,6 +297,19 @@ func alt_fire_pressed():
 		ricochet_wave.rotation = ricochet_raycast.rotation
 		level.add_child(ricochet_wave)
 		
+		var shot_trail = trail_scene.instantiate()
+		if raycast.get_collider():
+			shot_trail.scale.z = muzzle.global_position.distance_to(raycast.get_collision_point()) / 100
+		if raycast.get_collision_point():
+			shot_trail.look_at_from_position(muzzle.global_position, raycast.get_collision_point())
+		else:
+			shot_trail.position = muzzle.global_position
+			shot_trail.rotation = raycast.global_rotation
+		level.add_child(shot_trail)
+		
+		raycast.queue_free()
+		ricochet_raycast.queue_free()
+		
 		change_state(ComboGunState.DOWN)
 		down_timer.start()
 		player.is_hovering = false
