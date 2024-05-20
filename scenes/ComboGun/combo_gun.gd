@@ -395,7 +395,7 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 		shot_trail.look_at_from_position(muzzle.global_position, raycast.get_collision_point())
 	else:
 		shot_trail.position = muzzle.global_position
-		shot_trail.rotation = camera.global_rotation
+		shot_trail.rotation = raycast.global_rotation
 	level.add_child(shot_trail)
 	
 	if shot_type == ShotType.RICOCHET:
