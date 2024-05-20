@@ -42,8 +42,6 @@ func _ready():
 	var new_collision_shape = ConcavePolygonShape3D.new()
 	new_collision_shape.set_faces(new_mesh.get_faces())
 	collision_shape_3d.shape = new_collision_shape
-	
-	call_deferred("bake_navigation_mesh")
 
 
 func add_vertex(x: int, y: int):

@@ -12,7 +12,7 @@ extends StaticBody3D
 var noise_image: Image
 var big_noise_image: Image
 var chunk_size = 5
-var chunk_resolution = .05
+var chunk_resolution = .2
 var polygon_offset = 1 / chunk_resolution
 var chunk_offset = polygon_offset * chunk_size
 var chunk_grid = {}
@@ -51,8 +51,6 @@ func spawn_chunk(new_position: Vector2) -> DesertChunk:
 	chunks.add_child(new_chunk)
 	chunk_grid[new_position] = new_chunk
 	
-	await new_chunk.bake_finished
-	
 	return new_chunk
 
 
@@ -60,10 +58,10 @@ func _on_player_vision_area_body_entered(body):
 	var chunk = body.get_parent()
 	var chunk_position = chunk.position
 	
-	await spawn_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
-	await spawn_chunk(Vector2(chunk_position.x, chunk_position.z + chunk_offset))
-	await spawn_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.z))
-	await spawn_chunk(Vector2(chunk_position.x, chunk_position.z - chunk_offset))
+	spawn_chunk(Vector2(chunk_position.x + chunk_offset, chunk_position.z))
+	spawn_chunk(Vector2(chunk_position.x, chunk_position.z + chunk_offset))
+	spawn_chunk(Vector2(chunk_position.x - chunk_offset, chunk_position.z))
+	spawn_chunk(Vector2(chunk_position.x, chunk_position.z - chunk_offset))
 
 
 func _on_player_vision_area_body_exited(body):
