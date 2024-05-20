@@ -53,7 +53,7 @@ func add_hits(move_index, move_type, hits):
 		):
 			charge += 1. / move_coefficients[move_type] / 2
 	
-	charge /= 2
+	charge /= 10
 	
 	if charge > 0:
 		charge_gained.emit(charge)

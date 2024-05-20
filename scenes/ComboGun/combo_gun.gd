@@ -26,9 +26,22 @@ extends Node3D
 @onready var alt_fire_shoot_timer = $AltFireShootTimer
 @onready var charge_drain_timer = $ChargeDrainTimer
 @onready var level = player.get_parent().get_parent()
+@onready var muzzle = $Position/Animation/Muzzle
+@onready var animation_player = $AnimationPlayer
 enum ShotType {BASE, FAN, AUTO, RICOCHET, SHOTGUN, SHOTGUN_SHELL, BLAST, CHAIN_PULL}
 var current_state = ComboGunState.IDLE
 signal state_changed(new_state)
+var DOWN_TIMER_TIME = 0.5
+var ALT_DOWN_TIMER_TIME = 1
+var AUTO_WINDUP_TIMER_TIME = 0.3
+var AUTO_SHOOT_TIMER_TIME = 0.1
+var FIRE_SHOOT_TIMER_TIME = 0.4
+var FIRE_WAIT_TIMER_TIME = 0.1
+var FAN_SHOOT_TIMER_TIME = 0.3
+var SHOTGUN_SHOOT_TIMER_TIME = 0.4
+var ALT_FIRE_WAIT_TIMER_TIME = 0.3
+var ALT_FIRE_SHOOT_TIMER_TIME = 0.3
+var CHARGE_DRAIN_TIMER_TIME = 3
 
 # DASH
 var last_movement_time = 0
@@ -57,7 +70,7 @@ var is_charging_piercing = false
 
 # CHARGE
 var current_charge = 0
-var charge_max = 7
+var charge_max = 4
 signal charge_changed(new_charge)
 var is_charge_draining = false
 var grenade_charge_cost = 1
@@ -142,33 +155,43 @@ func fire_pressed():
 		fire_shoot_timer.start()
 		
 		player.knockup()
+		
+		animation_player.play("fire")
 	elif current_state == ComboGunState.FAN:
 		shoot_ray(30, ShotType.FAN)
 		fan_shoot_timer.start()
+		
+		animation_player.play("RESET")
+		animation_player.play("fan")
 		
 		fan_shots_fired += 1
 		if fan_shots_fired == 5:
 			change_state(ComboGunState.DOWN)
 			down_timer.start()
-		
+			animation_player.play("RESET")
+			animation_player.play("fan")
+			
 		player.knockup()
 	elif current_state == ComboGunState.ALT_FIRE:
-		if try_spend_charge(pierce_charge_cost):
-			change_state(ComboGunState.CHARGING_PIERCE)
-			piercing_charge_start_time = Time.get_unix_time_from_system()
-			
-			alt_fire_wait_timer.stop()
-			
-			is_charging_piercing = true
+		change_state(ComboGunState.CHARGING_PIERCE)
+		piercing_charge_start_time = Time.get_unix_time_from_system()
+		
+		alt_fire_wait_timer.stop()
+		
+		is_charging_piercing = true
+		
+		animation_player.play("RESET")
+		animation_player.play("pierce_charge")
 	elif current_state == ComboGunState.ALT_FIRE_SHOOT:
-		if try_spend_charge(chain_pull_charge_cost):
-			shoot_ray(0, ShotType.CHAIN_PULL)
-			
-			change_state(ComboGunState.DOWN)
-			alt_down_timer.start()
-			alt_fire_shoot_timer.stop()
-			
-			player.knockup()
+		shoot_ray(0, ShotType.CHAIN_PULL)
+		
+		change_state(ComboGunState.DOWN)
+		alt_down_timer.start()
+		alt_fire_shoot_timer.stop()
+		
+		player.knockup()
+		animation_player.play("RESET")
+		animation_player.play("grenade")
 
 
 func fire_released():
@@ -179,6 +202,7 @@ func fire_released():
 		change_state(ComboGunState.DOWN)
 		down_timer.start()
 		player.is_hovering = false
+		animation_player.play("down")
 	elif current_state == ComboGunState.CHARGING_PIERCE:
 		var current_time = Time.get_unix_time_from_system()
 		var pierce_power = clampf((current_time - piercing_charge_start_time) / piercing_max_charge_time, 0, 1)
@@ -189,20 +213,23 @@ func fire_released():
 		
 		is_charging_piercing = false
 		player.knockup()
+		
+		animation_player.play("RESET")
+		animation_player.play("pierce_shot")
 
 
 func alt_fire_pressed():
 	auto_windup_timer.stop()
 	
 	if current_state == ComboGunState.IDLE:
-		if try_spend_charge(grenade_charge_cost):
-			var grenade = grenade_scene.instantiate()
-			grenade.position = global_position
-			grenade.velocity = -camera.global_basis.z * grenade_launch_speed
-			level.add_child(grenade)
-			
-			change_state(ComboGunState.ALT_FIRE)
-			alt_fire_wait_timer.start()
+		var grenade = grenade_scene.instantiate()
+		grenade.position = global_position
+		grenade.velocity = -camera.global_basis.z * grenade_launch_speed
+		level.add_child(grenade)
+		
+		change_state(ComboGunState.ALT_FIRE)
+		alt_fire_wait_timer.start()
+		animation_player.play("grenade")
 	elif current_state == ComboGunState.FIRE:
 		if fire_shoot_timer.time_left != 0:
 			shotgun_spread_goodness = 1 - fire_shoot_timer.time_left / fire_shoot_timer.wait_time
@@ -213,6 +240,7 @@ func alt_fire_pressed():
 		shoot_ray(10, ShotType.SHOTGUN)
 		fire_shoot_timer.stop()
 		shotgun_shoot_timer.start()
+		animation_player.play("shotgun")
 		
 		if !player.is_on_floor():
 			var toss_direction = camera.global_basis.z
@@ -225,13 +253,16 @@ func alt_fire_pressed():
 			
 			change_state(ComboGunState.DOWN)
 			down_timer.start()
+			animation_player.play("RESET")
+			animation_player.play("shotgun")
 	elif current_state == ComboGunState.ALT_FIRE_SHOOT:
-		if try_spend_charge(blast_charge_cost):
-			shoot_ray(0, ShotType.BLAST)
-			
-			change_state(ComboGunState.DOWN)
-			alt_down_timer.start()
-			alt_fire_shoot_timer.stop()
+		shoot_ray(0, ShotType.BLAST)
+		
+		change_state(ComboGunState.DOWN)
+		alt_down_timer.start()
+		alt_fire_shoot_timer.stop()
+		animation_player.play("RESET")
+		animation_player.play("grenade")
 	elif current_state == ComboGunState.AUTO:
 		var raycast = RayCast3D.new()
 		raycast.position = global_position
@@ -272,6 +303,7 @@ func alt_fire_pressed():
 		auto_shoot_timer.stop()
 		
 		player.knockup()
+		animation_player.play("down")
 
 
 func alt_fire_released():
@@ -355,12 +387,15 @@ func shoot_ray(damage_amount: int, shot_type = ShotType.BASE, is_shotgun_shell =
 	
 	var shot_trail = trail_scene.instantiate()
 	if raycast.get_collider():
-		shot_trail.scale.z = raycast.position.distance_to(raycast.get_collision_point()) / 100
+		shot_trail.scale.z = muzzle.global_position.distance_to(raycast.get_collision_point()) / 100
 	if shot_type == ShotType.AUTO || shot_type == ShotType.SHOTGUN || is_shotgun_shell:
 		shot_trail.scale.x = 0.3
 		shot_trail.scale.y = 0.3
-	shot_trail.position = global_position
-	shot_trail.rotation = raycast.rotation
+	if raycast.get_collision_point():
+		shot_trail.look_at_from_position(muzzle.global_position, raycast.get_collision_point())
+	else:
+		shot_trail.position = muzzle.global_position
+		shot_trail.rotation = camera.global_rotation
 	level.add_child(shot_trail)
 	
 	if shot_type == ShotType.RICOCHET:
@@ -409,10 +444,12 @@ func shoot_pierce(pierce_power):
 
 func _on_down_timer_timeout():
 	change_state(ComboGunState.IDLE)
+	animation_player.play("idle")
 
 
 func _on_alt_down_timer_timeout():
 	change_state(ComboGunState.IDLE)
+	animation_player.play("idle")
 
 
 func _on_auto_windup_timer_timeout():
@@ -420,6 +457,8 @@ func _on_auto_windup_timer_timeout():
 	fire_shoot_timer.stop()
 	fire_wait_timer.stop()
 	auto_shoot_timer.start()
+	animation_player.play("RESET")
+	animation_player.play("auto")
 
 
 func _on_auto_shoot_timer_timeout():
@@ -427,6 +466,9 @@ func _on_auto_shoot_timer_timeout():
 	
 	player.hover()
 	player.is_hovering = true
+	
+	animation_player.play("RESET")
+	animation_player.play("auto")
 
 
 func _on_fire_shoot_timer_timeout():
@@ -443,6 +485,8 @@ func _on_fire_wait_timer_timeout():
 func _on_fan_shoot_timer_timeout():
 	change_state(ComboGunState.DOWN)
 	down_timer.start()
+	animation_player.play("down")
+	animation_player.play("down")
 
 
 func _on_shotgun_shoot_timer_timeout():
@@ -450,6 +494,7 @@ func _on_shotgun_shoot_timer_timeout():
 	down_timer.start()
 	
 	shotgun_shots_fired = 0
+	animation_player.play("down")
 
 
 func _on_alt_fire_wait_timer_timeout():
@@ -460,6 +505,7 @@ func _on_alt_fire_wait_timer_timeout():
 func _on_alt_fire_shoot_timer_timeout():
 	change_state(ComboGunState.DOWN)
 	down_timer.start()
+	animation_player.play("down")
 
 
 func _on_charge_move_queue_charge_gained(charge_amount):
@@ -474,18 +520,40 @@ func change_charge(new_charge):
 	charge_changed.emit(current_charge)
 	if current_charge == 0:
 		ChargeMoveQueue.clear_queue()
+	
+	if 0 <= new_charge and new_charge < 1:
+		update_timers(0)
+	elif 1 <= new_charge and new_charge < 2:
+		update_timers(1)
+	elif 2 <= new_charge and new_charge < 3:
+		update_timers(2)
+	elif 3 <= new_charge and new_charge < 4:
+		update_timers(3)
+	elif 4 == new_charge:
+		update_timers(4)
+
+
+func update_timers(charge_stage: int):
+	var stage_gain = 0.1
+	var time_ratio = 1 - stage_gain * charge_stage
+	
+	animation_player.speed_scale = 1 + stage_gain * charge_stage
+	
+	down_timer.wait_time = DOWN_TIMER_TIME * time_ratio
+	alt_down_timer.wait_time = ALT_DOWN_TIMER_TIME * time_ratio
+	auto_windup_timer.wait_time = AUTO_WINDUP_TIMER_TIME * time_ratio
+	auto_shoot_timer.wait_time = AUTO_SHOOT_TIMER_TIME * time_ratio
+	fire_shoot_timer.wait_time = FIRE_SHOOT_TIMER_TIME * time_ratio
+	fire_wait_timer.wait_time = FIRE_WAIT_TIMER_TIME * time_ratio
+	fan_shoot_timer.wait_time = FAN_SHOOT_TIMER_TIME * time_ratio
+	shotgun_shoot_timer.wait_time = SHOTGUN_SHOOT_TIMER_TIME * time_ratio
+	alt_fire_wait_timer.wait_time = ALT_FIRE_WAIT_TIMER_TIME * time_ratio
+	alt_fire_shoot_timer.wait_time = ALT_FIRE_SHOOT_TIMER_TIME * time_ratio
+	charge_drain_timer.wait_time = CHARGE_DRAIN_TIMER_TIME * time_ratio
 
 
 func _on_charge_drain_timer_timeout():
 	is_charge_draining = true
-
-
-func try_spend_charge(charge_amount):
-	if current_charge >= charge_amount:
-		change_charge(current_charge - charge_amount)
-		return true
-	else:
-		return false
 
 
 func change_state(new_state):

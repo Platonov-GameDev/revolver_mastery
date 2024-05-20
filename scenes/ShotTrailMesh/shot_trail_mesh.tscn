@@ -96,7 +96,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.279493),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.01, 0.0]
+"values": [0.05, 0.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -108,7 +108,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.279493),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.01, 0.0]
+"values": [0.05, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0roua"]

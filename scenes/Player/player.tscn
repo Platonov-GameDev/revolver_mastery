@@ -1,8 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://bwj64f6gyrrc4"]
+[gd_scene load_steps=19 format=3 uid="uid://bwj64f6gyrrc4"]
 
 [ext_resource type="Script" path="res://scenes/Player/player.gd" id="1_4bq6a"]
 [ext_resource type="Script" path="res://scenes/Player/input_handler.gd" id="1_mqogj"]
 [ext_resource type="Script" path="res://scenes/Player/gun.gd" id="3_18qho"]
+[ext_resource type="Texture2D" uid="uid://cvrew6h5odvtl" path="res://resources/speed_charge_bar_step.png" id="5_4ujky"]
+[ext_resource type="Texture2D" uid="uid://l3ul1itsfnmm" path="res://resources/speed_charge_bar_step_under.png" id="5_pjp7w"]
 [ext_resource type="Texture2D" uid="uid://ce47dd5irp6bg" path="res://resources/downtime_indicator.png" id="5_rk1d4"]
 [ext_resource type="PackedScene" uid="uid://b82b7s710juc4" path="res://components/HealthComponent/health_component.tscn" id="6_h1g0r"]
 [ext_resource type="PackedScene" uid="uid://bd4ck3emlci54" path="res://scenes/ComboGun/combo_gun.tscn" id="8_2kiry"]
@@ -14,20 +16,6 @@ font_size = 121
 
 [sub_resource type="LabelSettings" id="LabelSettings_q4swy"]
 font_size = 21
-
-[sub_resource type="Gradient" id="Gradient_00aqj"]
-colors = PackedColorArray(0.141176, 0.141176, 0.141176, 0, 0.141176, 0.141176, 0.141176, 0.486275)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_5r3cb"]
-gradient = SubResource("Gradient_00aqj")
-
-[sub_resource type="Gradient" id="Gradient_f617n"]
-colors = PackedColorArray(1, 0.164706, 0, 1, 1, 1, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_eg7o7"]
-gradient = SubResource("Gradient_f617n")
-fill_from = Vector2(1, 1)
-fill_to = Vector2(0.551282, 0)
 
 [sub_resource type="Gradient" id="Gradient_mq72i"]
 offsets = PackedFloat32Array(0)
@@ -261,88 +249,6 @@ offset_bottom = 55.0
 grow_horizontal = 2
 show_percentage = false
 
-[node name="ChargeProgressBar" type="TextureProgressBar" parent="."]
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -112.0
-offset_top = -201.0
-offset_right = -62.0
-offset_bottom = 170.0
-grow_horizontal = 0
-grow_vertical = 2
-max_value = 7.0
-step = 0.01
-fill_mode = 3
-nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_5r3cb")
-texture_progress = SubResource("GradientTexture2D_eg7o7")
-
-[node name="ColorRect" type="ColorRect" parent="ChargeProgressBar"]
-layout_mode = 0
-offset_top = 317.0
-offset_right = 50.0
-offset_bottom = 319.0
-
-[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect"]
-layout_mode = 0
-offset_left = -145.0
-offset_top = -6.0
-offset_right = -5.0
-offset_bottom = 17.0
-pivot_offset = Vector2(40, 7)
-text = "Grenade"
-horizontal_alignment = 2
-
-[node name="ColorRect2" type="ColorRect" parent="ChargeProgressBar"]
-layout_mode = 0
-offset_top = 265.0
-offset_right = 50.0
-offset_bottom = 267.0
-
-[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect2"]
-layout_mode = 0
-offset_left = -145.0
-offset_top = -6.0
-offset_right = -5.0
-offset_bottom = 17.0
-pivot_offset = Vector2(40, 7)
-text = "Blast"
-horizontal_alignment = 2
-
-[node name="ColorRect3" type="ColorRect" parent="ChargeProgressBar"]
-layout_mode = 0
-offset_top = 159.0
-offset_right = 50.0
-offset_bottom = 161.0
-
-[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect3"]
-layout_mode = 0
-offset_left = -145.0
-offset_top = -6.0
-offset_right = -5.0
-offset_bottom = 17.0
-pivot_offset = Vector2(40, 7)
-text = "Chain pull"
-horizontal_alignment = 2
-
-[node name="ColorRect4" type="ColorRect" parent="ChargeProgressBar"]
-layout_mode = 0
-offset_right = 50.0
-offset_bottom = 2.0
-
-[node name="Label" type="Label" parent="ChargeProgressBar/ColorRect4"]
-layout_mode = 0
-offset_left = -145.0
-offset_top = -6.0
-offset_right = -5.0
-offset_bottom = 17.0
-pivot_offset = Vector2(40, 7)
-text = "Pierce"
-horizontal_alignment = 2
-
 [node name="HealthBar" type="TextureProgressBar" parent="."]
 anchors_preset = 2
 anchor_top = 1.0
@@ -356,6 +262,48 @@ value = 100.0
 nine_patch_stretch = true
 texture_under = SubResource("GradientTexture2D_x47hj")
 texture_progress = SubResource("GradientTexture2D_i5mut")
+tint_under = Color(1, 1, 1, 0.588235)
+
+[node name="ChargeBars" type="VBoxContainer" parent="."]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -198.0
+offset_top = -166.0
+offset_right = -31.0
+offset_bottom = 166.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="ChargeBar4" type="TextureProgressBar" parent="ChargeBars"]
+layout_mode = 2
+fill_mode = 3
+texture_under = ExtResource("5_pjp7w")
+texture_progress = ExtResource("5_4ujky")
+tint_under = Color(1, 1, 1, 0.588235)
+
+[node name="ChargeBar3" type="TextureProgressBar" parent="ChargeBars"]
+layout_mode = 2
+fill_mode = 3
+texture_under = ExtResource("5_pjp7w")
+texture_progress = ExtResource("5_4ujky")
+tint_under = Color(1, 1, 1, 0.588235)
+
+[node name="ChargeBar2" type="TextureProgressBar" parent="ChargeBars"]
+layout_mode = 2
+fill_mode = 3
+texture_under = ExtResource("5_pjp7w")
+texture_progress = ExtResource("5_4ujky")
+tint_under = Color(1, 1, 1, 0.588235)
+
+[node name="ChargeBar1" type="TextureProgressBar" parent="ChargeBars"]
+layout_mode = 2
+fill_mode = 3
+texture_under = ExtResource("5_pjp7w")
+texture_progress = ExtResource("5_4ujky")
+tint_under = Color(1, 1, 1, 0.588235)
 
 [node name="DamageOverlay" type="Control" parent="."]
 modulate = Color(1, 1, 1, 0)
