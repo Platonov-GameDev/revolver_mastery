@@ -52,6 +52,7 @@ var max_airborne_speed = 50
 var initial_airborne_horizontal_velocity_magnitude = 0
 var is_hovering = false
 
+var fps_counter_frames := 0
 var fps_counter_timer := 0.
 
 
@@ -94,9 +95,11 @@ func _ready():
 
 func _process(delta):
 	fps_counter_timer += delta
-	if fps_counter_timer >= .1:
-		fps_counter_timer = 0
-		fps_label.text = str(snapped(1. / delta, 1))
+	fps_counter_frames += 1
+	if fps_counter_timer >= .05:
+		fps_label.text = str(snapped(fps_counter_frames / fps_counter_timer, 1))
+		fps_counter_timer = 0.
+		fps_counter_frames = 0
 	
 	if is_dead: return
 	
