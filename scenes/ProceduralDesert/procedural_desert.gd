@@ -22,10 +22,12 @@ func _ready():
 	player_vision_area.body_entered.connect(_on_player_vision_area_body_entered)
 	player_vision_area.body_exited.connect(_on_player_vision_area_body_exited)
 	
-	await noise_texture.changed
+	if not noise_texture.get_image():
+		await noise_texture.changed
 	noise_image = noise_texture.get_image()
 	
-	await big_noise_texture.changed
+	if not big_noise_texture.get_image():
+		await big_noise_texture.changed
 	big_noise_image = big_noise_texture.get_image()
 	
 	spawn_chunk(Vector2.ZERO)
