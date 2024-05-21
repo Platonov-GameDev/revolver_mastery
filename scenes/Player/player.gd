@@ -11,12 +11,10 @@ extends CharacterBody3D
 @onready var timer_label = $TimerLabel
 @onready var death_screen = $DeathScreen
 @onready var combo_gun = $Camera3D/ComboGun
-@onready var dash_timer = $DashTimer
 @onready var charge_bar_1 = $ChargeBars/ChargeBar1
 @onready var charge_bar_2 = $ChargeBars/ChargeBar2
 @onready var charge_bar_3 = $ChargeBars/ChargeBar3
 @onready var charge_bar_4 = $ChargeBars/ChargeBar4
-@onready var dash_cooldown_timer = $DashCooldownTimer
 @onready var downtime_indicator = $DowntimeIndicator
 @onready var indicator_1 = $ChargeIndicators/Indicator1
 @onready var indicator_2 = $ChargeIndicators/Indicator2
@@ -37,17 +35,22 @@ var xp = 0
 var start_time = Time.get_unix_time_from_system()
 var is_dead = false
 var current_movement_state = PlayerMovementState.DEFAULT
-var dash_speed = 120
-var is_dash_recharging = false
-var last_movement_input
 
-var player_move_speed = 200
+var default_move_speed = 200
+var slide_move_speed = 1
+var player_move_speed = default_move_speed
+
 var player_airborne_delta_speed = 30
 var player_hover_delta_speed = 10
 var movement_input_vector = Vector2.ZERO
-var ground_deceleration = 90
+
+var default_ground_deceleration = 90
+var slide_ground_deceleration = 10
+var ground_deceleration = default_ground_deceleration
+var slide_impulse = 30
+var slide_floor_acceleration = 0.05
+
 var max_ground_speed = 10
-var max_airborne_speed = 50
 
 var initial_airborne_horizontal_velocity_magnitude = 0
 var is_hovering = false
@@ -71,16 +74,15 @@ func _ready():
 	input_handler.alt_fire_released.connect(_on_input_handler_alt_fire_released)
 	input_handler.restart_pressed.connect(_on_input_handler_restart_pressed)
 	
+	input_handler.slide_pressed.connect(_on_input_handler_slide_pressed)
+	input_handler.slide_released.connect(_on_input_handler_slide_released)
+	
 	gun.activation_changed.connect(_on_gun_activation_changed)
 	gun.ammo_changed.connect(_on_gun_ammo_changed)
 	gun.reload_state_changed.connect(_on_gun_reload_state_changed)
 	
-	dash_timer.timeout.connect(_on_dash_timer_timeout)
-	
 	combo_gun.charge_changed.connect(_on_combo_gun_charge_changed)
 	combo_gun.state_changed.connect(_on_combo_gun_state_changed)
-	
-	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timer_timeout)
 	
 	health_component.died.connect(die)
 	health_component.damage_received.connect(_on_health_component_damage_received)
@@ -103,33 +105,56 @@ func _process(delta):
 	
 	if is_dead: return
 	
-	if current_movement_state == PlayerMovementState.DEFAULT:
-		if !combo_gun.is_charging_piercing:
-			velocity.y -= Global.gravity_acceleration * delta
-		elif combo_gun.is_charging_piercing:
-			velocity.y -= Global.gravity_acceleration * delta * 0.1
+	if !combo_gun.is_charging_piercing:
+		velocity.y -= Global.gravity_acceleration * delta
+	elif combo_gun.is_charging_piercing:
+		velocity.y -= Global.gravity_acceleration * delta * 0.1
 	
 	var movement_vector = movement_input_vector.rotated(get_rotation().y)
 	movement_vector.y *= -1
+	
 	var current_horizontal_velocity = Vector2(velocity.x, velocity.z)
+	
 	if is_on_floor():
-		initial_airborne_horizontal_velocity_magnitude = max_ground_speed
+		initial_airborne_horizontal_velocity_magnitude = Vector2(velocity.x, velocity.z).length()
+		if velocity.y < 0:
+			velocity.y = 0
 		
-		var new_horizontal_velocity = current_horizontal_velocity + movement_vector * player_move_speed * delta
-		if movement_vector.length() == 0:
-			var deceleration_velocity = new_horizontal_velocity.normalized() * ground_deceleration * delta
-			var velocity_after_deceleration = new_horizontal_velocity - deceleration_velocity
-			if velocity_after_deceleration.angle_to(new_horizontal_velocity) >= 0.01:
-				velocity_after_deceleration = Vector2.ZERO
-			velocity_after_deceleration = velocity_after_deceleration.limit_length(max_ground_speed)
-			
-			velocity.x = velocity_after_deceleration.x
-			velocity.z = velocity_after_deceleration.y
-		else:
-			new_horizontal_velocity = new_horizontal_velocity.limit_length(max_ground_speed)
-			
-			velocity.x = new_horizontal_velocity.x
-			velocity.z = new_horizontal_velocity.y
+		if current_movement_state == PlayerMovementState.DEFAULT:
+			if movement_vector.length() == 0:
+				var deceleration_velocity = (current_horizontal_velocity.normalized()
+					* ground_deceleration * delta)
+				var velocity_after_deceleration = current_horizontal_velocity - deceleration_velocity
+				if velocity_after_deceleration.angle_to(current_horizontal_velocity) >= 0.01:
+					velocity_after_deceleration = Vector2.ZERO
+				
+				velocity_after_deceleration = velocity_after_deceleration.limit_length(max_ground_speed)
+				
+				velocity.x = velocity_after_deceleration.x
+				velocity.z = velocity_after_deceleration.y
+			else:
+				var new_horizontal_velocity = (current_horizontal_velocity
+					+ movement_vector * player_move_speed * delta)
+				new_horizontal_velocity = new_horizontal_velocity.limit_length(max_ground_speed)
+				
+				velocity.x = new_horizontal_velocity.x
+				velocity.z = new_horizontal_velocity.y
+		elif current_movement_state == PlayerMovementState.SLIDING:
+			if current_horizontal_velocity != Vector2.ZERO:
+				var deceleration_velocity = (current_horizontal_velocity.normalized()
+					* ground_deceleration * delta)
+				
+				var floor_normal = get_floor_normal()
+				
+				var floor_velocity = (floor_normal.dot(velocity) / velocity.length()
+					* velocity.normalized() * slide_floor_acceleration)
+				
+				var final_velocity = current_horizontal_velocity
+				final_velocity -= deceleration_velocity
+				final_velocity += Vector2(floor_velocity.x, floor_velocity.z)
+				
+				velocity.x = final_velocity.x
+				velocity.z = final_velocity.y
 	elif !is_on_floor():
 		var new_horizontal_velocity = current_horizontal_velocity
 		if !is_hovering:
@@ -157,14 +182,12 @@ func _process(delta):
 
 func _on_input_handler_movement_inputted(input_vector: Vector2):
 	if is_dead: return
-	if current_movement_state == PlayerMovementState.DASHING: return
 	
 	movement_input_vector = input_vector
 
 
 func _on_input_handler_movement_pressed(direction):
 	combo_gun.movement_pressed(direction)
-	last_movement_input = direction
 
 
 func _on_input_handler_movement_released(direction):
@@ -177,10 +200,6 @@ func _on_input_handler_jump_pressed():
 		velocity.y = jump_speed
 		
 		var horizontal_velocity = Vector2(velocity.x, velocity.z)
-		initial_airborne_horizontal_velocity_magnitude = clampf(
-			horizontal_velocity.length(),
-			max_ground_speed,
-			max_airborne_speed)
 
 
 func _on_input_handler_escape_pressed():
@@ -258,36 +277,6 @@ func die():
 	death_screen.show()
 
 
-func dash(direction):
-	current_movement_state = PlayerMovementState.DASHING
-	
-	var dash_vector: Vector3
-	if direction == MovementDirection.FORWARD:
-		dash_vector = Vector3.FORWARD
-	elif direction == MovementDirection.BACK:
-		dash_vector = Vector3.BACK
-	elif direction == MovementDirection.RIGHT:
-		dash_vector = Vector3.RIGHT
-	elif direction == MovementDirection.LEFT:
-		dash_vector = Vector3.LEFT
-	dash_vector = dash_vector.rotated(Vector3.RIGHT, camera.rotation.x)
-	dash_vector = dash_vector.rotated(Vector3.UP, rotation.y)
-	dash_vector *= dash_speed
-	
-	velocity = dash_vector
-	dash_timer.start()
-	
-	var charge = ChargeMoveQueue.move_performed(MoveType.DASH)
-	ChargeMoveQueue.spawn_charge_label(position, charge)
-	
-	is_dash_recharging = true
-
-
-func _on_dash_timer_timeout():
-	current_movement_state = PlayerMovementState.DEFAULT
-	velocity.y = 0
-
-
 func _on_combo_gun_charge_changed(new_charge):
 	var charged_color = Color("#ff2a00")
 	var charging_color = Color("#ff9500")
@@ -324,10 +313,6 @@ func _on_combo_gun_charge_changed(new_charge):
 		charge_bar_4.tint_progress = charging_color
 
 
-func _on_dash_cooldown_timer_timeout():
-	is_dash_recharging = false
-
-
 func _on_combo_gun_state_changed(new_state):
 	if new_state == ComboGunState.DOWN:
 		downtime_indicator.hide()
@@ -349,10 +334,6 @@ func toss(toss_velocity: Vector3, resets_velocity = false):
 	elif !resets_velocity:
 		velocity += toss_velocity
 	var horizontal_velocity = Vector2(velocity.x, velocity.z)
-	initial_airborne_horizontal_velocity_magnitude = clampf(
-		horizontal_velocity.length(),
-		max_ground_speed,
-		max_airborne_speed)
 
 
 func hover():
@@ -374,3 +355,29 @@ func _on_game_manager_got_new_record():
 
 func _on_game_manager_highest_kpm_changed(new_highest_kpm):
 	highest_kpm_label.text = "Highest KPM: " + str(new_highest_kpm)
+
+
+func _on_input_handler_slide_pressed():
+	current_movement_state = PlayerMovementState.SLIDING
+	ground_deceleration = slide_ground_deceleration
+	player_move_speed = slide_move_speed
+	camera.position.y -= 1
+	camera.rotation.z += .1
+	combo_gun.rotation.z += 1
+	combo_gun.position.y -= .5
+	
+	if is_on_floor():
+		var new_horizontal_velocity = Vector2(velocity.x, velocity.z).normalized() * slide_impulse
+		velocity.x = new_horizontal_velocity.x
+		velocity.z = new_horizontal_velocity.y
+
+
+func _on_input_handler_slide_released():
+	if current_movement_state == PlayerMovementState.SLIDING:
+		current_movement_state = PlayerMovementState.DEFAULT
+		ground_deceleration = default_ground_deceleration
+		player_move_speed = default_move_speed
+		camera.position.y += 1
+		camera.rotation.z -= .1
+		combo_gun.rotation.z -= 1
+		combo_gun.position.y += .5

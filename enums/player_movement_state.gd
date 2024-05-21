@@ -1,3 +1,3 @@
 class_name PlayerMovementState
 
-enum {DEFAULT, DASHING}
+enum {DEFAULT, SLIDING}

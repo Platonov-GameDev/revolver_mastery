@@ -13,7 +13,8 @@ signal main_fire_pressed
 signal main_fire_released
 signal alt_fire_pressed
 signal alt_fire_released
-signal dash_pressed
+signal slide_pressed
+signal slide_released
 
 
 func _process(_delta):
@@ -64,8 +65,10 @@ func _process(_delta):
 	if Input.is_action_just_released("alt_fire"):
 		alt_fire_released.emit()
 	
-	if Input.is_action_just_pressed("dash"):
-		dash_pressed.emit()
+	if Input.is_action_just_pressed("slide"):
+		slide_pressed.emit()
+	if Input.is_action_just_released("slide"):
+		slide_released.emit()
 
 
 func _input(event):

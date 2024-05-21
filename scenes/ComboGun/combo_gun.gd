@@ -105,13 +105,11 @@ func _process(delta):
 
 
 func movement_pressed(direction):
-	if get_parent().get_parent().current_movement_state == PlayerMovementState.DASHING: return
 	last_movement_direction = direction
 	last_movement_time = Time.get_unix_time_from_system()
 
 
 func movement_released(direction):
-	if get_parent().get_parent().current_movement_state == PlayerMovementState.DASHING: return
 	if direction != last_movement_direction: return
 	var current_time = Time.get_unix_time_from_system()
 	var time_since_movement_press = current_time - last_movement_time
