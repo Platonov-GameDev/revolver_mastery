@@ -37,7 +37,7 @@ var is_dead = false
 var current_movement_state = PlayerMovementState.DEFAULT
 
 var default_move_speed = 200
-var slide_move_speed = 1
+var slide_move_speed = .05
 var player_move_speed = default_move_speed
 
 var player_airborne_delta_speed = 30
@@ -141,7 +141,11 @@ func _process(delta):
 				velocity.z = new_horizontal_velocity.y
 		elif current_movement_state == PlayerMovementState.SLIDING:
 			if current_horizontal_velocity != Vector2.ZERO:
-				var deceleration_velocity = (current_horizontal_velocity.normalized()
+				var redirected_velocity = (
+					(movement_vector * player_move_speed + current_horizontal_velocity).normalized()
+					* current_horizontal_velocity.length())
+				
+				var deceleration_velocity = (redirected_velocity.normalized()
 					* ground_deceleration * delta)
 				
 				var floor_normal = get_floor_normal()
@@ -149,7 +153,7 @@ func _process(delta):
 				var floor_velocity = (floor_normal.dot(velocity) / velocity.length()
 					* velocity.normalized() * slide_floor_acceleration)
 				
-				var final_velocity = current_horizontal_velocity
+				var final_velocity = redirected_velocity
 				final_velocity -= deceleration_velocity
 				final_velocity += Vector2(floor_velocity.x, floor_velocity.z)
 				
