@@ -52,8 +52,9 @@ func _on_spawn_impulse_timer_timeout():
 			enemy = range_enemy_scene.instantiate()
 			enemies_left_to_spawn.range -= 1
 		else:
-			break
 			spawn_impulse_timer.stop()
+			remove_spawn_points()
+			break
 		
 		add_child(enemy)
 		enemy.global_position = spawn_point.global_position
@@ -71,3 +72,8 @@ func _on_player_detection_area_body_entered(body):
 func _on_player_detection_area_body_exited(body):
 	#structure.enabled = false
 	chunk.enabled = false
+
+
+func remove_spawn_points():
+	for spawn_point in spawn_points:
+		spawn_point.queue_free()
