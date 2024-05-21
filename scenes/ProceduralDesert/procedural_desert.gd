@@ -22,6 +22,9 @@ func _ready():
 	player_vision_area.body_entered.connect(_on_player_vision_area_body_entered)
 	player_vision_area.body_exited.connect(_on_player_vision_area_body_exited)
 	
+	noise_texture.noise.seed = randi()
+	big_noise_texture.noise.seed = randi()
+	
 	if not noise_texture.get_image():
 		await noise_texture.changed
 	noise_image = noise_texture.get_image()
