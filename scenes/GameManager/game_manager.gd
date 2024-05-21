@@ -8,6 +8,7 @@ var kill_timestamps: Array[float] = []
 signal kpm_changed(new_kpm)
 signal highest_kpm_changed(new_highest_kpm)
 signal got_new_record()
+var total_enemies_killed = 0
 
 
 func _process(_delta):
@@ -29,6 +30,7 @@ func _process(_delta):
 func record_enemy_died():
 	var kill_time = Time.get_unix_time_from_system()
 	kill_timestamps.append(kill_time)
+	total_enemies_killed += 1
 	update_kpm()
 
 
@@ -48,3 +50,4 @@ func reset():
 	highest_kpm = 0
 	SaveManager.load_game()
 	kill_timestamps.clear()
+	total_enemies_killed = 0

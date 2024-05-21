@@ -2,6 +2,7 @@ extends NavigationRegion3D
 class_name DesertChunk
 
 
+@export var structure_scene: PackedScene
 @onready var collision_shape_3d = $StaticBody3D/CollisionShape3D
 @onready var static_body_3d = $StaticBody3D
 
@@ -12,6 +13,7 @@ var noise_image: Image
 var big_noise_image: Image
 
 var st = SurfaceTool.new()
+var has_structure := false
 
 
 func _ready():
@@ -57,12 +59,24 @@ func add_vertex(x: int, y: int):
 
 
 func get_noise_image_pixel_height(image: Image, x, y):
-	var width = image.get_width()
-	var height = image.get_height()
+	var width = image.get_width() - 1
+	var height = image.get_height() - 1
 	
-	if x < 0: x = width + x % width
-	elif x > width: x = x % width
-	if y < 0: y = height + y % width
-	elif y > height: y = y % width
+	if x <= 0: x = width + x % width
+	elif x >= width: x = x % width
+	if y <= 0: y = height + y % width
+	elif y >= height: y = y % width
 	
 	return image.get_pixel(x, y).r
+
+
+func try_generate_structure():
+	if randi() % 100 < 5:
+		has_structure = true
+		
+		var structure = structure_scene.instantiate()
+		add_child(structure)
+		
+		bake_navigation_mesh()
+	
+	return has_structure

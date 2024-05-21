@@ -34,7 +34,7 @@ func _physics_process(delta):
 				nav_agent.set_target_position(player.position)
 			
 			var next_path_position: Vector3 = nav_agent.get_next_path_position()
-			var move_direction = (next_path_position - position).normalized()
+			var move_direction = (next_path_position - global_position).normalized()
 			
 			var delta_velocity = move_direction * move_speed
 			if slowed_component.is_slowed:

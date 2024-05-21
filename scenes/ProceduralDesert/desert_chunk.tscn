@@ -1,13 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://cb1h7a8gu0lmv"]
+[gd_scene load_steps=4 format=3 uid="uid://cb1h7a8gu0lmv"]
 
 [ext_resource type="Script" path="res://scenes/ProceduralDesert/desert_chunk.gd" id="1_5md8l"]
+[ext_resource type="PackedScene" uid="uid://bq7vbvb1hntcq" path="res://scenes/DesertStructure/desert_structure.tscn" id="2_flota"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_2adlv"]
 resource_local_to_scene = true
+sample_partition_type = 2
+agent_radius = 1.25
 
 [node name="DesertChunk" type="NavigationRegion3D" groups=["desert_chunk"]]
 navigation_mesh = SubResource("NavigationMesh_2adlv")
+enabled = false
 script = ExtResource("1_5md8l")
+structure_scene = ExtResource("2_flota")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 

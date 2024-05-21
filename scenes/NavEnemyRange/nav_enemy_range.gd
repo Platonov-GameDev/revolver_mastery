@@ -53,7 +53,7 @@ func _physics_process(delta):
 				if !is_reloading:
 					var projectile = projectile_scene.instantiate()
 					projectile.position = muzzle.global_position
-					projectile.velocity = (player.position - position).normalized() * projectile_speed
+					projectile.velocity = (player.position - global_position).normalized() * projectile_speed
 					get_parent().add_child(projectile)
 					
 					is_reloading = true
@@ -62,7 +62,7 @@ func _physics_process(delta):
 					if nav_agent.target_position.distance_to(player.position) >= 1:
 						nav_agent.set_target_position(player.position)
 					var next_path_position: Vector3 = nav_agent.get_next_path_position()
-					var move_direction = (next_path_position - position).normalized()
+					var move_direction = (next_path_position - global_position).normalized()
 					
 					var delta_velocity = move_direction * move_speed * 0.5
 					if slowed_component.is_slowed:
@@ -73,7 +73,7 @@ func _physics_process(delta):
 				if nav_agent.target_position.distance_to(player.position) >= 1:
 					nav_agent.set_target_position(player.position)
 				var next_path_position: Vector3 = nav_agent.get_next_path_position()
-				var move_direction = (next_path_position - position).normalized()
+				var move_direction = (next_path_position - global_position).normalized()
 				
 				var delta_velocity = move_direction * move_speed
 				if slowed_component.is_slowed:

@@ -25,7 +25,7 @@ func _process(_delta):
 	
 	for body in pulled_bodies:
 		if !is_instance_valid(body): continue
-		var pull_point = body.position
+		var pull_point = body.global_position
 		pull_point.y += 1
 		
 		var pull_vector = pull_point - position
@@ -43,7 +43,7 @@ func _on_pull_timer_timeout():
 	for body in pulled_bodies:
 		body.current_state = EnemyState.PULLED
 		var charge = ChargeMoveQueue.move_performed(MoveType.CHAIN_PULL)
-		var label_position = body.position
+		var label_position = body.global_position
 		label_position.y += 1
 		ChargeMoveQueue.spawn_charge_label(label_position, charge)
 	

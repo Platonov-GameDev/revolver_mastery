@@ -20,7 +20,7 @@ func _on_detection_timer_timeout():
 	
 	var check_raycast = RayCast3D.new()
 	check_raycast.position = position
-	var enemy_center = enemy.position
+	var enemy_center = enemy.global_position
 	enemy_center.y += 1
 	check_raycast.target_position = enemy_center - position
 	level.add_child(check_raycast)

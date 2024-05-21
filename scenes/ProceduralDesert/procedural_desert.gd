@@ -6,12 +6,11 @@ extends StaticBody3D
 @export var player: CharacterBody3D
 @export var material: Material
 @export var desert_chunk_scene: PackedScene
-@onready var nav_region: NavigationRegion3D = get_parent()
 @onready var player_vision_area = $PlayerVisionArea
 @onready var chunks = $Chunks
 var noise_image: Image
 var big_noise_image: Image
-var chunk_size = 5
+var chunk_size = 30
 var chunk_resolution = .2
 var polygon_offset = 1 / chunk_resolution
 var chunk_offset = polygon_offset * chunk_size
@@ -44,7 +43,7 @@ func _process(_delta):
 func spawn_chunk(new_position: Vector2) -> DesertChunk:
 	if chunk_grid.has(new_position): return
 	
-	var new_chunk = desert_chunk_scene.instantiate()
+	var new_chunk = desert_chunk_scene.instantiate() as DesertChunk
 	new_chunk.position.x = new_position.x
 	new_chunk.position.z = new_position.y
 	new_chunk.chunk_size = chunk_size
@@ -55,6 +54,8 @@ func spawn_chunk(new_position: Vector2) -> DesertChunk:
 	
 	chunks.add_child(new_chunk)
 	chunk_grid[new_position] = new_chunk
+	
+	new_chunk.try_generate_structure()
 	
 	return new_chunk
 
@@ -83,5 +84,7 @@ func try_delete_chunk(chunk_position: Vector2):
 	if not chunk_grid.has(chunk_position): return
 	if player_vision_area.overlaps_body(chunk_grid[chunk_position].static_body_3d): return
 	
-	chunk_grid[chunk_position].queue_free()
+	var chunk = chunk_grid[chunk_position]
+	
+	chunk.queue_free()
 	chunk_grid.erase(chunk_position)
