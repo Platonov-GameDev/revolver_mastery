@@ -18,7 +18,7 @@ func _on_pierce_timer_timeout():
 		body.receive_damage(power * 200)
 		
 		var charge = ChargeMoveQueue.move_performed(MoveType.PIERCE)
-		var label_position = body.position
+		var label_position = body.global_position
 		label_position.y += 1
 		ChargeMoveQueue.spawn_charge_label(label_position, charge)
 
