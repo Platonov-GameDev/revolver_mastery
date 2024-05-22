@@ -5,6 +5,7 @@ class_name DesertChunk
 @export var structure_scene: PackedScene
 @onready var collision_shape_3d = $StaticBody3D/CollisionShape3D
 @onready var static_body_3d = $StaticBody3D
+@onready var player_detection_area = $PlayerDetectionArea
 
 var chunk_size: int
 var chunk_resolution: float
@@ -14,9 +15,13 @@ var big_noise_image: Image
 
 var st = SurfaceTool.new()
 var has_structure := false
+var structure
 
 
 func _ready():
+	player_detection_area.body_entered.connect(_on_player_detection_area_body_entered)
+	player_detection_area.body_exited.connect(_on_player_detection_area_body_exited)
+	
 	static_body_3d.set_collision_layer_value(6, true)
 	var mesh_instance = MeshInstance3D.new()
 	static_body_3d.add_child(mesh_instance)
@@ -71,12 +76,23 @@ func get_noise_image_pixel_height(image: Image, x, y):
 
 
 func try_generate_structure():
-	if randi() % 100 < 5:
+	if randi() % 100 < 10:
 		has_structure = true
 		
-		var structure = structure_scene.instantiate()
+		structure = structure_scene.instantiate()
 		add_child(structure)
-		
-		bake_navigation_mesh()
 	
 	return has_structure
+
+
+func _on_player_detection_area_body_entered(body):
+	var player = body
+	if has_structure:
+		structure.spawn_impulse_timer.start()
+		structure.player = player
+	
+	enabled = true
+
+
+func _on_player_detection_area_body_exited(body):
+	enabled = false

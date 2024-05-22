@@ -10,8 +10,8 @@ extends StaticBody3D
 @onready var chunks = $Chunks
 var noise_image: Image
 var big_noise_image: Image
-var chunk_size = 30
-var chunk_resolution = .2
+var chunk_size = 3
+var chunk_resolution = .02
 var polygon_offset = 1 / chunk_resolution
 var chunk_offset = polygon_offset * chunk_size
 var chunk_grid = {}
@@ -55,7 +55,9 @@ func spawn_chunk(new_position: Vector2) -> DesertChunk:
 	chunks.add_child(new_chunk)
 	chunk_grid[new_position] = new_chunk
 	
-	new_chunk.try_generate_structure()
+	var has_structure = new_chunk.try_generate_structure()
+	
+	NavigationBaker.add_chunk(new_chunk)
 	
 	return new_chunk
 
@@ -86,5 +88,6 @@ func try_delete_chunk(chunk_position: Vector2):
 	
 	var chunk = chunk_grid[chunk_position]
 	
+	NavigationBaker.remove_chunk(chunk)
 	chunk.queue_free()
 	chunk_grid.erase(chunk_position)

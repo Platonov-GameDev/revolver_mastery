@@ -21,6 +21,7 @@ Global="*res://scenes/Global/global.gd"
 ChargeMoveQueue="*res://scenes/ComboGun/charge_move_queue.gd"
 GameManager="*res://scenes/GameManager/game_manager.tscn"
 SaveManager="*res://scenes/SaveManager/save_manager.tscn"
+NavigationBaker="*res://scenes/NavigationBaker/navigation_baker.gd"
 
 [display]
 
@@ -94,6 +95,12 @@ restart={
 3d_physics/layer_5="grenade"
 3d_physics/layer_6="desert_chunk"
 3d_physics/layer_7="desert_chunk_embryo"
+
+[navigation]
+
+3d/default_cell_size=0.5
+3d/default_cell_height=0.5
+3d/default_edge_connection_margin=5.0
 
 [rendering]
 
