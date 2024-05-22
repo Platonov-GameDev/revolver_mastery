@@ -76,4 +76,5 @@ func _on_player_detection_area_body_exited(body):
 
 func remove_spawn_points():
 	for spawn_point in spawn_points:
-		spawn_point.queue_free()
+		if is_instance_valid(spawn_point):
+			spawn_point.queue_free()
