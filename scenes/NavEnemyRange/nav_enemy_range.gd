@@ -33,8 +33,8 @@ func _physics_process(delta):
 		
 		if is_on_floor():
 			var raycast_to_player = RayCast3D.new()
-			raycast_to_player.position = muzzle.global_position
 			get_parent().add_child(raycast_to_player)
+			raycast_to_player.global_position = muzzle.global_position
 			var player_center_position = player.global_position
 			player_center_position.y += 0.5
 			var player_direction = (player_center_position - raycast_to_player.global_position).normalized()
@@ -52,9 +52,10 @@ func _physics_process(delta):
 			if player_visible:
 				if !is_reloading:
 					var projectile = projectile_scene.instantiate()
-					projectile.position = muzzle.global_position
-					projectile.velocity = (player.position - global_position).normalized() * projectile_speed
 					get_parent().add_child(projectile)
+					projectile.global_position = muzzle.global_position
+					projectile.velocity = (player.position - global_position).normalized() * projectile_speed
+					print(projectile)
 					
 					is_reloading = true
 					shoot_timer.start()
