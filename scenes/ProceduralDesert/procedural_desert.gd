@@ -55,11 +55,41 @@ func spawn_chunk(new_position: Vector2) -> DesertChunk:
 	chunks.add_child(new_chunk)
 	chunk_grid[new_position] = new_chunk
 	
-	var has_structure = new_chunk.try_generate_structure()
+	if not check_if_structure_is_nearby(new_position):
+		new_chunk.try_generate_structure()
 	
 	NavigationBaker.add_chunk(new_chunk)
 	
 	return new_chunk
+
+
+func check_if_structure_is_nearby(position: Vector2) -> bool:
+	var is_structure_nearby := false
+	
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+			position.x + chunk_offset, position.y))) else is_structure_nearby
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+			position.x, position.y + chunk_offset))) else is_structure_nearby
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+			position.x - chunk_offset, position.y))) else is_structure_nearby
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+			position.x, position.y - chunk_offset))) else is_structure_nearby
+	
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+			position.x + chunk_offset, position.y + chunk_offset))) else is_structure_nearby
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+		position.x - chunk_offset, position.y + chunk_offset))) else is_structure_nearby
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+		position.x + chunk_offset, position.y - chunk_offset))) else is_structure_nearby
+	is_structure_nearby = true if (check_if_has_structure(Vector2(
+		position.x - chunk_offset, position.y - chunk_offset))) else is_structure_nearby
+	
+	return is_structure_nearby
+
+
+func check_if_has_structure(position: Vector2) -> bool:
+	if not chunk_grid.has(position): return false
+	return chunk_grid[position].has_structure
 
 
 func _on_player_vision_area_body_entered(body):

@@ -49,7 +49,6 @@ path_desired_distance = 2.0
 target_desired_distance = 2.0
 avoidance_enabled = true
 max_speed = 10000.0
-debug_enabled = true
 
 [node name="HealthComponent" parent="." node_paths=PackedStringArray("mesh") instance=ExtResource("4_kt2le")]
 mesh = NodePath("../MeshInstance3D")

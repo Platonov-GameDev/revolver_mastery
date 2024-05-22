@@ -31,8 +31,8 @@ func _ready():
 	for x in range(chunk_size):
 		for y in range(chunk_size):
 			var polygon_offset = 1 / chunk_resolution
-			var mult_x = (x - chunk_size / 2) * polygon_offset
-			var mult_y = (y - chunk_size / 2) * polygon_offset
+			var mult_x = (x - chunk_size / 2.) * polygon_offset
+			var mult_y = (y - chunk_size / 2.) * polygon_offset
 			
 			add_vertex(mult_x, mult_y)
 			add_vertex(mult_x + polygon_offset, mult_y)
@@ -76,11 +76,11 @@ func get_noise_image_pixel_height(image: Image, x, y):
 
 
 func try_generate_structure():
-	if randi() % 100 < 10:
-		has_structure = true
-		
-		structure = structure_scene.instantiate()
-		add_child(structure)
+	#if randi() % 100 < 10:
+	has_structure = true
+	
+	structure = structure_scene.instantiate()
+	add_child(structure)
 	
 	return has_structure
 
@@ -94,5 +94,5 @@ func _on_player_detection_area_body_entered(body):
 	enabled = true
 
 
-func _on_player_detection_area_body_exited(body):
+func _on_player_detection_area_body_exited(_body):
 	enabled = false

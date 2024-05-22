@@ -55,7 +55,6 @@ func _physics_process(delta):
 					get_parent().add_child(projectile)
 					projectile.global_position = muzzle.global_position
 					projectile.velocity = (player.position - global_position).normalized() * projectile_speed
-					print(projectile)
 					
 					is_reloading = true
 					shoot_timer.start()

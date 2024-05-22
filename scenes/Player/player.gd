@@ -202,8 +202,6 @@ func _on_input_handler_jump_pressed():
 	if is_dead: return
 	if is_on_floor():
 		velocity.y = jump_speed
-		
-		var horizontal_velocity = Vector2(velocity.x, velocity.z)
 
 
 func _on_input_handler_escape_pressed():
@@ -337,7 +335,6 @@ func toss(toss_velocity: Vector3, resets_velocity = false):
 		velocity = toss_velocity
 	elif !resets_velocity:
 		velocity += toss_velocity
-	var horizontal_velocity = Vector2(velocity.x, velocity.z)
 
 
 func hover():
